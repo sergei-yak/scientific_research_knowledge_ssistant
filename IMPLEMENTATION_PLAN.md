@@ -1,12 +1,12 @@
 # Implementation plan
 
-**Status:** Planning only. No application code, dependency installation, service checks, or tests have been completed by this documentation task.
+**Status:** M0 complete for the explicitly chosen local-provider path. Full locked installation, GPU/encoder checks, offline tests, database and local-provider coexistence probes passed. OpenAI live inference remains pending credentials/budget for its later integration gate. See `docs/M0_REPORT.md` for actual evidence and limitations.
 
-**Requirements:** `project_spec.md` is authoritative. This document supplies implementation boundaries, sequencing, and verification; it does not replace the spec's retrieval or evaluation rules. All milestones below are **not started**.
+**Requirements:** `project_spec.md` is authoritative. This document supplies implementation boundaries, sequencing, and verification; it does not replace the spec's retrieval or evaluation rules. M1–M4 are **not started**.
 
 ## Decision log
 
-These decisions are incorporated into the authoritative spec; implementation verification is pending. Append changes with reason, affected requirements/task IDs and verification evidence rather than silently replacing decisions.
+D1–D11 are incorporated into the authoritative spec; verify them in the listed milestones. Append changes with reason, affected requirements/task IDs and evidence rather than silently replacing decisions.
 
 | ID | Decision and reason | Verify in |
 |---|---|---|
@@ -21,6 +21,9 @@ These decisions are incorporated into the authoritative spec; implementation ver
 | D9 | A synthetic fixture proves traversal; real-paper acceptance requires correct behavior, not an observed graph advantage. Record corpus selection before expansion. | M3.1–M4.1 |
 | D10 | Autonomous routine work, budgeted paid operations, human review and one authorized frozen final evaluation have distinct boundaries. | M0.3, M2.2, M4.2 |
 | D11 | Test logical snapshot reconstruction before freezing; native offline dump is optional and never overwrites the working volume. | M3.3 |
+| D12 | M0 uses the official PyTorch 2.6 CUDA 12.4 source and compatible Transformers 4.x/Pandas 2.x ranges; no required package version changed. Full installation/imports, CUDA math, encoder probes and offline tests passed. The tested Hatchling backend is pinned to 1.33.0. | M0.1 |
+| D13 | Use commit-addressed local encoder directories to avoid Windows symlink privileges. Both downloads and actual encoder inference passed; revisions are in the M0 report. | M0.1 |
+| D14 | Explicit M0 live provider is installed local Qwen. OpenAI stays pending credentials/budget; local probes passed without paid requests. | M0.3 |
 
 **M1 design checkpoint, before M2:** Specify candidate pooling and RRF ties, deterministic embedding text for chunks/facts, interval-aware deduplication and evidence assembly. Graph reuses the exact Hybrid + Facts builder. Question overlap counts question aliases only; seed aliases can seed traversal. Define per-template start keys, directed relationship patterns, ordering and timeout configuration. Validate these contracts on synthetic/development cases before real claim review; changes require a logged development decision, never gold-driven tuning.
 
@@ -67,11 +70,11 @@ Keep public configuration, synthetic fixtures and sanitized manifests under vers
 
 ## M0 — Environment and dependency gate
 
-- [ ] **M0.1 — Runtime/lock:** Record Python 3.11, `uv`, Docker/Ollama availability, GPU driver and memory. Create package/build settings, `.gitignore`, `.env.example`, pytest integration marker and Compose configuration when implementation begins. Resolve specified dependencies with `uv lock`; install with `uv sync --locked`, then use `uv run --locked`. Record required imports, CUDA/device checks, both encoder limits/dimensions and token estimator. Log conflicts instead of silently substituting versions; establish a Git baseline.
-- [ ] **M0.2 — Core database:** Pin the image, persistent volumes, localhost ports and health check. Verify credentials, parameterized operations, vector/full-text procedures and disposable smoke indexes reaching `ONLINE`. Keep smoke data separate from the corpus and preserve existing volumes.
-- [ ] **M0.3 — Provider/resource readiness:** Validate both SDKs/configuration; explicitly choose one provider for real text/structured probes, within user-approved paid limits if applicable. Record request/output/concurrency/retry controls, identity, latency and failures. Measure RAM/VRAM with Neo4j plus encoders and, when available, local Ollama; record offloading/context limits and any deferred simultaneous-operation check. Track the secondary provider as pending until M3.3 if unavailable.
+- [x] **M0.1 — Runtime/lock:** Record Python 3.11, `uv`, Docker/Ollama availability, GPU driver and memory. Create package/build settings, `.gitignore`, `.env.example`, pytest integration marker and Compose configuration when implementation begins. Resolve specified dependencies with `uv lock`; install with `uv sync --locked`, then use `uv run --locked`. Record required imports, CUDA/device checks, both encoder limits/dimensions and token estimator. Log conflicts instead of silently substituting versions; establish a Git baseline.
+- [x] **M0.2 — Core database:** Pin the image, persistent volumes, localhost ports and health check. Verify credentials, parameterized operations, vector/full-text procedures and disposable smoke indexes reaching `ONLINE`. Keep smoke data separate from the corpus and preserve existing volumes.
+- [x] **M0.3 — Provider/resource readiness:** Validate both SDKs/configuration; explicitly choose one provider for real text/structured probes, within user-approved paid limits if applicable. Record request/output/concurrency/retry controls, identity, latency and failures. Measure RAM/VRAM with Neo4j plus encoders and, when available, local Ollama; record offloading/context limits and any deferred simultaneous-operation check. Track the secondary provider as pending until M3.3 if unavailable.
 
-**Gate:** M0.1–M0.2 establish core readiness; one chosen live provider enables the real M1 answer path. Missing credentials/budget or secondary-provider readiness never counts as a pass, but independent offline foundation/retrieval work can continue. Provider changes are explicit choices. No installations or smoke probes have been performed by this documentation task.
+**Gate:** M0.1–M0.2 establish core readiness; one chosen live provider enables the real M1 answer path. Missing credentials/budget or secondary-provider readiness never counts as a pass, but independent offline work can continue. Provider changes are explicit choices. Current check results are in the progress table and M0 report, not inferred from code existence.
 
 ## M1 — One-paper vector baseline and shared foundation
 
@@ -106,6 +109,12 @@ Keep public configuration, synthetic fixtures and sanitized manifests under vers
 
 ## Progress record
 
-Checkboxes above are the actionable task register; all are unchecked. For each task, append `task_id | status (not_started/in_progress/waiting_for_human/blocked/done) | files/commit | exact checks + outcomes/skips | artifact paths | decision IDs | next action`. Pending human decisions block only dependent tasks. A milestone report summarizes these records; code existence is not verification. No implementation has been authorized by this documentation-editing task.
+Checkboxes above are the actionable task register. For each task, append `task_id | status (not_started/in_progress/waiting_for_human/blocked/done) | files/commit | exact checks + outcomes/skips | artifact paths | decision IDs | next action`. Pending human decisions block only dependent tasks; code existence is not verification. The user authorized M0 implementation after the planning baseline (`d68606b`).
+
+| Task | Status | Changes/checks/evidence | Decisions / next action |
+|---|---|---|---|
+| M0.1 | done | Full main environment installed from `uv.lock`; `uv lock --check`, `uv sync --locked --offline`, `uv pip check` passed. `uv run --locked --offline pytest -m "not integration"`: 17 passed, two deselected. All imports, CUDA matrix result, 384-D/768-D encoders and estimator passed in `runs/m0/final-environment.json`. | D5/D12/D13: temporary `.venv-checks` was used only while CUDA downloaded; the complete `.venv` is now verified. See `docs/M0_REPORT.md` and the local M0 Git checkpoint. |
+| M0.2 | done | New isolated Compose project, healthy Neo4j 5.26.32, both indexes/searches/idempotent sentinel and cleanup passed; one enabled Neo4j integration test passed, Ollama pytest case skipped because CLI probes run separately. `runs/m0/neo4j-fixed.json`. | D5: preserve volumes; restore testing remains M3.3. |
+| M0.3 | done (selected local provider) | Both SDK imports passed; local Qwen text/structured probes passed with CPU MiniLM resident and exercised while Neo4j ran. `runs/m0/final-services.json` records resources/digest/settings/prompts/usage/timings. OpenAI live remains pending key/budget, zero paid requests. | D6/D10/D14: local M1 can begin. Recheck context/resource limits for full answers; complete the secondary live integration by M3.3. |
 
 Operational references: [uv lock/sync](https://docs.astral.sh/uv/concepts/projects/sync/), [Neo4j dump/load](https://neo4j.com/docs/operations-manual/current/docker/dump-load/), [Neo4j 5 query tuning](https://neo4j.com/docs/cypher-manual/5/planning-and-tuning/query-tuning/). Check command flags against the pinned version before execution.

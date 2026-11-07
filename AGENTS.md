@@ -2,7 +2,7 @@
 
 ## Read first
 
-- Read `project_spec.md` for requirements and `IMPLEMENTATION_PLAN.md` for the current milestone, module boundaries, and decision log before implementation.
+- Read `project_spec.md` for requirements and `IMPLEMENTATION_PLAN.md` for milestone/boundaries/decisions. `README.md` has executable setup steps; `docs/M0_REPORT.md` records actual readiness and pending checks.
 - `project_spec.md` is authoritative; `project_spec_submission.md` is its submission summary. Reference requirements instead of duplicating algorithms.
 - Resolve routine details autonomously; record consequential decisions in the plan. Fix agreed requirement changes in the spec and synchronize its summary; the plan must not override conflicting requirements.
 
@@ -31,7 +31,7 @@
 
 ## Commands
 
-Planned commands; activate as files become available and keep them accurate. None is evidence of completed setup:
+M0 commands are implemented and verified; use the recorded report for outcomes. Keep this list current as later milestones add entry points:
 
 - Initial resolution: `uv lock`, then `uv sync --locked`; commit the lockfile.
 - Subsequent installation: `uv sync --locked`; check consistency with `uv lock --check`.
@@ -39,6 +39,8 @@ Planned commands; activate as files become available and keep them accurate. Non
 - Offline tests: `uv run --locked pytest -m "not integration"`.
 - Configured service tests: `uv run --locked pytest -m integration` (register the marker during setup; select only configured services).
 - CLI help: `uv run --locked python -m research_assistant --help`.
-- UI: `uv run --locked streamlit run src/research_assistant/ui/app.py`.
+- Cached setup probes: `uv run --locked python -m research_assistant smoke --checks imports resources embeddings openai` (OpenAI config only; zero paid calls).
+- Explicit local service probes: add `--checks neo4j ollama --resident-encoder` to the smoke command; choose a fresh `--output` report path. See README for artifact download opt-in.
+- UI (planned, not implemented): `uv run --locked streamlit run src/research_assistant/ui/app.py`.
 
 Integration checks use the plan's recorded service/credential prerequisites; setup never routinely resets volumes.

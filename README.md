@@ -1,10 +1,10 @@
 # Scientific Research Knowledge Assistant
 
-Current implementation: **M0 setup, M1 vector RAG, M2.1 extraction and the completed bounded M2.2 review pass**.
+Current implementation: **M0 setup, M1 vector RAG and the completed M2 five-paper evidence/review pilot**.
 The CLI indexes MiniLM vectors in Neo4j, answers with local Qwen, and exports source-linked review packets.
 Human-decision import and approved-fact indexing are implemented; hybrid/graph search, the UI and
 the frozen benchmark remain later milestones. Current human-review counts are recorded in `docs/M2_2_REPORT.md`.
-M2.3's eight development annotations are prepared and awaiting human validation; see `docs/M2_3_REPORT.md`.
+All eight M2.3 development annotations are human-validated and final readiness is true; see `docs/M2_3_REPORT.md`.
 Read `project_spec.md` and `AGENTS.md` before making changes.
 
 ## M1 baseline
@@ -130,9 +130,9 @@ pending at the initial review timebox. See `docs/M2_2_REPORT.md` and the local h
 
 ## M2.3 development gold validation
 
-Eight development-only drafts and their exact source spans are local under
+Eight human-validated development annotations and their exact source spans are local under
 `data/evaluation/development/pilot-v1/`. `questions.jsonl` contains stripped requests;
-`annotations.jsonl` contains proposed reference answers and gold supports for evaluation only.
+`annotations.jsonl` contains reviewed reference answers and gold supports for evaluation only.
 Never pass annotations or gold answers to retrieval/generation. Real artifacts and human receipts
 remain outside Git. Held-out inputs stay in the evaluator-controlled external directory, untouched.
 
@@ -147,6 +147,9 @@ not mean the gold is human-validated; inspect `review.ready` and the per-questio
 Review packets are `review-batches/batch-01` through `batch-04` inside that dataset directory.
 Use `docs/M2_3_REPORT.md` for current status. Changes require a new immutable dataset version and
 fresh validation. Gold decisions do not approve graph claims or reopen extraction/review caps.
+The creation manifest's draft label is historical; current readiness is determined by source/hash
+checks and exact-bound receipt replay. `runs/m2/m2-3-session/acceptance.json` records development
+acceptance, which is separate from M4's final-evaluation freeze. M3.1 is next; expansion stays closed.
 
 ## Source/evidence contracts
 
@@ -154,7 +157,7 @@ fresh validation. Gold decisions do not approve graph claims or reopen extractio
 retrieval/answer/run artifacts and independent gold annotations. `evaluation/scoring.py` only scores
 provided annotation/context objects; it never supplies gold answers to retrieval or generation.
 Raw and approved-fact source spans receive identical credit. M1 tests use synthetic gold data;
-real human gold annotations and held-out execution remain later milestones.
+M2.3 supplies eight human-validated real development annotations. Held-out execution remains M4 work.
 
 ## Setup (PowerShell, project root)
 

@@ -30,11 +30,11 @@
 - Preserve source attribution, review history, and immutable experiment snapshots. Keep keys, downloaded PDFs, caches, database volumes, and private evaluation answers out of Git.
 - Tune on development questions only. Held-out questions/gold/reveal files belong in an evaluator-controlled external directory; never list/search/read it during development. `.gitignore` is not access control. Only the authorized frozen evaluation runner consumes private inputs; keep them out of agent context and disclose exposure/corrections.
 - Keep requested mode, effective mode, and any fallback reason visible. Provider substitution is never automatic.
-- M2.3 development annotations live only in versioned `data/evaluation/development/` directories. Human gold validation is separate from graph-claim approval; preserve exact question/answer/span bindings and do not inherit approval after edits. Keep gold out of retrieval inputs. Oracle source witnesses verify annotation feasibility, never retrieval performance; absence-keyword triage never proves unanswerability. See `docs/M2_3_REPORT.md` for the active batch and pending decisions.
+- M2.3 development annotations live only in versioned `data/evaluation/development/` directories. All eight pilot annotations are human-validated; preserve exact question/answer/span bindings and do not inherit approval after edits. Gold validation is separate from graph-claim approval; keep gold out of retrieval inputs. Oracle source witnesses verify annotation feasibility, never retrieval performance; absence-keyword triage never proves unanswerability. Use current receipt/source replay for readiness, not the creation manifest's historical draft label. See `docs/M2_3_REPORT.md` for acceptance and scope limits.
 
 ## Commands
 
-M0/M1/M2.1 and M2.2 review commands are implemented. The bounded M2.2 pass is complete; two timeboxed drafts remain pending. M2.3 and the full pilot acceptance gate remain open. Use the recorded reports for outcomes. Keep this list current as later milestones add entry points:
+M0–M2 commands are implemented and the bounded evidence pilot is complete; two timeboxed graph drafts remain pending. M3.1 is next, and full five-paper product/integration acceptance is still required before expansion. Use the recorded reports for outcomes. Keep this list current as later milestones add entry points:
 
 - Initial resolution: `uv lock`, then `uv sync --locked`; commit the lockfile.
 - Subsequent installation: `uv sync --locked`; check consistency with `uv lock --check`.

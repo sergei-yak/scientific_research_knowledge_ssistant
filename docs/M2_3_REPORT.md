@@ -1,133 +1,121 @@
-# M2.3 — Development evidence checkpoint
+# M2.3 — Development evidence and human gold validation
 
-**Status: waiting for human gold validation; not complete.** Eight development questions and
-source-span annotations are prepared and mechanically verified. **Six of eight annotations are
-human-approved** (all direct, cross-paper and multi-hop annotations); only DEV-U1/DEV-U2 remain pending.
-The final, unanswerable batch is now presented in chat. No held-out inputs were
-listed, searched or read; no final benchmark or M3 retrieval comparison has run.
+**Status: complete.** All eight development annotations have explicit human approval against their
+exact displayed question, reference answer and source-span bindings. Final `dev-check` reports
+`human_validated: 8` and `ready: true`. The M2 evidence gate is satisfied for the bounded pilot;
+M3's end-to-end product/traversal/integration/recovery gate remains unfinished. Corpus expansion
+remains closed. No held-out inputs were listed, searched or read.
 
-## Task outcome so far
+## Task outcomes
 
 | M2.3 requirement | Actual outcome |
 |---|---|
-| Eight stratified development questions | Two direct, two cross-paper, two multi-hop and two unanswerable drafts. All five pilot papers contribute answerable evidence. |
-| Independent gold spans | New gold identifiers, exact PDF/chunk/offset/hash references and sufficient-fact sets. Gold data is stored outside graph/retrieval inputs. One direct source fact has no approved graph support counterpart. |
-| Limitations and multi-passage support | Real-paper limitations, AND requirements across passages, cross-paper setups, connected reasoning chains and explicit unknown/incompatible conditions are included. |
-| Human validation | **Approved: 6/8; pending: 2/8.** All six answerable annotations explicitly approved as supported; the two unanswerable annotations await decisions. Prior graph-claim approvals do not approve a question, reference answer or scoring annotation. |
-| Five-paper acceptance gate | Remains open. M3 traversal, product workflows, integrations and recovery are still separate gates. Corpus expansion remains closed. |
+| Eight stratified development questions | Two direct, two cross-paper, two multi-hop and two unanswerable annotations, all human-approved. All five pilot papers contribute answerable evidence. |
+| Independent gold spans | Separate gold IDs and exact PDF/chunk/offset/hash references with sufficient-fact sets. One real source fact has no approved graph support counterpart. Gold stays outside graph/retrieval inputs. |
+| Limitations and multi-passage evidence | Real-paper limitations, AND support across passages, reporting-paper attribution, incompatible/unknown conditions and connected multi-hop reasoning chains exercised. |
+| Human checkpoint | Four two-question batches approved; exact responses and identity retained in ignored receipts. No approval or duration inferred for unseen items. |
+| Final readiness | Source/annotation/audit hashes, all eight approval bindings, category allocation, source-only context feasibility and unanswerable scoring checks pass. |
 
 Corpus: `74260b76836e297402fd7d25804a70eba873de0a00327260b0d348964eb4e329`.
 Development version: ignored `data/evaluation/development/pilot-v1/`.
 Dataset binding: `bf50cdc6e912926732220c2f4276d0e09a5ecf98c93d0f71c85380856db5a67c`.
+Implementation checkpoint: `7469244`; subsequent closeout changes affect documentation and private
+human records only. Source-tree and lockfile hashes are recorded in the acceptance artifact.
 
-## Design and limits
+## Human validation and preparation time
 
-The questions test design, scalability caveats, differing evaluation corpora, linked discovery and
-cost/fallback behavior. Each multi-hop draft includes a connected chain with at least two explicit
-relations; that category takes precedence over cross-paper. The set is purposive development data
-with overlapping sources, not an independent statistical sample or a performance-selected benchmark.
-Its gold is agent-proposed and requires human validation; graph-independent identifiers alone do
-not establish semantic validity or complete annotation coverage.
+| Batch | Category / IDs | Recorded decision | Approximate reported minutes |
+|---|---|---|---:|
+| 01 | Direct / DEV-D1, DEV-D2 | Approved — supported | 10 |
+| 02 | Cross-paper / DEV-C1, DEV-C2 | Approved — supported | 15 |
+| 03 | Multi-hop / DEV-M1, DEV-M2 | Approved — supported | 10 |
+| 04 | Unanswerable / DEV-U1, DEV-U2 | Approved — scoped absence supported | 15 |
+| **Total** | **8/8 approved; zero pending/rejected** | | **50** |
 
-Reference answers preserve reporting-paper ownership and distinguish original HippoRAG from
-HippoRAG 2. Shared MuSiQue identity does not imply matching releases, subsets or splits. Qualitative
-overhead reports do not establish numerical cross-study superiority. Gold may exist without an
-approved graph claim; it is never ingested into the graph to improve apparent coverage.
+The total is approximately **3,000 seconds of user-reported batch review**, separate from M2.2's
+claim-review effort. Numeric replies were to questions explicitly asking for minutes. Individual
+question times remain unknown. Verbatim responses, timestamps and exact bindings are preserved in
+`human-inputs/batch-01-chat.json` through `batch-04-chat.json` inside the dataset directory. Receipt
+hashes are included in the final acceptance record. No private identity or raw response enters Git.
 
-The unanswerable drafts concern an unavailable exact emissions measurement and an unreported gain
-from a proposed fine-tuning intervention. Their absence audit scans the 571 indexed chunks, retaining
-all four emissions/energy-term hits and 12 original-HippoRAG fine-tuning/NER/OpenIE hits, including
-irrelevant and citation matches. The original paper's future-work/off-the-shelf discussion provides
-useful context. Keyword triage is **not** proof of semantic absence. Human review must validate the
-corpus scope and rationale; omitted pages, appendices, other versions and wider literature are not
-certified absent. Unanswerable questions have no gold facts or sufficient sets; recall is `N/A`.
+## Design, scope and limits
 
-Source spans currently identify fixed quotation windows, sometimes including surrounding context.
-Equivalent sufficient passages must be explicitly annotated and reviewed; matching a graph claim ID
-or paraphrasing a reference answer cannot supply missing source evidence. Reviewers should flag
-overbroad spans or missing alternatives. Revalidate development annotations if the corpus expands;
-the pilot's unanswerability judgments do not automatically hold for the final corpus.
+The questions cover design, scaling caveats, evaluation setups, linked discovery, cost/fallback
+behavior and justified abstention. Multi-hop questions have connected chains with at least two
+explicit relations and take category precedence over cross-paper. This is purposive development
+data with overlapping sources, not an independent statistical sample or performance-selected test.
+Gold is agent-proposed and human-validated; it does not certify scientific truth or exhaustive
+coverage. Graph-independent IDs do not by themselves establish semantic validity.
 
-Gold-validation effort is recorded separately from M2.2's initial claim-review timeboxes. This work
-does not approve new graph claims, reopen the two deferred GraphRAG drafts or reset extraction caps.
-No claim journals or graph state were modified.
+Reference answers distinguish original HippoRAG from HippoRAG 2 and preserve reporting-paper
+ownership. A shared MuSiQue name does not prove matching releases, subsets or splits. Qualitative
+cost reports do not establish numerical cross-study superiority. Numerical performance comparison
+remains limited by the pilot evidence; no values were fabricated or graph claims added to match gold.
 
-The first gold batch (DEV-D1/DEV-D2) was explicitly approved as supported, with **approximately ten
-minutes / 600 seconds** reported for that batch. The reply `10` is interpreted in minutes because
-the displayed question explicitly asked for minutes. Individual question times remain unknown.
-The exact response, reviewer identity and displayed annotation bindings are in the ignored receipt
-`data/evaluation/development/pilot-v1/human-inputs/batch-01-chat.json`. No unseen annotation was approved.
+The unanswerable judgments are human-validated for the **recorded indexed corpus only**. The audit
+retains all four carbon/energy-term hits and 12 original-HippoRAG fine-tuning/NER/OpenIE hits, including
+irrelevant/citation matches. Keyword triage alone is not proof of semantic absence. Omitted pages,
+appendices, other versions and the wider literature remain outside the judgment. Both questions
+have empty gold-fact/sufficient-set lists and evidence recall `N/A`; context-only quotations do not
+become answers to the missing measurements. Revalidate these judgments if the corpus expands.
 
-The cross-paper batch (DEV-C1/DEV-C2) was also explicitly approved as supported, with **approximately
-15 minutes / 900 seconds** reported. The reply `15` answers a question explicitly asking for minutes.
-Its verbatim response and bindings are preserved in `human-inputs/batch-02-chat.json` inside the
-dataset directory. At that checkpoint, reported gold-validation time totaled approximately 25
-minutes / 1,500 seconds; no per-question allocation was inferred.
+Fixed source windows sometimes include surrounding context. Equivalent sufficient passages require
+explicit reviewed annotations. Missing/truncated support receives no credit; graph IDs and reference
+answer text cannot substitute for source spans. Later changes require a new immutable dataset
+version and fresh validation. The creation manifest's draft label is historical; current human
+eligibility comes from exact-bound receipts and `dev-check`, not that creation-time text.
 
-The multi-hop batch (DEV-M1/DEV-M2) was explicitly approved as supported, with **approximately ten
-minutes / 600 seconds** reported in response to the minutes question. Its exact reply and bindings
-are in `human-inputs/batch-03-chat.json`. Total reported gold-validation time is now **approximately
-35 minutes / 2,100 seconds**. Per-question times remain unknown; only the unanswerable batch is pending.
+This is **development acceptance, not the M4 final-evaluation freeze**. Human gold validation grants
+no graph-claim approval, does not reopen the two timeboxed GraphRAG drafts, and does not reset
+extraction limits. All existing source/claim histories remain preserved.
 
-## Implementation
+## Implementation and checks
 
-- `ingestion/sources.py` now owns the existing immutable corpus-cache loader, shared by review and
-  evaluation. Source hashes remain checked; the review API delegates to it without changing its
-  approval rules. No independent source-validation implementation is introduced per retrieval mode.
-- `evaluation/development.py` defines development annotations, category/rationale checks, connected
-  reasoning links, immutable dataset exports, exact-bound review packets and human receipts. It uses
-  the existing `EvaluationQuestion`, `SourceSpanRef`, common evidence packer and source-span scorer.
-- The workflow accepts only versioned directories inside `data/evaluation/development/`; external
-  dataset paths and held-out rows are rejected. This is a development boundary, not the M4 private
-  evaluation runner. It never discovers an evaluator-controlled directory.
-- `annotations.jsonl` contains proposed answers/spans. `questions.jsonl` strips answers and supports;
-  only stripped requests may later go to retrieval/generation. All real questions, gold, audit text
-  and receipts remain ignored local artifacts. Tracked tests contain synthetic data only.
-- Annotation/source/audit hashes detect edits. Changed annotations require a new version and fresh
-  human validation. Receipts retain verbatim responses, exact displayed bindings, timezone-aware
-  capture time and known/unknown batch duration. Per-question time is not invented. Old receipt
-  replay cannot undo a later decision; altered receipt hashes fail. Human provenance remains a
-  trusted input boundary, not cryptographic proof of identity.
-- New CLI: `dev-check --dataset-dir <development-version> --output <new-report.json>` with the
-  standard `uv run --locked --offline python -m research_assistant` prefix. This command checks
-  annotation integrity/readiness without LLM or Neo4j calls. It does not mark drafts human-valid.
+`evaluation/development.py` provides development-only contracts, immutable exports, category and
+connected-chain checks, complete review packets, exact-bound human receipts and readiness replay.
+`ingestion/sources.py` supplies the shared hash-verified corpus loader; review delegates to the same
+loader. The workflow reuses the existing `EvaluationQuestion`, common evidence packer and scorer.
+It rejects external dataset directories and held-out rows; it is not the private evaluation runner.
 
-## Actual checks and omissions
+`questions.jsonl` contains stripped requests. `annotations.jsonl` contains reviewed reference
+answers and gold spans for evaluation only. Never give gold to retrieval/generation. All real
+questions, answers, source/audit text and receipts stay ignored locally; tracked fixtures are
+synthetic. Human provenance is a trusted input boundary, not cryptographic proof of identity.
 
-| Check | Outcome |
+| Check actually performed | Outcome |
 |---|---|
-| `uv run --locked --offline pytest -m "not integration"` | **75 passed**, three integration cases deselected; 78 collected. Five upstream PyMuPDF SWIG deprecation warnings. |
-| Development corpus/source/category checks | Eight unique development-only questions, exactly two per category; all exact gold spans valid. Six answerable oracle contexts fit in **1–3 units / 257–739 estimated tokens**. |
-| Real multi-passage scorer | Complete support recall 1; missing premise 0; one-character truncation 0. Raw and approved-fact support both receive recall 1 for the same independent gold fact. |
-| Outside-graph source fact | Direct question DEV-D2 is supported by a chunk absent from every current approved-fact support bundle; a raw source witness receives recall 1. |
-| Source/review preservation | Offline replay still has 571 source chunks, 23 eligible facts and unchanged M2.2 journal head. No graph writes, extraction or provider calls. |
-| Dependency checks | `uv lock --check --offline` and `uv pip check` passed; no dependency or lockfile changes. |
-| First human import/readback | Exact-bound DEV-D1/DEV-D2 decisions replay as approved; six others remain pending and dataset readiness stays false. Source/category/witness checks still pass; no code changes or test rerun were needed for this import. |
-| Cross-paper import/readback | DEV-C1/DEV-C2 approved against their exact displayed bindings. All four prior/current decisions replay as approved; four unseen annotations stay pending and readiness remains false. Source/category/witness checks pass; no code changes or test rerun for this import. |
-| Multi-hop import/readback | DEV-M1/DEV-M2 approved against their exact displayed bindings. All six answerable annotations replay as approved; DEV-U1/DEV-U2 stay pending and readiness remains false. Source/category/witness checks pass; no code changes or test rerun for this import. |
+| Offline implementation suite | **75 passed**, three integration cases deselected; 78 collected. Five upstream PyMuPDF SWIG deprecation warnings. No application changes since this run; data-only human imports did not trigger redundant unit-test reruns. |
+| Locked dependencies | `uv lock --check --offline` and `uv pip check` passed during implementation; no dependency/lockfile changes. |
+| Final CLI readiness | `uv run --locked --offline python -m research_assistant dev-check --dataset-dir data/evaluation/development/pilot-v1 --output runs/m2/m2-3-session/final-readiness.json` passed: eight approved, readiness true, exact source and artifact hashes valid. |
+| Source-only feasibility | All six answerable oracle contexts fit in **1–3 units / 257–739 estimated tokens** and cover their required gold spans. This is annotation feasibility, not measured retrieval recall. |
+| Real multi-passage scorer | Full support recall 1; missing premise 0; one-character truncation 0. Raw and approved-fact evidence both receive recall 1 for the same independent gold fact. |
+| Outside-graph gold | DEV-D2 is supported by a source chunk absent from every current approved-fact support bundle; its raw witness receives recall 1. |
+| Final acceptance verifier | Eight stripped requests match annotations; all four receipts pass binding/hash replay; both unanswerable recalls are null (`N/A`); review time sums to 3,000 seconds. |
+| Preservation | Offline source/journal replay still has 571 chunks, 23 eligible facts and two deferred claims at the unchanged M2.2 head. No graph writes or provider calls. |
 
-The first focused test run passed 22 cases and failed one because the synthetic receipt fixture
-changed JSON formatting before replay. The fixture now preserves canonical formatting; the full
-suite passed afterward. No production receipt was edited to repair this test.
+The first focused implementation test run passed 22 and failed one because a synthetic receipt
+fixture changed JSON formatting before replay. The fixture was corrected to preserve canonical
+formatting; the full suite passed afterward. No production receipt was edited to fix that test.
 
-Oracle contexts are deliberately assembled from annotated sources to check feasibility. Their recall
-is **not measured retrieval performance**. No answer quality, mode comparison or traversal claim is
-made. Service integration tests were not rerun for this offline change. Ollama inference was not
-needed; OpenAI live readiness remains pending credentials/budget for M3.3. Zero LLM/paid calls and
-zero held-out accesses occurred.
+Service integration tests were not rerun for this offline milestone. Ollama inference was not
+needed; OpenAI live readiness remains pending credentials and an approved budget for M3.3. No
+retrieval-mode comparison, answer-quality evaluation, graph traversal or recovery test is claimed.
+There were **zero LLM/paid calls and zero held-out accesses** in M2.3.
 
-## Artifacts and remaining checkpoint
+## Artifacts, deviations and next step
 
-- Dataset: `data/evaluation/development/pilot-v1/{manifest.json,questions.jsonl,annotations.jsonl,absence-audit.json}`.
-- Four two-question packets: `review-batches/batch-01` through `batch-04` in that directory.
-- Current human request: batch-04, DEV-U1/DEV-U2. Batches 01/02/03 are approved with ten, fifteen
-  and ten reported minutes respectively; final batch decisions/time are pending. Reviewer identity persists.
-- Preparation/check reports: `runs/m2/m2-3-session/prepare-result.json`, `check-initial.json`.
-- Real scorer fixture: `runs/m2/m2-3-session/source-scorer-check.json`.
-- Latest human import/readback: `runs/m2/m2-3-session/gold-import-batch-03.json`; earlier reports remain preserved.
-- Source-curation and verifier scripts remain under the same ignored session directory.
+- Dataset: `data/evaluation/development/pilot-v1/`; complete source/audit/annotation files and all
+  four original review packets remain unchanged. Only derived receipts/acceptance notes were added.
+- Final import: `runs/m2/m2-3-session/gold-import-batch-04.json`.
+- Final CLI checks: `runs/m2/m2-3-session/final-readiness.json`.
+- Immutable development acceptance: `runs/m2/m2-3-session/acceptance.json`, including dataset/source/
+  annotation/receipt/code/lockfile hashes and current readiness. It is a historical acceptance record;
+  future edits or revocations require a fresh readiness check.
+- Earlier preparation, scorer checks and intermediate imports remain preserved under the same
+  ignored session directory. Current handoff: `runs/m2/m2-3-session/START_HERE.md`.
 
-Finish the final unanswerable human-validation batch, record actual decisions/time, revise any rejected
-or unclear annotations as a new version, and rerun the applicable checks. M2.3 remains unchecked
-until all required gold annotations are validated. `project_spec.md` section 4 explicitly requires
-"Human-validate statements/spans before freezing"; mechanical passes cannot substitute for that step.
+No requirement or dependency deviations were introduced. There is no remaining M2.3 human
+checkpoint or blocker. Next is **M3.1**: implement Hybrid, Hybrid + Approved Facts and Graph retrieval
+with the established shared evidence contracts, bounded templates, fallback and query-plan checks.
+M3.2 product workflows and M3.3 provider/recovery checks still precede expansion. Held-out inputs
+remain evaluator-controlled and untouched; final-run authorization belongs to M4.

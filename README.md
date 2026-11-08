@@ -1,8 +1,9 @@
 # Scientific Research Knowledge Assistant
 
-Current implementation: **M0 setup, M1 vector RAG and M2.1 five-paper candidate extraction**.
+Current implementation: **M0 setup, M1 vector RAG, M2.1 extraction and the completed bounded M2.2 review pass**.
 The CLI indexes MiniLM vectors in Neo4j, answers with local Qwen, and exports source-linked review packets.
-Human approval import, hybrid/graph search, the UI and the frozen benchmark are later milestones.
+Human-decision import and approved-fact indexing are implemented; hybrid/graph search, the UI and
+the frozen benchmark remain later milestones. Current human-review counts are recorded in `docs/M2_2_REPORT.md`.
 Read `project_spec.md` and `AGENTS.md` before making changes.
 
 ## M1 baseline
@@ -80,6 +81,51 @@ Evaluation/Finding/FactText nodes are created in M2.1. Human review time is zero
 `review-check` is entirely offline: it replays source/quote identities, mapping revisions, CSV
 bindings and cumulative caps. Passing it establishes mechanical integrity, not semantic support.
 Model prompts/responses, source text, review packets and journals stay ignored in Git.
+
+## M2.2 human review and approved facts
+
+Current status: `docs/M2_2_REPORT.md`. The user prefers small in-chat batches. M2.1 packets remain
+historical; the current revision/decision history is in ignored `data/reviews/pilot/`. Preserve it.
+Review batches and exact revision bindings are under `runs/m2/m2-2-session/`; use the current
+milestone report for the next batch. Reviewing one batch never approves unseen claims.
+
+```powershell
+$tag = Get-Date -Format 'yyyyMMdd-HHmmss'
+uv run --locked --offline python -m research_assistant review-prepare --bundle-dir runs/m2/review-final --review-dir data/reviews/pilot --output "runs/m2/prepare-$tag.json"
+uv run --locked --offline python -m research_assistant review-status --review-dir data/reviews/pilot --output "runs/m2/status-$tag.json"
+# For human-edited CSV input, use the head-addressed template returned by review-prepare:
+uv run --locked --offline python -m research_assistant review-import --review-dir data/reviews/pilot --decisions <human-decisions.csv> --output "runs/m2/import-$tag.json"
+# Proposed corrections require a new ReviewRevision, predecessor hash and human re-review:
+uv run --locked --offline python -m research_assistant review-revise --review-dir data/reviews/pilot --revision <proposed-revision.json> --output "runs/m2/revise-$tag.json"
+uv run --locked --offline python -m research_assistant review-sync --review-dir data/reviews/pilot --output "runs/m2/sync-$tag.json"
+```
+
+Existing preparation replays idempotently and exports current revision bindings. Human CSV rows
+need explicit decision/reviewer/timezone-aware timestamp/reason and source/entity/revision hashes.
+For unmeasured per-claim time, leave seconds blank and state that in `review_time_note`. Blank
+decisions stay pending. Preserve in-chat responses in local receipts and import only the exact
+explicit decisions; record batch durations once, without inventing per-claim allocations.
+
+An edit or changed source/support/alias definition invalidates the old approval. Synchronization
+rebuilds eligible FactText using CPU MiniLM, creates corpus-scoped active-only vector/full-text
+indexes, and preserves inactive history. It makes **no LLM calls**. `fact-text-v1` shows canonical
+method/dataset mappings and unknown conditions in the common evidence bundle. All future fact
+retrievers must require the current local review head through `ReviewRepository.active_facts`;
+unsynchronized or rolled-back history fails closed. Never query stale approved rows as a fallback.
+Overlong embedding input requires revision; it is never silently truncated.
+
+Optional isolated review integration fixture (synthetic decisions, no production approvals):
+
+```powershell
+$env:RUN_REVIEW_SMOKE = '1'
+uv run --locked --offline pytest -m integration tests/integration/test_review_repository.py
+Remove-Item Env:RUN_REVIEW_SMOKE
+```
+
+The fixture removes only its UUID-owned synthetic nodes/indexes. It never resets application data
+or volumes. M2.2 has 23 current human-approved facts across five papers; two GraphRAG drafts remain
+pending at the initial review timebox. See `docs/M2_2_REPORT.md` and the local handoff index
+`runs/m2/m2-2-session/FINAL_STATUS.md`. M3 retrievers and M2.3 annotations have not started.
 
 ## Source/evidence contracts
 

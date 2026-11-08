@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from datetime import datetime
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -122,16 +123,30 @@ class ClaimRevision(Contract):
 
 
 class ReviewDecision(Contract):
-    """A human review record; review import/eligibility is implemented in M2."""
+    """Shared explicit human decision; shape validation alone never authorizes approval."""
 
     claim_id: str
     claim_revision: int = Field(ge=1)
+    revision_sha256: str
     source_sha256: str
     entity_revision: str
-    reviewer: str
-    reviewed_at: str
-    reason: str
+    reviewer: str = Field(min_length=1)
+    reviewed_at: datetime
+    review_seconds: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    review_time_note: str = Field(min_length=1)
+    reason: str = Field(min_length=1)
     decision: Literal["approved", "rejected", "needs_review"]
+    origin: Literal["human_csv", "human_chat"]
+    provenance_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+
+    @model_validator(mode="after")
+    def explicit_human_record(self) -> ReviewDecision:
+        """Require identity/time provenance and keep unmeasured durations explicit."""
+        if not self.reviewer.strip() or not self.reason.strip():
+            raise ValueError("Human reviewer and decision reason are required")
+        if self.reviewed_at.tzinfo is None:
+            raise ValueError("Review timestamp must include its timezone")
+        return self
 
 
 class EvidenceItem(Contract):

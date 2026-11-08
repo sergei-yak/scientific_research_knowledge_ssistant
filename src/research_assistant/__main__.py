@@ -47,6 +47,24 @@ def main(argv: list[str] | None = None) -> int:
     review_check = subparsers.add_parser("review-check", help="Replay packet source/identity/cap checks with no model calls")
     review_check.add_argument("--bundle-dir", type=Path, required=True)
     review_check.add_argument("--output", type=Path, required=True)
+    prepare = subparsers.add_parser("review-prepare", help="Register audited candidates without decisions")
+    prepare.add_argument("--bundle-dir", type=Path, required=True)
+    prepare.add_argument("--review-dir", type=Path, required=True)
+    prepare.add_argument("--output", type=Path, required=True)
+    review_import = subparsers.add_parser("review-import", help="Import explicit human CSV rows into review history")
+    review_import.add_argument("--review-dir", type=Path, required=True)
+    review_import.add_argument("--decisions", type=Path, required=True)
+    review_import.add_argument("--output", type=Path, required=True)
+    revise = subparsers.add_parser("review-revise", help="Register a proposed correction and invalidate old eligibility")
+    revise.add_argument("--review-dir", type=Path, required=True)
+    revise.add_argument("--revision", type=Path, required=True)
+    revise.add_argument("--output", type=Path, required=True)
+    review_status = subparsers.add_parser("review-status", help="Replay review eligibility without model/graph calls")
+    review_status.add_argument("--review-dir", type=Path, required=True)
+    review_status.add_argument("--output", type=Path, required=True)
+    sync = subparsers.add_parser("review-sync", help="Synchronize current human-approved facts to Neo4j")
+    sync.add_argument("--review-dir", type=Path, required=True)
+    sync.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)
     configure_caches()
     try:
@@ -76,6 +94,24 @@ def main(argv: list[str] | None = None) -> int:
             elif args.command == "review-check":
                 from research_assistant.review.audit import audit_packets
                 result = audit_packets(args.bundle_dir)
+            elif args.command == "review-prepare":
+                from research_assistant.review.store import prepare_review
+                result = prepare_review(args.bundle_dir, args.review_dir)
+            elif args.command == "review-import":
+                from research_assistant.review.store import import_csv
+                result = import_csv(args.review_dir, args.decisions)
+            elif args.command == "review-revise":
+                from research_assistant.review.contracts import ReviewRevision
+                from research_assistant.review.store import load_chunks, propose_revision
+                revision = ReviewRevision.model_validate_json(args.revision.read_text(encoding="utf-8"))
+                result = propose_revision(args.review_dir, revision, load_chunks(args.review_dir))
+            elif args.command == "review-status":
+                from research_assistant.review.facts import projection
+                from research_assistant.review.store import load_chunks
+                result = projection(args.review_dir, load_chunks(args.review_dir))
+            elif args.command == "review-sync":
+                from research_assistant.graph.reviews import synchronize_review
+                result = synchronize_review(args.review_dir, settings)
             else:
                 request = QueryRequest(question=args.question, corpus_id=args.corpus)
                 result = ask_question(request, settings, args.context_tokens,

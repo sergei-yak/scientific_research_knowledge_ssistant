@@ -48,6 +48,7 @@ def test_invalid_json_and_length_stop_are_never_accepted(monkeypatch):
     with pytest.raises(ValidationError):
         model.generate_structured(DraftAnswer, [{"role": "user", "content": "question"}])
     assert sdk.calls == 1
+    assert model.last_result.text == "not JSON"
     sdk.reason = "length"
     with pytest.raises(ValueError, match="limit"):
         model.generate_text([{"role": "user", "content": "question"}])
@@ -69,3 +70,12 @@ def test_rrf_uses_ranks_not_raw_scores_and_deduplicates_each_list():
     assert [identity for identity, _ in result] == ["a", "b"]
     assert result[0][1] == result[1][1]
     assert result[0][1] == pytest.approx(1 / 61 + 1 / 62)
+
+
+def test_extraction_uses_its_independent_provider_and_model(monkeypatch):
+    sdk = FakeSDK()
+    monkeypatch.setattr(llm.ollama, "Client", lambda **kwargs: sdk)
+    local = llm.OllamaClient(Settings(generation_model="not-installed"), purpose="extraction")
+    assert local.model == "qwen3.8:latest"
+    with pytest.raises(ValueError, match="no provider fallback"):
+        llm.OllamaClient(Settings(extraction_provider="openai"), purpose="extraction")

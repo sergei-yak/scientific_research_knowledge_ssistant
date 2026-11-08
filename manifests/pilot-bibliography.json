@@ -1,0 +1,100 @@
+{
+  "source": "OpenAlex bounded singleton lookups",
+  "metadata_sha256": "170bc7c17e75a445323bebaa3274b658234885943ac644f83481f7ad45d826a0",
+  "papers": [
+    {
+      "paper_id": "arxiv:2501.00309v2",
+      "arxiv_id": "2501.00309v2",
+      "source_sha256": "737b0b8fe0aa8459429b5906d66d0bfcb5246c488add534d3ce23f58a0f7b7fc",
+      "arxiv_doi": "https://doi.org/10.48550/arXiv.2501.00309",
+      "openalex_id": "https://openalex.org/W4406031095",
+      "doi": "https://doi.org/10.48550/arxiv.2501.00309",
+      "year": 2024,
+      "checked_at": "2026-11-08T00:18:27.544610+00:00",
+      "references_status": "available"
+    },
+    {
+      "paper_id": "arxiv:2404.16130v1",
+      "arxiv_id": "2404.16130v1",
+      "source_sha256": "33524b3b56910c513affdad8dbf67d14e68edf0572e4debdb09a9f1916463b06",
+      "arxiv_doi": "https://doi.org/10.48550/arXiv.2404.16130",
+      "openalex_id": "https://openalex.org/W4395686609",
+      "doi": "https://doi.org/10.48550/arxiv.2404.16130",
+      "year": 2024,
+      "checked_at": "2026-11-08T00:18:28.052824+00:00",
+      "references_status": "available"
+    },
+    {
+      "paper_id": "arxiv:2405.14831v1",
+      "arxiv_id": "2405.14831v1",
+      "source_sha256": "43413f14b75989b41574a783c3d854643db768c6842eb4ae71daa5d8baeb8b32",
+      "arxiv_doi": "https://doi.org/10.48550/arXiv.2405.14831",
+      "openalex_id": "https://openalex.org/W4415797504",
+      "doi": "https://doi.org/10.52202/079017-1902",
+      "year": 2024,
+      "checked_at": "2026-11-08T00:18:28.303904+00:00",
+      "references_status": "available"
+    },
+    {
+      "paper_id": "arxiv:2410.05779v1",
+      "arxiv_id": "2410.05779v1",
+      "source_sha256": "430857127120ba1a0923afe56258c8fc87fd4ec503f9f8e284c5d1007ccf7001",
+      "arxiv_doi": "https://doi.org/10.48550/arXiv.2410.05779",
+      "openalex_id": "https://openalex.org/W4416034797",
+      "doi": "https://doi.org/10.18653/v1/2025.findings-emnlp.568",
+      "year": 2025,
+      "checked_at": "2026-11-08T00:18:28.815524+00:00",
+      "references_status": "available"
+    },
+    {
+      "paper_id": "arxiv:2502.14802v1",
+      "arxiv_id": "2502.14802v1",
+      "source_sha256": "4e6b75b6734ad4e3c25421a3e35f1d9d4aa68e896236dde3ba84090812c478f8",
+      "arxiv_doi": "https://doi.org/10.48550/arXiv.2502.14802",
+      "openalex_id": "https://openalex.org/W4407831980",
+      "doi": "https://doi.org/10.48550/arxiv.2502.14802",
+      "year": 2025,
+      "checked_at": "2026-11-08T00:18:28.990326+00:00",
+      "references_status": "available"
+    }
+  ],
+  "citation_edges": [
+    {
+      "citing": "arxiv:2501.00309v2",
+      "cited": "arxiv:2404.16130v1",
+      "source": "openalex",
+      "version_scope": "work_level_not_pdf_version"
+    },
+    {
+      "citing": "arxiv:2501.00309v2",
+      "cited": "arxiv:2410.05779v1",
+      "source": "openalex",
+      "version_scope": "work_level_not_pdf_version"
+    },
+    {
+      "citing": "arxiv:2405.14831v1",
+      "cited": "arxiv:2404.16130v1",
+      "source": "openalex",
+      "version_scope": "work_level_not_pdf_version"
+    },
+    {
+      "citing": "arxiv:2410.05779v1",
+      "cited": "arxiv:2404.16130v1",
+      "source": "openalex",
+      "version_scope": "work_level_not_pdf_version"
+    },
+    {
+      "citing": "arxiv:2502.14802v1",
+      "cited": "arxiv:2404.16130v1",
+      "source": "openalex",
+      "version_scope": "work_level_not_pdf_version"
+    },
+    {
+      "citing": "arxiv:2502.14802v1",
+      "cited": "arxiv:2410.05779v1",
+      "source": "openalex",
+      "version_scope": "work_level_not_pdf_version"
+    }
+  ],
+  "caveat": "References are work-level metadata, not verification of citations in the pinned PDF; missing edges are unknown."
+}

@@ -31,6 +31,22 @@ def main(argv: list[str] | None = None) -> int:
     ask.add_argument("--context-tokens", type=int, default=4096, help="M1 answer context; default 4096, separate from M0 smoke limits")
     ask.add_argument("--max-output-tokens", type=int, default=512, help="M1 output limit; default 512")
     ask.add_argument("--minimum-similarity", type=float, default=0.30)
+    metadata = subparsers.add_parser("pilot-metadata", help="Bounded OpenAlex lookups for the declared five papers")
+    metadata.add_argument("--manifest", type=Path, required=True)
+    metadata.add_argument("--cache-dir", type=Path, required=True)
+    metadata.add_argument("--output", type=Path, required=True)
+    pilot = subparsers.add_parser("pilot-ingest", help="Build a separate five-paper corpus, preserving member snapshots")
+    pilot.add_argument("--manifest", type=Path, required=True)
+    pilot.add_argument("--metadata", type=Path, required=True)
+    pilot.add_argument("--output", type=Path, required=True)
+    extract = subparsers.add_parser("extract", help="Prepare bounded local-Qwen claim-review bundles; no approvals")
+    extract.add_argument("--corpus", required=True)
+    extract.add_argument("--plan", type=Path, required=True)
+    extract.add_argument("--bundle-dir", type=Path, required=True)
+    extract.add_argument("--output", type=Path, required=True)
+    review_check = subparsers.add_parser("review-check", help="Replay packet source/identity/cap checks with no model calls")
+    review_check.add_argument("--bundle-dir", type=Path, required=True)
+    review_check.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)
     configure_caches()
     try:
@@ -46,17 +62,34 @@ def main(argv: list[str] | None = None) -> int:
         try:
             if args.command == "ingest":
                 result = ingest_paper(args.manifest, settings)
+            elif args.command == "pilot-metadata":
+                from research_assistant.ingestion.corpus import PilotManifest
+                from research_assistant.ingestion.metadata import fetch_metadata
+                manifest = PilotManifest.model_validate_json(args.manifest.read_text(encoding="utf-8"))
+                result = fetch_metadata(manifest.papers, settings, args.cache_dir)
+            elif args.command == "pilot-ingest":
+                from research_assistant.ingestion.corpus import ingest_pilot
+                result = ingest_pilot(args.manifest, args.metadata, settings)
+            elif args.command == "extract":
+                from research_assistant.extraction.pilot import extract_pilot
+                result = extract_pilot(args.corpus, args.plan, args.bundle_dir, settings)
+            elif args.command == "review-check":
+                from research_assistant.review.audit import audit_packets
+                result = audit_packets(args.bundle_dir)
             else:
                 request = QueryRequest(question=args.question, corpus_id=args.corpus)
                 result = ask_question(request, settings, args.context_tokens,
                                       args.max_output_tokens, args.minimum_similarity).model_dump(mode="json")
             if args.output:
                 write_immutable(args.output, json.dumps(result, ensure_ascii=False, indent=2) + "\n")
-            summary = result if args.command == "ingest" else {
+            summary = result if args.command != "ask" else {
                 "output": str(args.output), "answer": result["result"],
                 "evidence_units": len(result["retrieval"]["evidence"]),
                 "estimated_evidence_tokens": result["retrieval"]["estimated_tokens"],
             }
+            if args.command == "pilot-metadata":
+                summary = {"output": str(args.output), "matched": sum(bool(p["openalex_id"]) for p in result["papers"]),
+                           "papers": len(result["papers"]), "citation_edges": len(result["citation_edges"])}
             print(json.dumps(summary, ensure_ascii=True, indent=2))
             return 0
         except Exception as exc:

@@ -27,6 +27,7 @@ class Settings(BaseModel):
     ollama_base_url: str = "http://127.0.0.1:11434"
     openai_model: str = "gpt-6.1-terra"
     openai_api_key: SecretStr = SecretStr("")
+    openalex_api_key: SecretStr = SecretStr("")
     api_budget_approved: bool = False
     api_budget_usd: float = Field(default=0, ge=0, allow_inf_nan=False)
     api_max_request_usd: float = Field(default=0, ge=0, allow_inf_nan=False)
@@ -69,7 +70,7 @@ class Settings(BaseModel):
 
     def redact(self, message: str) -> str:
         """Remove configured secrets from diagnostic error messages."""
-        for secret in (self.neo4j_password, self.openai_api_key):
+        for secret in (self.neo4j_password, self.openai_api_key, self.openalex_api_key):
             if value := secret.get_secret_value():
                 message = message.replace(value, "[REDACTED]")
         return message

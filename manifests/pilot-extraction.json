@@ -1,0 +1,44 @@
+{
+  "version": "bounded-claims-v2",
+  "amendment_decision": "D22",
+  "max_passages_per_paper": 8,
+  "max_candidates_per_paper": 12,
+  "max_requests_per_paper": 8,
+  "candidates_per_request": 2,
+  "max_passage_tokens": 600,
+  "context_tokens": 4096,
+  "output_tokens": 1024,
+  "initial_review_minutes": 20,
+  "selections": {
+    "arxiv:2501.00309v2": [
+      {"page": 5, "anchor": "Based on existing literature on GraphRAG", "max_blocks": 5, "purpose": "Survey-owned framework definition; findings only, not cited studies' evaluations"},
+      {"page": 50, "anchor": "Balancing Completeness and Conciseness", "max_blocks": 1, "purpose": "Qualitative organizer challenge"},
+      {"page": 50, "anchor": "Aligning Different Resources", "max_blocks": 1, "purpose": "Qualitative alignment challenge"},
+      {"page": 51, "anchor": "Scalability: As data volumes", "max_blocks": 1, "purpose": "System-level scalability limitation"}
+    ],
+    "arxiv:2404.16130v1": [
+      {"page": 3, "anchor": "The baseline requirement for this step", "max_blocks": 2, "purpose": "Entity/relationship graph indexing design"},
+      {"page": 6, "anchor": "We selected two datasets", "max_blocks": 3, "purpose": "Paper-owned evaluation datasets and task scope"},
+      {"page": 7, "anchor": "Given the multi-stage nature", "max_blocks": 3, "purpose": "Evaluation criteria and LLM judge protocol; no table numbers"},
+      {"page": 11, "anchor": "Limitations of evaluation approach", "max_blocks": 2, "purpose": "Explicit limitations and index preparation trade-offs"}
+    ],
+    "arxiv:2405.14831v1": [
+      {"page": 3, "anchor": "Offline Indexing. Our offline indexing phase", "max_blocks": 2, "purpose": "HippoRAG indexing/retrieval method"},
+      {"page": 5, "anchor": "We evaluate our method", "max_blocks": 1, "purpose": "Paper-owned multi-hop QA dataset/split scope; avoid flattened table"},
+      {"page": 6, "anchor": "We report retrieval and QA performance", "max_blocks": 2, "purpose": "Metrics and experimental implementation, not table-value extraction"},
+      {"page": 10, "anchor": "F that shows most errors made by our system", "max_blocks": 1, "purpose": "Continuation of limitations; exclude acknowledgments/references below"}
+    ],
+    "arxiv:2410.05779v1": [
+      {"page": 3, "anchor": "Graph-Enhanced Entity and Relationship Extraction", "max_blocks": 1, "purpose": "LightRAG graph indexing method; omit illustrative figure entities"},
+      {"page": 4, "anchor": "To accommodate diverse query types", "max_blocks": 2, "purpose": "Dual-level retrieval design"},
+      {"page": 5, "anchor": "Evaluation Datasets. To conduct", "max_blocks": 2, "purpose": "Paper-owned evaluation data and domain scope"},
+      {"page": 5, "anchor": "The second part of the process involves", "max_blocks": 1, "purpose": "Qualitative retrieval cost/design; no numerical performance claim"}
+    ],
+    "arxiv:2502.14802v1": [
+      {"page": 4, "anchor": "Offline Indexing. 1) HippoRAG 2", "max_blocks": 1, "purpose": "HippoRAG 2 indexing and passage integration"},
+      {"page": 5, "anchor": "We summarize the online retrieval process in HippoRAG 2", "max_blocks": 1, "purpose": "Own online retrieval/PPR method, including explicit empty-triple fallback"},
+      {"page": 6, "anchor": "Multi-hop QA. We randomly collect", "max_blocks": 1, "purpose": "Own multi-hop QA datasets; final LV-Eval sentence continues outside the passage and cannot support a complete LV-Eval claim"},
+      {"page": 8, "anchor": "The dense retriever employed by HippoRAG 2", "max_blocks": 1, "purpose": "Qualitative retriever flexibility, not unseen table values"}
+    ]
+  }
+}

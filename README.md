@@ -1,8 +1,8 @@
 # Scientific Research Knowledge Assistant
 
-Current implementation: **M0 setup and M1 one-paper vector RAG**. The CLI parses a pinned paper,
-indexes MiniLM vectors in Neo4j and answers with local Qwen and inspectable source citations.
-Claim review, hybrid/graph search, the UI and the frozen benchmark are later milestones.
+Current implementation: **M0 setup, M1 vector RAG and M2.1 five-paper candidate extraction**.
+The CLI indexes MiniLM vectors in Neo4j, answers with local Qwen, and exports source-linked review packets.
+Human approval import, hybrid/graph search, the UI and the frozen benchmark are later milestones.
 Read `project_spec.md` and `AGENTS.md` before making changes.
 
 ## M1 baseline
@@ -37,6 +37,49 @@ semantic correctness: the first development run found a real counterexample. See
 `docs/M1_REPORT.md` for the failure, generic chunking fix, native usage/resources and verification.
 The fixed evidence estimate is distinct from Qwen's native tokenizer; M1 uses a conservative context
 preflight and native usage checks. CPU embeddings avoid competing with Qwen for scarce VRAM.
+
+## M2.1 five-paper pilot
+
+`manifests/pilot-five-papers.json` pins the five PDFs, rights, hashes and partial coverage.
+Download missing PDFs separately from their versioned URLs to their declared local paths; ingestion
+checks hashes. Selection is documented in `manifests/PILOT_SELECTION.md`; PDF inspection and known
+reading-order/section-label limits are in `docs/M2_PDF_INSPECTION.md`.
+
+OpenAlex metadata uses at most two bounded GETs per paper and caches successes/unknown outcomes.
+`OPENALEX_API_KEY` is optional for the small basic lookups; stay within free access, never buy credits
+automatically. A new metadata cache is an explicit refresh and changes the combined snapshot identity.
+Bibliographic CITES edges are work-level discovery data, not proof about the pinned PDF's citations.
+
+```powershell
+$tag = Get-Date -Format 'yyyyMMdd-HHmmss'
+$metadata = "runs/m2/metadata-$tag.json"
+uv run --locked --offline python -m research_assistant pilot-metadata --manifest manifests/pilot-five-papers.json --cache-dir data/metadata/pilot-v1 --output $metadata
+$ingestReport = "runs/m2/ingest-$tag.json"
+uv run --locked --offline python -m research_assistant pilot-ingest --manifest manifests/pilot-five-papers.json --metadata $metadata --output $ingestReport
+$corpus = (Get-Content -Raw -LiteralPath $ingestReport | ConvertFrom-Json).corpus_id
+$packets = "runs/m2/review-$tag"
+uv run --locked --offline python -u -m research_assistant extract --corpus $corpus --plan manifests/pilot-extraction.json --bundle-dir $packets --output "runs/m2/extraction-$tag.json"
+uv run --locked --offline python -m research_assistant review-check --bundle-dir $packets --output "runs/m2/review-check-$tag.json"
+```
+
+Extraction uses **EXTRACTION_PROVIDER/MODEL**, independently of generation. Local M2 limits are
+4,096 context/1,024 output tokens, two candidates/request, eight cumulative requests per paper,
+at most eight distinct passages and 12 candidates. The current plan selects four passages/paper.
+Prompt amendment D22 and all initial empty/interrupted calls remain counted. No automatic model
+retry, repair call, provider change or approval occurs. A started call without a response reserves
+its possible candidates and is never repeated automatically. Per-PDF journals under
+`data/extraction/by-source/` survive export/configuration/corpus metadata changes. Preserve them.
+
+`extract` can reuse saved responses for a **new export directory**, with zero new inference for
+already attempted requests. Configuration changes need a recorded amendment and cannot reset
+the cumulative caps. It refuses to overwrite packets or decisions. Open `START_HERE.md`, then each
+`REVIEW.md` and its `decisions.csv`. Decision/reviewer/time fields start blank; only humans fill
+them. Proposed mappings have revision hashes. M2.2 will validate/import decisions; no scientific
+Evaluation/Finding/FactText nodes are created in M2.1. Human review time is zero until actually recorded.
+
+`review-check` is entirely offline: it replays source/quote identities, mapping revisions, CSV
+bindings and cumulative caps. Passing it establishes mechanical integrity, not semantic support.
+Model prompts/responses, source text, review packets and journals stay ignored in Git.
 
 ## Source/evidence contracts
 

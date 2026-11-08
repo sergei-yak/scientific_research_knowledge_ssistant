@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import time
-from typing import Protocol, TypeVar
+from typing import Literal, Protocol, TypeVar
 
 import ollama
 from pydantic import BaseModel
@@ -31,15 +31,21 @@ class LLMClient(Protocol):
 class OllamaClient:
     """One explicitly selected model, bounded context, no retries or substitution."""
 
-    def __init__(self, settings: Settings, context_tokens: int = 4096, output_tokens: int = 512) -> None:
-        if settings.generation_provider != "ollama":
-            raise ValueError("M1 implements local Ollama only; no provider fallback")
+    def __init__(self, settings: Settings, context_tokens: int = 4096, output_tokens: int = 512,
+                 purpose: Literal["generation", "extraction"] = "generation") -> None:
+        if purpose not in {"generation", "extraction"}:
+            raise ValueError("Unknown LLM operation")
+        if getattr(settings, purpose + "_provider") != "ollama":
+            raise ValueError("Local Ollama only; no provider fallback")
         if not 2048 <= context_tokens <= 8192 or not 64 <= output_tokens <= 1024:
             raise ValueError("M1 context/output limits are outside supported bounds")
         self.settings = settings
         self.context_tokens, self.output_tokens = context_tokens, output_tokens
         self.client = ollama.Client(host=settings.ollama_base_url, timeout=settings.request_timeout_seconds)
-        self.model = settings.generation_model
+        self.model = getattr(settings, purpose + "_model")
+        self.purpose = purpose
+        self.prompt_version = "bounded-claims-v1" if purpose == "extraction" else "grounded-vector-v1"
+        self.last_result: LLMResult | None = None
         self.digest = self._digest()
 
     def _digest(self) -> str:
@@ -50,6 +56,7 @@ class OllamaClient:
         return match.digest
 
     def _generate(self, messages: list[dict[str, str]], schema: dict | None) -> LLMResult:
+        self.last_result = None
         if self._digest() != self.digest:
             raise ValueError("Model digest changed during the run")
         estimate = estimate_tokens(json.dumps(messages, ensure_ascii=False))
@@ -63,6 +70,16 @@ class OllamaClient:
         start = time.perf_counter()
         response = self.client.chat(model=self.model, messages=messages, format=schema,
                                     options=options, think=False, keep_alive="2m")
+        self.last_result = LLMResult(
+            text=response.message.content, provider="ollama", model=self.model, digest=self.digest,
+            elapsed_ms=(time.perf_counter() - start) * 1000,
+            usage={"prompt_tokens": response.prompt_eval_count, "output_tokens": response.eval_count},
+            settings={**options, "thinking": False, "retries": 0, "concurrency": 1,
+                      "prompt_estimate": estimate, "purpose": self.purpose,
+                      "prompt_version": self.prompt_version,
+                      "loaded_models": [m.model_dump(mode="json") for m in self.client.ps().models]},
+            messages=messages,
+        )
         if response.done_reason == "length":
             raise ValueError("Generator hit the output/context limit; answer not accepted")
         if response.prompt_eval_count is None:
@@ -71,15 +88,7 @@ class OllamaClient:
             raise ValueError("Native context margin exceeded; answer not accepted")
         if self._digest() != self.digest:
             raise ValueError("Model digest changed during generation")
-        return LLMResult(
-            text=response.message.content, provider="ollama", model=self.model, digest=self.digest,
-            elapsed_ms=(time.perf_counter() - start) * 1000,
-            usage={"prompt_tokens": response.prompt_eval_count, "output_tokens": response.eval_count},
-            settings={**options, "thinking": False, "retries": 0, "concurrency": 1,
-                      "prompt_estimate": estimate, "prompt_version": "grounded-vector-v1",
-                      "loaded_models": [m.model_dump(mode="json") for m in self.client.ps().models]},
-            messages=messages,
-        )
+        return self.last_result
 
     def generate_text(self, messages: list[dict[str, str]]) -> LLMResult:
         """Return bounded local text; never call another provider."""

@@ -44,6 +44,8 @@ class GraphRepository:
         if (array.shape != (len(chunks), 384) or not np.isfinite(array).all()
                 or not np.allclose(np.linalg.norm(array, axis=1), 1, atol=1e-5)):
             raise ValueError("Invalid ingestion vector dimensions/values")
+        if any(chunk.paper_id != manifest.paper_id or chunk.source_sha256 != manifest.source_sha256 for chunk in chunks):
+            raise ValueError("Chunk belongs to a different paper/source")
         with self.driver.session(database=self.database) as session:
             for kind in ("Paper", "Chunk", "Corpus"):
                 session.run(f"CREATE CONSTRAINT ra_{kind.lower()}_id IF NOT EXISTS FOR (n:{kind}) REQUIRE n.id IS UNIQUE").consume()
@@ -95,6 +97,58 @@ class GraphRepository:
             count = session.run(f"MATCH (n:`{label}`) RETURN count(n) AS count").single()["count"]
             if count != len(chunks):
                 raise ValueError("Snapshot chunk count mismatch; snapshot remains unready")
+            session.run("MATCH (c:Corpus {id:$id,project:$project}) SET c.ready=true",
+                        id=snapshot["corpus_id"], project=PROJECT).consume()
+        return {"corpus_id": snapshot["corpus_id"], "chunks": count, "index": index, "ready": True}
+
+    def combine(self, snapshot: dict, chunk_ids: list[str]) -> dict:
+        """Index an explicit union of owned chunks; preserve member snapshots and metadata."""
+        label, index = corpus_names(snapshot["corpus_id"])
+        paper_ids = [p["paper_id"] for p in snapshot["papers"]]
+        if len(set(chunk_ids)) != len(chunk_ids) or len(chunk_ids) != snapshot["chunk_count"]:
+            raise ValueError("Combined chunk identities/count mismatch")
+        if any(edge["citing"] not in paper_ids or edge["cited"] not in paper_ids
+               for edge in snapshot["metadata"]["citation_edges"]):
+            raise ValueError("Citation endpoint outside selected corpus")
+        with self.driver.session(database=self.database) as session:
+            existing = session.run(
+                "MATCH (c:Corpus {id:$id}) RETURN c.project AS project,c.snapshot_json AS snapshot,properties(c)['frozen'] AS frozen",
+                id=snapshot["corpus_id"]).single()
+            encoded = json.dumps(snapshot)
+            if existing and (existing["project"] != PROJECT or existing["frozen"] or existing["snapshot"] != encoded):
+                raise ValueError("Combined snapshot conflicts with an existing/frozen corpus")
+            valid = session.run(Query(
+                "UNWIND $ids AS id MATCH (n:Chunk {id:id,project:$project}) "
+                "WHERE n.encoder_revision=$revision RETURN count(n) AS count", timeout=30),
+                ids=chunk_ids, project=PROJECT, revision=snapshot["encoder_revision"]).single()["count"]
+            if valid != len(chunk_ids):
+                raise ValueError("Combined snapshot references missing/incompatible chunks")
+            session.run(
+                "MERGE (c:Corpus {id:$id}) ON CREATE SET c.frozen=false "
+                "SET c.project=$project,c.ready=false,c.snapshot_json=$snapshot",
+                id=snapshot["corpus_id"], project=PROJECT, snapshot=encoded).consume()
+            for offset in range(0, len(chunk_ids), 128):
+                session.run(Query(f"UNWIND $ids AS id MATCH (n:Chunk {{id:id,project:$project}}) SET n:`{label}`",
+                                  timeout=30), ids=chunk_ids[offset:offset+128], project=PROJECT).consume()
+            for paper in snapshot["metadata"]["papers"]:
+                session.run(
+                    "MATCH (c:Corpus {id:$id,project:$project}),(p:Paper {id:$paper,project:$project}) "
+                    "MERGE (c)-[r:HAS_PAPER]->(p) SET r.metadata_json=$metadata",
+                    id=snapshot["corpus_id"], project=PROJECT, paper=paper["paper_id"], metadata=json.dumps(paper)).consume()
+            for edge in snapshot["metadata"]["citation_edges"]:
+                session.run(
+                    "MATCH (a:Paper {id:$a,project:$project}),(b:Paper {id:$b,project:$project}) "
+                    "MERGE (a)-[r:CITES {corpus_id:$corpus}]->(b) "
+                    "SET r.source='openalex',r.version_scope='work_level_not_pdf_version'",
+                    a=edge["citing"], b=edge["cited"], project=PROJECT, corpus=snapshot["corpus_id"]).consume()
+            session.run(Query(
+                f"CREATE VECTOR INDEX `{index}` IF NOT EXISTS FOR (n:`{label}`) ON (n.embedding_384) "
+                "OPTIONS {indexConfig: {`vector.dimensions`:384, `vector.similarity_function`:'cosine'}}",
+                timeout=30)).consume()
+            session.run("CALL db.awaitIndex($name,120)", name=index).consume()
+            count = session.run(f"MATCH (n:`{label}`) RETURN count(n) AS count").single()["count"]
+            if count != len(chunk_ids):
+                raise ValueError("Combined chunk count mismatch; snapshot remains unready")
             session.run("MATCH (c:Corpus {id:$id,project:$project}) SET c.ready=true",
                         id=snapshot["corpus_id"], project=PROJECT).consume()
         return {"corpus_id": snapshot["corpus_id"], "chunks": count, "index": index, "ready": True}

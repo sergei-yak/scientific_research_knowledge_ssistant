@@ -1,8 +1,9 @@
 # M2.3 — Development evidence checkpoint
 
 **Status: waiting for human gold validation; not complete.** Eight development questions and
-source-span annotations are prepared and mechanically verified. **Four of eight annotations are
-human-approved** (DEV-D1/DEV-D2/DEV-C1/DEV-C2); four remain pending. The multi-hop batch is now presented in chat. No held-out inputs were
+source-span annotations are prepared and mechanically verified. **Six of eight annotations are
+human-approved** (all direct, cross-paper and multi-hop annotations); only DEV-U1/DEV-U2 remain pending.
+The final, unanswerable batch is now presented in chat. No held-out inputs were
 listed, searched or read; no final benchmark or M3 retrieval comparison has run.
 
 ## Task outcome so far
@@ -12,7 +13,7 @@ listed, searched or read; no final benchmark or M3 retrieval comparison has run.
 | Eight stratified development questions | Two direct, two cross-paper, two multi-hop and two unanswerable drafts. All five pilot papers contribute answerable evidence. |
 | Independent gold spans | New gold identifiers, exact PDF/chunk/offset/hash references and sufficient-fact sets. Gold data is stored outside graph/retrieval inputs. One direct source fact has no approved graph support counterpart. |
 | Limitations and multi-passage support | Real-paper limitations, AND requirements across passages, cross-paper setups, connected reasoning chains and explicit unknown/incompatible conditions are included. |
-| Human validation | **Approved: 4/8; pending: 4/8.** Both direct and both cross-paper annotations explicitly approved as supported. Prior graph-claim approvals do not approve a question, reference answer or scoring annotation. |
+| Human validation | **Approved: 6/8; pending: 2/8.** All six answerable annotations explicitly approved as supported; the two unanswerable annotations await decisions. Prior graph-claim approvals do not approve a question, reference answer or scoring annotation. |
 | Five-paper acceptance gate | Remains open. M3 traversal, product workflows, integrations and recovery are still separate gates. Corpus expansion remains closed. |
 
 Corpus: `74260b76836e297402fd7d25804a70eba873de0a00327260b0d348964eb4e329`.
@@ -60,8 +61,13 @@ The exact response, reviewer identity and displayed annotation bindings are in t
 The cross-paper batch (DEV-C1/DEV-C2) was also explicitly approved as supported, with **approximately
 15 minutes / 900 seconds** reported. The reply `15` answers a question explicitly asking for minutes.
 Its verbatim response and bindings are preserved in `human-inputs/batch-02-chat.json` inside the
-dataset directory. Total reported gold-validation time is now **approximately 25 minutes / 1,500
-seconds**; per-question time remains unknown. Multi-hop and unanswerable annotations remain pending.
+dataset directory. At that checkpoint, reported gold-validation time totaled approximately 25
+minutes / 1,500 seconds; no per-question allocation was inferred.
+
+The multi-hop batch (DEV-M1/DEV-M2) was explicitly approved as supported, with **approximately ten
+minutes / 600 seconds** reported in response to the minutes question. Its exact reply and bindings
+are in `human-inputs/batch-03-chat.json`. Total reported gold-validation time is now **approximately
+35 minutes / 2,100 seconds**. Per-question times remain unknown; only the unanswerable batch is pending.
 
 ## Implementation
 
@@ -98,6 +104,7 @@ seconds**; per-question time remains unknown. Multi-hop and unanswerable annotat
 | Dependency checks | `uv lock --check --offline` and `uv pip check` passed; no dependency or lockfile changes. |
 | First human import/readback | Exact-bound DEV-D1/DEV-D2 decisions replay as approved; six others remain pending and dataset readiness stays false. Source/category/witness checks still pass; no code changes or test rerun were needed for this import. |
 | Cross-paper import/readback | DEV-C1/DEV-C2 approved against their exact displayed bindings. All four prior/current decisions replay as approved; four unseen annotations stay pending and readiness remains false. Source/category/witness checks pass; no code changes or test rerun for this import. |
+| Multi-hop import/readback | DEV-M1/DEV-M2 approved against their exact displayed bindings. All six answerable annotations replay as approved; DEV-U1/DEV-U2 stay pending and readiness remains false. Source/category/witness checks pass; no code changes or test rerun for this import. |
 
 The first focused test run passed 22 cases and failed one because the synthetic receipt fixture
 changed JSON formatting before replay. The fixture now preserves canonical formatting; the full
@@ -113,14 +120,14 @@ zero held-out accesses occurred.
 
 - Dataset: `data/evaluation/development/pilot-v1/{manifest.json,questions.jsonl,annotations.jsonl,absence-audit.json}`.
 - Four two-question packets: `review-batches/batch-01` through `batch-04` in that directory.
-- Current human request: batch-03, DEV-M1/DEV-M2. Batches 01/02 are approved with ten and fifteen
-  reported minutes respectively; batch-03 decisions/time are pending. Reviewer identity persists.
+- Current human request: batch-04, DEV-U1/DEV-U2. Batches 01/02/03 are approved with ten, fifteen
+  and ten reported minutes respectively; final batch decisions/time are pending. Reviewer identity persists.
 - Preparation/check reports: `runs/m2/m2-3-session/prepare-result.json`, `check-initial.json`.
 - Real scorer fixture: `runs/m2/m2-3-session/source-scorer-check.json`.
-- Latest human import/readback: `runs/m2/m2-3-session/gold-import-batch-02.json`; batch-01's report remains preserved.
+- Latest human import/readback: `runs/m2/m2-3-session/gold-import-batch-03.json`; earlier reports remain preserved.
 - Source-curation and verifier scripts remain under the same ignored session directory.
 
-Finish the remaining two small human-validation batches, record actual decisions/time, revise any rejected
+Finish the final unanswerable human-validation batch, record actual decisions/time, revise any rejected
 or unclear annotations as a new version, and rerun the applicable checks. M2.3 remains unchecked
 until all required gold annotations are validated. `project_spec.md` section 4 explicitly requires
 "Human-validate statements/spans before freezing"; mechanical passes cannot substitute for that step.

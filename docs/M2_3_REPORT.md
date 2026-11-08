@@ -1,8 +1,8 @@
 # M2.3 — Development evidence checkpoint
 
 **Status: waiting for human gold validation; not complete.** Eight development questions and
-source-span annotations are prepared and mechanically verified. Zero annotations currently have
-human decisions. The first two-question batch has been presented in chat. No held-out inputs were
+source-span annotations are prepared and mechanically verified. **Two of eight annotations are
+human-approved** (DEV-D1/DEV-D2); six remain pending. The cross-paper batch is now presented in chat. No held-out inputs were
 listed, searched or read; no final benchmark or M3 retrieval comparison has run.
 
 ## Task outcome so far
@@ -12,7 +12,7 @@ listed, searched or read; no final benchmark or M3 retrieval comparison has run.
 | Eight stratified development questions | Two direct, two cross-paper, two multi-hop and two unanswerable drafts. All five pilot papers contribute answerable evidence. |
 | Independent gold spans | New gold identifiers, exact PDF/chunk/offset/hash references and sufficient-fact sets. Gold data is stored outside graph/retrieval inputs. One direct source fact has no approved graph support counterpart. |
 | Limitations and multi-passage support | Real-paper limitations, AND requirements across passages, cross-paper setups, connected reasoning chains and explicit unknown/incompatible conditions are included. |
-| Human validation | **Pending: 0/8.** Prior graph-claim approvals do not approve a question, reference answer or scoring annotation. |
+| Human validation | **Approved: 2/8; pending: 6/8.** DEV-D1 and DEV-D2 explicitly approved as supported. Prior graph-claim approvals do not approve a question, reference answer or scoring annotation. |
 | Five-paper acceptance gate | Remains open. M3 traversal, product workflows, integrations and recovery are still separate gates. Corpus expansion remains closed. |
 
 Corpus: `74260b76836e297402fd7d25804a70eba873de0a00327260b0d348964eb4e329`.
@@ -51,6 +51,12 @@ Gold-validation effort is recorded separately from M2.2's initial claim-review t
 does not approve new graph claims, reopen the two deferred GraphRAG drafts or reset extraction caps.
 No claim journals or graph state were modified.
 
+The first gold batch (DEV-D1/DEV-D2) was explicitly approved as supported, with **approximately ten
+minutes / 600 seconds** reported for that batch. The reply `10` is interpreted in minutes because
+the displayed question explicitly asked for minutes. Individual question times remain unknown.
+The exact response, reviewer identity and displayed annotation bindings are in the ignored receipt
+`data/evaluation/development/pilot-v1/human-inputs/batch-01-chat.json`. No unseen annotation was approved.
+
 ## Implementation
 
 - `ingestion/sources.py` now owns the existing immutable corpus-cache loader, shared by review and
@@ -84,6 +90,7 @@ No claim journals or graph state were modified.
 | Outside-graph source fact | Direct question DEV-D2 is supported by a chunk absent from every current approved-fact support bundle; a raw source witness receives recall 1. |
 | Source/review preservation | Offline replay still has 571 source chunks, 23 eligible facts and unchanged M2.2 journal head. No graph writes, extraction or provider calls. |
 | Dependency checks | `uv lock --check --offline` and `uv pip check` passed; no dependency or lockfile changes. |
+| First human import/readback | Exact-bound DEV-D1/DEV-D2 decisions replay as approved; six others remain pending and dataset readiness stays false. Source/category/witness checks still pass; no code changes or test rerun were needed for this import. |
 
 The first focused test run passed 22 cases and failed one because the synthetic receipt fixture
 changed JSON formatting before replay. The fixture now preserves canonical formatting; the full
@@ -99,13 +106,14 @@ zero held-out accesses occurred.
 
 - Dataset: `data/evaluation/development/pilot-v1/{manifest.json,questions.jsonl,annotations.jsonl,absence-audit.json}`.
 - Four two-question packets: `review-batches/batch-01` through `batch-04` in that directory.
-- Current human request: batch-01, DEV-D1/DEV-D2. Reviewer identity persists from the prior session;
-  no duration or decisions have been inferred.
+- Current human request: batch-02, DEV-C1/DEV-C2. Batch-01 is approved with ten minutes reported;
+  batch-02 decisions/time are pending. Reviewer identity persists from the prior session.
 - Preparation/check reports: `runs/m2/m2-3-session/prepare-result.json`, `check-initial.json`.
 - Real scorer fixture: `runs/m2/m2-3-session/source-scorer-check.json`.
+- Latest human import/readback: `runs/m2/m2-3-session/gold-import-batch-01.json`.
 - Source-curation and verifier scripts remain under the same ignored session directory.
 
-Finish the four small human-validation batches, record actual decisions/time, revise any rejected
+Finish the remaining three small human-validation batches, record actual decisions/time, revise any rejected
 or unclear annotations as a new version, and rerun the applicable checks. M2.3 remains unchecked
 until all required gold annotations are validated. `project_spec.md` section 4 explicitly requires
 "Human-validate statements/spans before freezing"; mechanical passes cannot substitute for that step.

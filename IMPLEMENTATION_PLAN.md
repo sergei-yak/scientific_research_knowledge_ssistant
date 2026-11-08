@@ -1,8 +1,8 @@
 # Implementation plan
 
-**Status:** M0 complete for the explicitly chosen local-provider path. Full locked installation, GPU/encoder checks, offline tests, database and local-provider coexistence probes passed. OpenAI live inference remains pending credentials/budget for its later integration gate. See `docs/M0_REPORT.md` for actual evidence and limitations.
+**Status:** M0 and M1 complete. M1 uses local Qwen and a versioned subset of the user-suggested survey. See `docs/M0_REPORT.md` and `docs/M1_REPORT.md` for actual outcomes and limitations. OpenAI live integration remains pending credentials/budget.
 
-**Requirements:** `project_spec.md` is authoritative. This document supplies implementation boundaries, sequencing, and verification; it does not replace the spec's retrieval or evaluation rules. M1–M4 are **not started**.
+**Requirements:** `project_spec.md` is authoritative. This document supplies implementation boundaries, sequencing, and verification; it does not replace the spec's retrieval or evaluation rules. M2–M4 are **not started**.
 
 ## Decision log
 
@@ -24,8 +24,28 @@ D1–D11 are incorporated into the authoritative spec; verify them in the listed
 | D12 | M0 uses the official PyTorch 2.6 CUDA 12.4 source and compatible Transformers 4.x/Pandas 2.x ranges; no required package version changed. Full installation/imports, CUDA math, encoder probes and offline tests passed. The tested Hatchling backend is pinned to 1.33.0. | M0.1 |
 | D13 | Use commit-addressed local encoder directories to avoid Windows symlink privileges. Both downloads and actual encoder inference passed; revisions are in the M0 report. | M0.1 |
 | D14 | Explicit M0 live provider is installed local Qwen. OpenAI stays pending credentials/budget; local probes passed without paid requests. | M0.3 |
+| D15 | User-suggested arXiv 2501.00309v2 is a survey, not an original benchmark study. Index pages 1–52 only; omitted page 53 includes final discussion before the references. No survey result becomes an approved experiment. | M1.2 |
+| D16 | Declare already-locked NumPy as a direct vector dependency; no package versions upgraded. | M1.1 |
+| D17 | First section-strict chunker over-ranked standalone captions/headings and produced an incorrect component answer. Generic soft section boundaries now merge short neighbors into useful page-local context; bump chunker identity and preserve both snapshots/failed run. | M1.2 |
+| D18 | Gold coverage may union identical normalized page spans across overlapping chunk windows, after hash/text validation. This prevents deduplication from unfairly penalizing raw chunks; semantic alternatives still require explicit human annotations. | M1.1 |
+| D19 | M1 generation uses an explicit 4,096-token context and 512 output tokens, separate from M0's small smoke limits; native usage and resources recorded. No paid fallback. | M1.2 |
 
-**M1 design checkpoint, before M2:** Specify candidate pooling and RRF ties, deterministic embedding text for chunks/facts, interval-aware deduplication and evidence assembly. Graph reuses the exact Hybrid + Facts builder. Question overlap counts question aliases only; seed aliases can seed traversal. Define per-template start keys, directed relationship patterns, ordering and timeout configuration. Validate these contracts on synthetic/development cases before real claim review; changes require a logged development decision, never gold-driven tuning.
+## M1 design bindings (before M2)
+
+- **Vector:** corpus-specific ANN pool of 24; recompute actual cosine, stable-ID ties, retain 12 candidates. Initial development threshold is 0.30. Common assembly selects at most six units/1,800 estimated tokens. Actual candidates, scores, omissions and context are saved; this is approximate retrieval, not exact global nearest-neighbor search.
+- **Future fusion:** Hybrid uses chunk-vector and chunk-full-text top-12 lists. Hybrid + Facts uses those plus fact-vector/fact-full-text top-12 lists, each with equal contribution to RRF `k=60`; deduplicate IDs within lists and break fused ties by stable ID. Graph reuses that exact pool. `retrieval/ranking.py` tests the rank-only contract; the three extra retrieval modes are not implemented in M1.
+- **Embedding text:** raw chunks use exact normalized text; fact text will deterministically include reporting paper, canonical method/dataset, assertion and sorted conditions. Quote bundles are attached separately. Reject overlong fact embedding text for revision, rather than silently truncating conditions. Query/graph-only cosine always uses the same MiniLM revision and canonical embedding input.
+- **Assembly:** raw overlap is removed by source page/offset while retaining exact chunk-local mappings; keep facts atomic and deduplicate claim revisions. Render exact shared source spans once via source references, preserving distinct claims. Count every displayed source/claim/path/metadata field; reject an oversized unit instead of hiding text. The scorer checks the actual reconstructed context, source hashes, AND/OR support and alternative sufficient fact sets, never graph claim IDs.
+- **Future graph selection:** reviewed aliases use NFKC/casefold and word boundaries; count distinct canonical question entities, not occurrences or seed-only aliases. Ambiguous aliases are not auto-resolved. At most four seeds; fixed routes below, one cross-paper transition per route. Each query starts at indexed paper/claim IDs, filters current approval/owner/corpus eligibility early, orders by reporting-paper/claim/chunk IDs and limits to five rows. At most 80 intermediate rows become 40 unique candidates using the spec's alias/cosine/path/baseline/ID order; duplicate targets retain their shortest, then lexically stable path. Thirty-second query timeouts and M3 EXPLAIN/PROFILE checks apply. No unrestricted paths or generated Cypher.
+
+| Future template | Explicit relationship route from a seed, then source eligibility checks |
+|---|---|
+| Shared dataset | `Chunk <-HAS_CHUNK- Paper ->REPORTS_EVALUATION Evaluation ->ON_DATASET Dataset <-ON_DATASET Evaluation ->SUPPORTED_BY Chunk` (five edges). |
+| Shared method | Same five-edge route with `OF_METHOD` and `Method`. Both evaluations retain their own reporting papers. |
+| Citation | `Chunk <-HAS_CHUNK- Paper ->CITES Paper ->REPORTS_EVALUATION/REPORTS_FINDING Claim ->SUPPORTED_BY Chunk` (four edges); incoming citation is a separate fixed branch, sharing the five-row total. |
+| Finding | Seed paper's evaluation to a shared method, then incoming `ABOUT_METHOD` from a finding and `SUPPORTED_BY` to its chunk (five edges); `ABOUT_EVALUATION` is a fixed shorter branch. |
+
+M3 must join every target to its actual reporting paper in the same selected corpus and verify current approval/revision/support, including finding targets. Metadata citations alone never authorize claims. Graph fallback returns the original Hybrid + Facts assembly unchanged if no new eligible item survives. These are development design bindings, not a claim that graph tests have run or that traversal has a pure causal effect independent of reranking.
 
 ## Module boundaries
 
@@ -78,8 +98,8 @@ Keep public configuration, synthetic fixtures and sanitized manifests under vers
 
 ## M1 — One-paper vector baseline and shared foundation
 
-- [ ] **M1.1 — Contracts first:** Implement shared contracts, selected provider adapter and graph foundation. Finalize the M1 design checkpoint and independent gold-annotation contract/scorer before M2; test raw-chunk/fact parity, multi-span AND/OR support, truncation and invalid source hashes using offline fixtures. Real development annotations follow in M2.3; the secondary adapter may remain pending.
-- [ ] **M1.2 — Real baseline:** Parse the first pilot paper, freeze tokenizer-safe chunks, persist MiniLM embeddings and produce a vector-retrieved cited answer through the chosen provider/CLI. Establish shared rendering/budget enforcement, run artifacts and exact commands; claim review and graph expansion follow later.
+- [x] **M1.1 — Contracts first:** Implement shared contracts, selected provider adapter and graph foundation. Finalize the M1 design checkpoint and independent gold-annotation contract/scorer before M2; test raw-chunk/fact parity, multi-span AND/OR support, truncation and invalid source hashes using offline fixtures. Real development annotations follow in M2.3; the secondary adapter may remain pending.
+- [x] **M1.2 — Real baseline:** Parse the first pilot paper, freeze tokenizer-safe chunks, persist MiniLM embeddings and produce a vector-retrieved cited answer through the chosen provider/CLI. Establish shared rendering/budget enforcement, run artifacts and exact commands; claim review and graph expansion follow later.
 
 **Gate:** A real paper-to-cited-answer run is inspectable. Offline tests cover stable source IDs, rerun idempotency, dimensions, budget enforcement, invalid citation IDs and insufficient evidence; live checks are recorded separately.
 
@@ -116,5 +136,7 @@ Checkboxes above are the actionable task register. For each task, append `task_i
 | M0.1 | done | Full main environment installed from `uv.lock`; `uv lock --check`, `uv sync --locked --offline`, `uv pip check` passed. `uv run --locked --offline pytest -m "not integration"`: 17 passed, two deselected. All imports, CUDA matrix result, 384-D/768-D encoders and estimator passed in `runs/m0/final-environment.json`. | D5/D12/D13: temporary `.venv-checks` was used only while CUDA downloaded; the complete `.venv` is now verified. See `docs/M0_REPORT.md` and the local M0 Git checkpoint. |
 | M0.2 | done | New isolated Compose project, healthy Neo4j 5.26.32, both indexes/searches/idempotent sentinel and cleanup passed; one enabled Neo4j integration test passed, Ollama pytest case skipped because CLI probes run separately. `runs/m0/neo4j-fixed.json`. | D5: preserve volumes; restore testing remains M3.3. |
 | M0.3 | done (selected local provider) | Both SDK imports passed; local Qwen text/structured probes passed with CPU MiniLM resident and exercised while Neo4j ran. `runs/m0/final-services.json` records resources/digest/settings/prompts/usage/timings. OpenAI live remains pending key/budget, zero paid requests. | D6/D10/D14: local M1 can begin. Recheck context/resource limits for full answers; complete the secondary live integration by M3.3. |
+| M1.1 | done | Shared typed contracts, independent source-span scorer, common renderer/packer, local LLM protocol/adapter and immutable repository guards. Offline tests cover real failure boundaries, AND/OR/overlap support, citation validation and rank-only fusion. | D16/D18/D19; detailed checks in `docs/M1_REPORT.md`. Human claim/gold review is still M2/M4. |
+| M1.2 | done | User's pinned survey parsed; final corpus has 325 tokenizer-safe chunks on pages 1–52, repeats idempotently. Correct cited framework answer and model-generated abstention saved under `runs/m1/`; earlier incorrect answer retained. Native context 4,096 and memory inspected. | D15/D17/D19; use final corpus `23fb546e11aeb14b2737c238ddea9d23f5f86aeb5f4f4dea5dab84a55501f146`. M2 not started. |
 
 Operational references: [uv lock/sync](https://docs.astral.sh/uv/concepts/projects/sync/), [Neo4j dump/load](https://neo4j.com/docs/operations-manual/current/docker/dump-load/), [Neo4j 5 query tuning](https://neo4j.com/docs/cypher-manual/5/planning-and-tuning/query-tuning/). Check command flags against the pinned version before execution.

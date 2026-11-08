@@ -24,3 +24,15 @@ def test_invalid_settings_do_not_echo_credential_url(monkeypatch: pytest.MonkeyP
     output = capsys.readouterr().out
     assert "do-not-print" not in output
     assert json.loads(output)["error"] == "invalid_settings"
+
+
+def test_product_failures_are_timestamped_and_saved_without_overwrite(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    output = tmp_path / "failed.json"
+    assert main(["ingest", "--manifest", "missing.json", "--output", str(output)]) == 1
+    failure = json.loads(output.read_text(encoding="utf-8"))
+    assert failure["status"] == "failed" and failure["created_at"]
+    previous = output.read_bytes()
+    with pytest.raises(SystemExit):
+        main(["ingest", "--manifest", "missing.json", "--output", str(output)])
+    assert output.read_bytes() == previous

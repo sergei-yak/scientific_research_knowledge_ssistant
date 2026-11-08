@@ -1,0 +1,13 @@
+{
+  "paper_id": "arxiv:2501.00309v2",
+  "title": "Retrieval-Augmented Generation with Graphs (GraphRAG)",
+  "source_url": "https://arxiv.org/pdf/2501.00309v2",
+  "source_sha256": "737b0b8fe0aa8459429b5906d66d0bfcb5246c488add534d3ce23f58a0f7b7fc",
+  "local_path": "data/raw/arxiv-2501.00309v2.pdf",
+  "arxiv_id": "2501.00309v2",
+  "document_type": "survey",
+  "rights": "arXiv non-exclusive distribution license; PDF cached locally for this academic pilot, not included in Git or redistributed by this project.",
+  "rights_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+  "selected_pages": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52],
+  "selection_reason": "User-suggested survey: readable framework definitions and taxonomy suit M1 vector QA. Pilot coverage is pages 1-52; reference-list pages 53-88 are excluded. Survey descriptions of other work must not be attributed as this paper's experiments. Figures/tables/equations are not independently verified."
+}

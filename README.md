@@ -1,8 +1,50 @@
 # Scientific Research Knowledge Assistant
 
-Current implementation: **M0 environment and smoke checks**. Product ingestion, retrieval,
-review, evaluation and UI milestones are defined in `IMPLEMENTATION_PLAN.md` and are not implemented yet.
+Current implementation: **M0 setup and M1 one-paper vector RAG**. The CLI parses a pinned paper,
+indexes MiniLM vectors in Neo4j and answers with local Qwen and inspectable source citations.
+Claim review, hybrid/graph search, the UI and the frozen benchmark are later milestones.
 Read `project_spec.md` and `AGENTS.md` before making changes.
+
+## M1 baseline
+
+The selected paper is [arXiv:2501.00309v2](https://arxiv.org/abs/2501.00309v2), a GraphRAG survey.
+`manifests/pilot-paper.json` declares source hash, rights and partial page coverage (1–52).
+Page 53's remaining discussion and reference-list pages are outside this pilot. Tables, diagrams
+and equations are not independently verified. Reported studies remain attributed to the survey,
+not treated as original experiments conducted by its authors.
+
+Ensure the pinned PDF exists at `data/raw/arxiv-2501.00309v2.pdf`. If absent, download the manifest's
+versioned URL there; ingestion rejects a hash mismatch. Use the locked environment and running local
+Neo4j/Ollama services from setup below. Encoder artifacts must have passed the M0 artifact check.
+
+```powershell
+$tag = Get-Date -Format 'yyyyMMdd-HHmmss'
+$ingestReport = "runs/m1/ingest-$tag.json"
+uv run --locked --offline python -m research_assistant ingest --manifest manifests/pilot-paper.json --output $ingestReport
+$corpus = (Get-Content -Raw -LiteralPath $ingestReport | ConvertFrom-Json).corpus_id
+uv run --locked --offline python -m research_assistant ask --corpus $corpus --question 'Which five components make up the holistic GraphRAG framework described in this survey?' --context-tokens 4096 --max-output-tokens 512 --output "runs/m1/answer-$tag.json"
+```
+
+`--offline` disables package-index access, not the deliberately selected local Neo4j/Ollama calls.
+Paper/model downloads happen separately. No paid provider is selected or contacted by M1.
+Use fresh report names: ingestion is idempotent, but run reports are never overwritten.
+The public manifest and scientific source data are distinct; raw text/vectors/runs stay ignored in Git.
+Frozen source metadata changes require a new snapshot identity, not an in-place rewrite.
+
+Answers resolve only citation IDs actually shown in the six-unit/1,800-estimated-token context.
+An unsupported question can return `insufficient_evidence=true`. Valid citation IDs do not prove
+semantic correctness: the first development run found a real counterexample. See
+`docs/M1_REPORT.md` for the failure, generic chunking fix, native usage/resources and verification.
+The fixed evidence estimate is distinct from Qwen's native tokenizer; M1 uses a conservative context
+preflight and native usage checks. CPU embeddings avoid competing with Qwen for scarce VRAM.
+
+## Source/evidence contracts
+
+`contracts.py` defines immutable-source identities, exact excerpt spans, future human review records,
+retrieval/answer/run artifacts and independent gold annotations. `evaluation/scoring.py` only scores
+provided annotation/context objects; it never supplies gold answers to retrieval or generation.
+Raw and approved-fact source spans receive identical credit. M1 tests use synthetic gold data;
+real human gold annotations and held-out execution remain later milestones.
 
 ## Setup (PowerShell, project root)
 

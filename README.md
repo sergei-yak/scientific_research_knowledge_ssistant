@@ -4,6 +4,7 @@ Current implementation: **M0 setup, M1 vector RAG, M2.1 extraction and the compl
 The CLI indexes MiniLM vectors in Neo4j, answers with local Qwen, and exports source-linked review packets.
 Human-decision import and approved-fact indexing are implemented; hybrid/graph search, the UI and
 the frozen benchmark remain later milestones. Current human-review counts are recorded in `docs/M2_2_REPORT.md`.
+M2.3's eight development annotations are prepared and awaiting human validation; see `docs/M2_3_REPORT.md`.
 Read `project_spec.md` and `AGENTS.md` before making changes.
 
 ## M1 baseline
@@ -125,7 +126,27 @@ Remove-Item Env:RUN_REVIEW_SMOKE
 The fixture removes only its UUID-owned synthetic nodes/indexes. It never resets application data
 or volumes. M2.2 has 23 current human-approved facts across five papers; two GraphRAG drafts remain
 pending at the initial review timebox. See `docs/M2_2_REPORT.md` and the local handoff index
-`runs/m2/m2-2-session/FINAL_STATUS.md`. M3 retrievers and M2.3 annotations have not started.
+`runs/m2/m2-2-session/FINAL_STATUS.md`. M3 retrievers have not started; the M2.3 checkpoint is below.
+
+## M2.3 development gold validation
+
+Eight development-only drafts and their exact source spans are local under
+`data/evaluation/development/pilot-v1/`. `questions.jsonl` contains stripped requests;
+`annotations.jsonl` contains proposed reference answers and gold supports for evaluation only.
+Never pass annotations or gold answers to retrieval/generation. Real artifacts and human receipts
+remain outside Git. Held-out inputs stay in the evaluator-controlled external directory, untouched.
+
+```powershell
+$tag = Get-Date -Format 'yyyyMMdd-HHmmss'
+uv run --locked --offline python -m research_assistant dev-check --dataset-dir data/evaluation/development/pilot-v1 --output "runs/m2/dev-check-$tag.json"
+```
+
+The command checks immutable hashes, sources, category allocation, source-context feasibility and
+recorded human validation. It makes no model/database calls. A successful mechanical check does
+not mean the gold is human-validated; inspect `review.ready` and the per-question status.
+Review packets are `review-batches/batch-01` through `batch-04` inside that dataset directory.
+Use `docs/M2_3_REPORT.md` for current status. Changes require a new immutable dataset version and
+fresh validation. Gold decisions do not approve graph claims or reopen extraction/review caps.
 
 ## Source/evidence contracts
 

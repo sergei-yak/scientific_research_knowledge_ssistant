@@ -13,6 +13,7 @@ from typing import Iterator
 from research_assistant.contracts import Chunk, fingerprint, text_sha
 from research_assistant.extraction.contracts import ProposedClaim
 from research_assistant.graph.repository import corpus_names
+from research_assistant.ingestion.sources import load_corpus_chunks
 from research_assistant.pipeline import write_immutable
 from research_assistant.review.audit import audit_packets
 from research_assistant.review.contracts import EntityDefinition, HumanDecision, ReviewRevision
@@ -137,16 +138,7 @@ def export_decisions(directory: Path) -> dict:
 def load_chunks(directory: Path) -> dict[str, Chunk]:
     """Read only the selected corpus's verified immutable member chunks."""
     config = json.loads((directory / "config.json").read_text(encoding="utf-8"))
-    corpus_names(config["corpus_id"])
-    members = json.loads((Path("data/processed") / config["corpus_id"] / "members.json").read_text(encoding="utf-8"))
-    chunks = {}
-    for member in members:
-        rows = [Chunk.model_validate_json(line) for line in Path(member["chunk_path"]).read_text(encoding="utf-8").splitlines()]
-        snapshot = json.loads(Path(member["snapshot_path"]).read_text(encoding="utf-8"))
-        if fingerprint([row.model_dump() for row in rows]) != snapshot["chunks_sha256"]:
-            raise ValueError("Current source cache changed")
-        chunks.update({row.chunk_id: row for row in rows})
-    return chunks
+    return load_corpus_chunks(config["corpus_id"])
 
 
 def decision_matches(revision: ReviewRevision, decision: HumanDecision) -> bool:

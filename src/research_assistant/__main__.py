@@ -65,6 +65,9 @@ def main(argv: list[str] | None = None) -> int:
     sync = subparsers.add_parser("review-sync", help="Synchronize current human-approved facts to Neo4j")
     sync.add_argument("--review-dir", type=Path, required=True)
     sync.add_argument("--output", type=Path, required=True)
+    dev = subparsers.add_parser("dev-check", help="Verify development annotations and explicit human validation; no LLM/graph calls")
+    dev.add_argument("--dataset-dir", type=Path, required=True)
+    dev.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)
     configure_caches()
     try:
@@ -112,6 +115,9 @@ def main(argv: list[str] | None = None) -> int:
             elif args.command == "review-sync":
                 from research_assistant.graph.reviews import synchronize_review
                 result = synchronize_review(args.review_dir, settings)
+            elif args.command == "dev-check":
+                from research_assistant.evaluation.development import check_dataset
+                result = check_dataset(args.dataset_dir)
             else:
                 request = QueryRequest(question=args.question, corpus_id=args.corpus)
                 result = ask_question(request, settings, args.context_tokens,

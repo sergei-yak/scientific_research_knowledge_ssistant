@@ -2,7 +2,7 @@
 
 ## Read first
 
-- Read `project_spec.md` for requirements and `IMPLEMENTATION_PLAN.md` for milestone/boundaries/decisions. `README.md` has executable commands; milestone reports through `docs/M2_2_REPORT.md` record actual results and limits. Check `docs/M2_PDF_INSPECTION.md` before relying on parsed sections/tables.
+- Read `project_spec.md` for requirements and `IMPLEMENTATION_PLAN.md` for milestone/boundaries/decisions. `README.md` has executable commands; milestone reports through `docs/M2_3_REPORT.md` record actual results and limits. Check `docs/M2_PDF_INSPECTION.md` before relying on parsed sections/tables.
 - `project_spec.md` is authoritative; `project_spec_submission.md` is its submission summary. Reference requirements instead of duplicating algorithms.
 - Resolve routine details autonomously; record consequential decisions in the plan. Fix agreed requirement changes in the spec and synchronize its summary; the plan must not override conflicting requirements.
 
@@ -30,6 +30,7 @@
 - Preserve source attribution, review history, and immutable experiment snapshots. Keep keys, downloaded PDFs, caches, database volumes, and private evaluation answers out of Git.
 - Tune on development questions only. Held-out questions/gold/reveal files belong in an evaluator-controlled external directory; never list/search/read it during development. `.gitignore` is not access control. Only the authorized frozen evaluation runner consumes private inputs; keep them out of agent context and disclose exposure/corrections.
 - Keep requested mode, effective mode, and any fallback reason visible. Provider substitution is never automatic.
+- M2.3 development annotations live only in versioned `data/evaluation/development/` directories. Human gold validation is separate from graph-claim approval; preserve exact question/answer/span bindings and do not inherit approval after edits. Keep gold out of retrieval inputs. Oracle source witnesses verify annotation feasibility, never retrieval performance; absence-keyword triage never proves unanswerability. See `docs/M2_3_REPORT.md` for the active batch and pending decisions.
 
 ## Commands
 
@@ -47,6 +48,7 @@ M0/M1/M2.1 and M2.2 review commands are implemented. The bounded M2.2 pass is co
 - Extract/export: `uv run --locked --offline python -u -m research_assistant extract --corpus <corpus-id> --plan manifests/pilot-extraction.json --bundle-dir <new-packet-directory> --output <new-report.json>`.
 - Offline packet audit: `uv run --locked --offline python -m research_assistant review-check --bundle-dir <packet-directory> --output <new-report.json>`; this never grants approval.
 - Human review: `review-prepare`, `review-import`, `review-revise`, `review-status` and `review-sync` use the same CLI prefix; exact flags and CSV bindings are in README. `review-sync` makes no LLM calls; do not use synthetic decisions with the production review directory.
+- Development annotation checks: `uv run --locked --offline python -m research_assistant dev-check --dataset-dir data/evaluation/development/pilot-v1 --output <new-report.json>`. This accepts development-only data and reports human readiness; it does not grant validation or run retrieval/generation.
 - Cached setup probes: `uv run --locked python -m research_assistant smoke --checks imports resources embeddings openai` (OpenAI config only; zero paid calls).
 - Explicit local service probes: add `--checks neo4j ollama --resident-encoder` to the smoke command; choose a fresh `--output` report path. See README for artifact download opt-in.
 - UI (planned, not implemented): `uv run --locked streamlit run src/research_assistant/ui/app.py`.

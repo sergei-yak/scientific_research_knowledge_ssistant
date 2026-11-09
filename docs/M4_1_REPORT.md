@@ -1,6 +1,6 @@
 # M4.1 — Corpus/scoring readiness: human-review checkpoint
 
-**Status: waiting_for_human, not complete.** Local implementation and independent checks are finished. Nine expansion claims are human-approved; 19 remain pending. Eight expanded-scope development annotations and evaluator-owned final 24-question readiness remain pending. No M4.2 freeze, held-out execution or new paid spending is authorized. Outcomes below were recorded on 2026-11-08 America/Chicago; UTC artifacts cross into November 9.
+**Status: waiting_for_human, not complete.** Local implementation and independent checks are finished. Ten expansion claims are human-approved; 18 remain pending. Eight expanded-scope development annotations and evaluator-owned final 24-question readiness remain pending. No M4.2 freeze, held-out execution or new paid spending is authorized. Outcomes below were recorded on 2026-11-08 America/Chicago; UTC artifacts cross into November 9.
 
 ## Changes and actual corpus
 
@@ -15,7 +15,9 @@
 
 Sergei Iakovlev approved E1 revision 1 and E2 revision 2 from the first paper, with **approximately 15 minutes batch review time**; per-claim time is unknown. The verbatim response and exact bindings are in the local receipt `data/reviews/expansion-v1/human-inputs/m4-1-batch-01-sergei.json`. Publication verified **25 active claims** in the expanded scope: 23 carried pilot approvals plus these two new approvals. The pilot remains at 23 approvals and its original head.
 
-The queue contains **15 small paper-specific batches** (one to three claims each): `runs/m4-1/review-batches/queue.json`. Batches 1–5 are complete (~15 + 5 + 10 + 10 + 5 minutes); batch 6 (PG-RAG) is presented in chat. `mapping-proposals.json` points to the current remaining packets; the original queue and packets remain historical. Initial review allowance remains 20 minutes per paper, without invented elapsed times. The other 19 expansion claims and two previously timeboxed pilot drafts remain ineligible. The expanded graph currently has 32 active claims, including nine new human approvals. No additional inference is needed merely to review these packets.
+The queue contains **15 small paper-specific batches** (one to three claims each): `runs/m4-1/review-batches/queue.json`. Batches 1–6 are complete (~15 + 5 + 10 + 10 + 5 + 10 minutes); batch 7 (TRACE) is presented in chat. `mapping-proposals.json` points to the current remaining packets; the original queue and packets remain historical. Initial review allowance remains 20 minutes per paper, without invented elapsed times. The other 18 expansion claims and two previously timeboxed pilot drafts remain ineligible. The expanded graph currently has 33 active claims, including ten new human approvals. No additional inference is needed merely to review these packets.
+
+Batch 6 import and graph publication passed exact revision/source/entity bindings: `runs/m4-1/import-batch-06.json`, `sync-batch-06.json`. PG1 revision 2 is approved; ~600 seconds is recorded for this batch, bringing expansion review to ~3,300 seconds. The synchronized expanded graph has 33 active claims. No application code, dependencies, extraction requests or gold annotations changed; the full test suite was not rerun for this data-only decision import.
 
 ## Scoring and evaluator boundary
 
@@ -27,7 +29,7 @@ Prepared `data/evaluation/development/expansion-v1-draft/`: eight retained devel
 
 ## Verification and preserved evidence
 
-Latest engineering/review checkpoint: `runs/m4-1/acceptance-after-batch05.json` records nine new approvals / 32 active claims, 19 new claims pending, ~2,700 seconds of recorded human review, and **1,947 nodes / 2,105 relationships**. All original node properties/labels and relationships are still preserved. Earlier artifacts below retain their actual historical heads/counts.
+Engineering/review checkpoint after Batch 5: `runs/m4-1/acceptance-after-batch05.json` records nine new approvals / 32 active claims, 19 new claims pending, ~2,700 seconds of recorded human review, and **1,947 nodes / 2,105 relationships**. All original node properties/labels and relationships are still preserved. Earlier artifacts below retain their actual historical heads/counts.
 
 | Check | Actual outcome / artifact |
 |---|---|

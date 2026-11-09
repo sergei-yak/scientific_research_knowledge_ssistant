@@ -242,7 +242,7 @@ def test_ask_service_uses_the_selected_mode_and_exact_shared_context(monkeypatch
     monkeypatch.setattr(service,'retrieve_request',lambda *args:(snapshot,result))
     monkeypatch.setattr(pipeline,'code_identity',lambda:{'code_revision':'test','code_dirty':False,'source_tree_sha256':'x'})
     monkeypatch.setattr(pipeline,'check_resources',lambda:{})
-    monkeypatch.setattr(pipeline,'OllamaClient',lambda *args:object())
+    monkeypatch.setattr(pipeline,'create_client',lambda *args:object())
     def answer(question,retrieval,client):
         assert retrieval is result and retrieval.context==result.context
         assert retrieval.requested_mode=='graph' and client is not None

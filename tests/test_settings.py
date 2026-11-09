@@ -34,7 +34,7 @@ def test_paid_probes_need_approval_budget_and_request_ceiling() -> None:
     settings = Settings(openai_api_key="test-not-a-real-key")
     assert settings.paid_probe_blockers()
     assert Settings(openai_api_key="test-key", api_budget_approved=True, api_budget_usd=1, api_max_request_usd=2).paid_probe_blockers()
-    assert not Settings(openai_api_key="test-key", api_budget_approved=True, api_budget_usd=1, api_max_request_usd=0.1).paid_probe_blockers()
+    assert not Settings(openai_api_key="test-key", api_budget_approved=True, api_budget_usd=1, api_max_request_usd=0.1, api_max_requests=2).paid_probe_blockers()
 
 
 def test_openai_configuration_probe_never_constructs_api_client(monkeypatch: pytest.MonkeyPatch) -> None:

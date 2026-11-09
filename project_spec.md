@@ -24,6 +24,8 @@
 
 **LLM interface and readiness:** One `LLMClient` contract with `generate_text(...)` and `generate_structured(schema: type[BaseModel], ...)`; validate JSON with Pydantic. M0 validates both SDKs/configuration and real text/structured inference with **one explicitly chosen provider**. That provider supports the M1 baseline and M2 extraction; secondary-provider readiness does not block independent development. Both adapters must pass real text/structured-output smoke tests before M3 acceptance; only **one fixed generator** is used for the benchmark. Missing live access remains an outstanding check while offline work continues. No silent switching. Log model identity, local digest/quantization, settings, prompt version, usage, retries, cost and latency. Paid calls require an explicit user-approved budget, enforced request/output/concurrency limits, and accounting that includes retries; no paid calls until a budget exists.
 
+**Paid-operation accounting:** Bind numerical approvals to their operation scope. Use one durable project ledger across clients/processes; reserve a conservative upper bound before sending each request. Failed/unknown attempts retain their reservation and count toward the request cap. New configuration/approval files must not reset history. Readiness-only approval does not authorize application generation/extraction; credentials remain outside snapshots.
+
 ## 3. Core Features & MVP (Minimum Viable Product)
 
 **Phase 1 — MVP, built in verifiable stages**

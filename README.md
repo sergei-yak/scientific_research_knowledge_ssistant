@@ -1,10 +1,11 @@
 # Scientific Research Knowledge Assistant
 
-Current implementation: **M0–M3.1**, including four controlled retrieval modes on the five-paper pilot.
-The CLI indexes MiniLM vectors in Neo4j, answers with local Qwen, and exports source-linked review packets.
-Human review, approved-fact indexing, hybrid search and bounded graph traversal are implemented.
-The UI, full product/recovery acceptance and frozen benchmark remain later milestones. Current
-retrieval results and limits are in `docs/M3_1_REPORT.md`; claim counts are in `docs/M2_2_REPORT.md`.
+Current implementation: **M0–M3.3 complete; full five-paper acceptance gate passed**.
+Four retrieval conditions, Streamlit workflows and checked evidence export operate on the five-paper
+pilot. Both provider adapters and budget controls are implemented; local probes and an isolated logical
+restore passed. Both OpenAI live probes passed after the user replaced an expired key. The configured
+generator remains local Qwen. See `docs/M3_2_REPORT.md` and `docs/M3_3_REPORT.md` for actual outcomes;
+M4.1 must record selection/readiness before expansion, and final evaluation remains separately gated.
 All eight M2.3 development annotations are human-validated and final readiness is true; see `docs/M2_3_REPORT.md`.
 Read `project_spec.md` and `AGENTS.md` before making changes.
 
@@ -254,7 +255,7 @@ uv run --locked --offline python scripts/accept_m3_2.py --output-dir runs/m3-2/<
 ```
 
 See `docs/M3_2_REPORT.md` for actual checks, the corrected abstention behavior and remaining limits.
-Product availability is not a semantic answer-quality score; M3.3 and the full expansion gate remain open.
+Product availability is not a semantic answer-quality score. M3.3 subsequently passed the five-paper gate; see `docs/M3_3_REPORT.md`.
 
 ## Source/evidence contracts
 
@@ -318,10 +319,82 @@ do not mean the corresponding milestone gate passed.
 ## Provider readiness
 
 The explicit M0 live choice is local Ollama (`qwen3.8:latest`); the actual digest is recorded.
-OpenAI is configuration/import-only in M0. The `openai` probe makes **zero paid requests**;
-credentials and a user-approved numerical budget remain prerequisites for budget-accounted
-adapter probes in M1/M3. There is no automatic provider fallback. Do not add a key or raise
-spend settings on the assumption that it authorizes paid execution.
+The M0 `smoke --checks openai` probe remains configuration-only and makes **zero paid requests**.
+M3.3 adds explicit live adapter probes through `provider-check`; no provider is substituted on failure.
+An API key alone does not authorize spending. Source/package changes require a Streamlit restart
+before handoff, as described above.
+
+```powershell
+uv run --locked --offline python -m research_assistant provider-check --providers ollama openai --output <new-report.json>
+```
+
+Each requested provider receives at most two inference operations: plain text and validated JSON.
+CPU MiniLM remains resident, performs inference between calls, and Neo4j is checked with real vector
+retrieval. Unavailable authorization/credentials are recorded as pending; failed probes preserve available
+raw replies and errors. The report records usage, model identity, settings and resource observations.
+Cloud identity is the provider-reported model identifier, not a weights checksum.
+
+Paid calls require `API_BUDGET_APPROVED`, `API_BUDGET_USD`, `API_MAX_REQUEST_USD`,
+`API_MAX_REQUESTS`, `API_BUDGET_SCOPE`, `MAX_OUTPUT_TOKENS`, `MAX_CONCURRENCY=1` and
+`MAX_RETRIES=0`, all within the user's actual authorization. A recorded M3.3 approval can instead
+be supplied with `provider-check --approval <local-approval.json>`; it applies only to readiness
+probes, without changing `.env` or permitting paid application generation/extraction.
+
+The fixed project ledger `data/accounting/openai.jsonl` uses an exclusive cross-process lock and
+hash-chained durable reservations before each call. All attempts count; failed/unknown outcomes retain
+the whole reservation. Reservations are conservative upper bounds, not invoices. Changing a receipt,
+client or working directory never clears consumption. Do not remove the journal or a stale lock to
+regain budget. Readiness probes send fixed dummy prompts, not research/evaluation answers.
+
+The current adapter supports the explicitly configured `gpt-6.1-terra` through the Responses API,
+with no hosted tools, storage, automatic truncation or SDK retries. Fixed-field schemas use strict
+structured output; free-form mapping schemas use explicitly logged JSON mode and full Pydantic
+validation. Invalid/incomplete/refusal responses fail and preserve their reservation/raw result.
+Rates were checked on 2026-11-08; the conservative bound uses $5/million for both input and output
+tokens, with extra protocol allowance and a 64 KiB input ceiling. Paid execution requires price review
+again after 14 days. See the official [model/rates](https://developers.openai.com/api/docs/models/gpt-6.1-terra)
+and [structured-output documentation](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=responses).
+
+## Logical snapshot and isolated recovery (M3.3)
+
+Quiesce ingestion/review/paid writers and finish fact-mode queries before export. The shared review
+lock briefly blocks fact-mode queries while the snapshot is copied. Export into a fresh directory;
+the service verifies current approvals, checks the graph before/after copying and rejects changing assets.
+
+```powershell
+uv run --locked --offline python -m research_assistant snapshot-export --snapshot-dir <new-snapshot-directory> --output <new-export-report.json>
+uv run --locked --offline python scripts/recover_pilot.py --snapshot-dir <snapshot-directory> --output-dir <new-recovery-report-directory>
+```
+
+The snapshot includes all project-owned current/historical nodes, relationships and embeddings;
+schema/index metadata; pinned source PDFs/manifests/caches; review/extraction/accounting journals;
+development annotations/receipts; saved development contexts; application/configuration/test code and
+the lockfile. File hashes, semantic graph hash and manifest hash are recorded. API/database secrets,
+held-out files and model caches are excluded. Recovery requires the locked Python environment and
+separately cached pinned encoder weights. Copied development gold is used only by scoring.
+
+The runner creates a unique `dbu-m3-recovery-*` Compose project with **new** data/log volumes,
+using the pinned Neo4j image and loopback ports 8765/8475 (override with `--bolt-port`/`--http-port`).
+Restore verifies container/endpoint/volume identity and refuses the source endpoint, nonempty
+targets or existing application schema. It never deletes/resets working data. It reconstructs only
+allowlisted labels/types/schema with parameterized property data, then awaits ONLINE indexes.
+
+The runner checks exact semantic graph/schema equality, uses the copied source/review assets for
+32 fresh development retrievals, reproduces all 32 saved-context scores, runs discovery/comparison/
+limitations/export and executes the two UUID-owned native guards against the restored database.
+Rebuilt approximate indexes may return different contexts; saved contexts/scores remain authoritative.
+The target is stopped afterward and its volumes/reports retained. `target.json`/`report.json` record
+commands, ports, container/image/volume identities and outcomes. No working-database downtime is needed.
+
+For an already-created **fresh, empty, attested** target, the lower-level operation is:
+
+```powershell
+uv run --locked --offline python -m research_assistant snapshot-restore --snapshot-dir <snapshot-directory> --target-uri bolt://127.0.0.1:8765 --target-project <dbu-m3-recovery-unique-name> --output <new-restore-report.json>
+```
+
+Restoring never re-enables paid access. Reconcile any newer live budget reservations before authorizing
+paid operations from recovered files. Native offline dump/load is optional and was not exercised here;
+it requires a separate downtime plan and fresh target. M4 still owns final corpus selection/freeze/evaluation.
 
 Actual task outcomes, limitations and evidence paths are maintained in `IMPLEMENTATION_PLAN.md`.
 Dependency, Docker and model downloads may need network access; service checks need local

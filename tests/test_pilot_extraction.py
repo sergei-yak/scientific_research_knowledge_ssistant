@@ -156,11 +156,11 @@ def test_export_resume_reuses_all_calls_and_leaves_decisions_blank(monkeypatch, 
             FakeClient.calls += 1
             return ExtractionResponse(candidates=[draft()]), SimpleNamespace(model_dump=lambda **kwargs: {"fixture": True})
 
-    monkeypatch.setattr(pilot, "OllamaClient", FakeClient)
-    first = pilot.extract_pilot(identity, plan_path, tmp_path / "first", SimpleNamespace())
+    monkeypatch.setattr(pilot, "create_client", FakeClient)
+    first = pilot.extract_pilot(identity, plan_path, tmp_path / "first", SimpleNamespace(extraction_provider="ollama"))
     assert FakeClient.calls == 5 and first["approved"] == 0
     journals = {p: p.read_bytes() for p in Path("data/extraction").rglob("*.json")}
-    second = pilot.extract_pilot(identity, plan_path, tmp_path / "second", SimpleNamespace())
+    second = pilot.extract_pilot(identity, plan_path, tmp_path / "second", SimpleNamespace(extraction_provider="ollama"))
     assert FakeClient.calls == 5 and len(second["papers"]) == 5
     assert all(p.read_bytes() == content for p, content in journals.items())
     rows = list(csv.DictReader((tmp_path / "second/p0/decisions.csv").open(encoding="utf-8")))
@@ -174,7 +174,7 @@ def test_export_resume_reuses_all_calls_and_leaves_decisions_blank(monkeypatch, 
         (revised / name).write_bytes((root / name).read_bytes())
     plan.amendment_decision = "D-fixture"
     plan_path.write_text(plan.model_dump_json(), encoding="utf-8")
-    pilot.extract_pilot("b" * 64, plan_path, tmp_path / "revised", SimpleNamespace())
+    pilot.extract_pilot("b" * 64, plan_path, tmp_path / "revised", SimpleNamespace(extraction_provider="ollama"))
     assert FakeClient.calls == 5
     path = tmp_path / "second/p0/bundle.json"
     corrupt = json.loads(path.read_text(encoding="utf-8"))

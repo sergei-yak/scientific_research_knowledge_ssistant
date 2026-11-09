@@ -2,7 +2,7 @@
 
 ## Read first
 
-- Read `project_spec.md` for requirements and `IMPLEMENTATION_PLAN.md` for milestone/boundaries/decisions. `README.md` has executable commands; milestone reports through `docs/M3_2_REPORT.md` record actual results and limits. Check `docs/M2_PDF_INSPECTION.md` before relying on parsed sections/tables.
+- Read `project_spec.md` for requirements and `IMPLEMENTATION_PLAN.md` for milestone/boundaries/decisions. `README.md` has executable commands; milestone reports through `docs/M3_3_REPORT.md` record actual results and limits. Check `docs/M2_PDF_INSPECTION.md` before relying on parsed sections/tables.
 - `project_spec.md` is authoritative; `project_spec_submission.md` is its submission summary. Reference requirements instead of duplicating algorithms.
 - Resolve routine details autonomously; record consequential decisions in the plan. Fix agreed requirement changes in the spec and synchronize its summary; the plan must not override conflicting requirements.
 
@@ -20,6 +20,7 @@
 
 - In-scope local edits, tests, inspection and project service startup need no extra confirmation. Download permitted papers/models within authorized scope and source rate limits. Purchases or materially larger out-of-scope downloads need authorization.
 - Paid calls require a user-approved numerical budget and request/output/concurrency limits. Account for retries and preflight remaining funds; a key is not spending authorization. Without a budget, continue offline/local work and ask when paid execution becomes necessary. Never switch providers or raise budgets automatically.
+- Use the shared provider factory and durable `data/accounting/openai.jsonl` reservations. Preserve all failed/unknown attempts and approval receipts; never reset the ledger or clear a stale lock to regain funds. The M3.3 readiness-only allowance is exhausted at three total attempts under $0.10; it grants no paid application generation/extraction or M4 calls. Reconcile newer ledger entries before enabling paid access from recovered files.
 - Explicit authorization must cover deletion/reset of existing Neo4j data/volumes, backup overwrite or restore over working data. Verify targets/recovery first. Restore tests use fresh isolated targets; disclose planned downtime before offline dumps.
 - Log justified dependency changes, update the spec and lockfile deliberately, and rerun compatibility checks. Routine tests must not implicitly upgrade dependencies.
 
@@ -36,7 +37,7 @@
 
 ## Commands
 
-M0–M3.2 commands are implemented; two timeboxed graph drafts remain pending. M3.3 integration/recovery is next, and the full five-paper gate is still required before expansion. Use the recorded reports for outcomes. Keep this list current as later milestones add entry points:
+M0–M3.3 are complete and the five-paper gate passed; two timeboxed graph drafts remain pending. Next is M4.1 selection/readiness before expansion. No held-out/final run is authorized. Use the recorded reports for outcomes. Keep this list current as later milestones add entry points:
 
 - Initial resolution: `uv lock`, then `uv sync --locked`; commit the lockfile.
 - Subsequent installation: `uv sync --locked`; check consistency with `uv lock --check`.
@@ -58,5 +59,8 @@ M0–M3.2 commands are implemented; two timeboxed graph drafts remain pending. M
 - Explicit local service probes: add `--checks neo4j ollama --resident-encoder` to the smoke command; choose a fresh `--output` report path. See README for artifact download opt-in.
 - Evidence export: `uv run --locked --offline python -m research_assistant export-evidence --run <saved-run.json> --output <new-evidence.csv>`; revalidates current sources/approvals and never makes an LLM call. Optional `--review-dir` selects the explicit matching review store.
 - UI: `uv run --locked --offline streamlit run src/research_assistant/ui/app.py`; local-only port 8501. Submit triggers one query; synthesis is opt-in. Reruns/downloads validate stored evidence without repeating generation. Failure artifacts and immutable runs stay under ignored `runs/ui/`.
+- Live adapters/resources: `uv run --locked --offline python -m research_assistant provider-check --providers ollama openai --output <new-report.json>`. Missing paid authorization remains pending. `--approval <local-receipt.json>` applies an existing readiness approval; it never resets request/fund consumption or changes the configured generator. Do not rerun paid probes under the exhausted M3.3 allowance.
+- Logical backup: `uv run --locked --offline python -m research_assistant snapshot-export --snapshot-dir <new-directory> --output <new-report.json>`. Quiesce writers/fact queries; export holds the review lock. No overwrite or secret/held-out inclusion.
+- Recovery acceptance: `uv run --locked --offline python scripts/recover_pilot.py --snapshot-dir <snapshot-directory> --output-dir <new-report-directory>`. Creates a unique disposable Compose target, verifies copied assets/retrieval/scoring/guards, then stops and retains its volumes. It never resets the working database. See README for prerequisites/ports and lower-level `snapshot-restore` flags.
 
 Integration checks use the plan's recorded service/credential prerequisites; setup never routinely resets volumes.

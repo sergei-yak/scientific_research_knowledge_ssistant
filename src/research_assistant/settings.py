@@ -31,6 +31,8 @@ class Settings(BaseModel):
     api_budget_approved: bool = False
     api_budget_usd: float = Field(default=0, ge=0, allow_inf_nan=False)
     api_max_request_usd: float = Field(default=0, ge=0, allow_inf_nan=False)
+    api_max_requests: int = Field(default=0, ge=0)
+    api_budget_scope: Literal['generation', 'extraction', 'm3_3_readiness'] = 'generation'
     request_timeout_seconds: float = Field(default=180, gt=0, le=600)
     max_output_tokens: int = Field(default=128, gt=0, le=4096)
     max_concurrency: int = Field(default=1, ge=1, le=8)
@@ -67,6 +69,8 @@ class Settings(BaseModel):
             reasons.append("No user-approved positive API budget")
         if not 0 < self.api_max_request_usd <= self.api_budget_usd:
             reasons.append("Per-request cost ceiling is missing or exceeds budget")
+        if self.api_max_requests <= 0:
+            reasons.append('Approved maximum paid request count is missing')
         return reasons
 
     def redact(self, message: str) -> str:

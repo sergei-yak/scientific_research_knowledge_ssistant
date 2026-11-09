@@ -1,4 +1,4 @@
-"""Explicit local-provider interface; no paid or alternate-provider fallback."""
+"""Explicit configured-provider interface; no automatic provider substitution."""
 
 from __future__ import annotations
 
@@ -14,6 +14,18 @@ from research_assistant.retrieval.evidence import estimate_tokens
 from research_assistant.settings import Settings
 
 Schema = TypeVar("Schema", bound=BaseModel)
+
+
+def create_client(settings: Settings, context_tokens: int = 4096, output_tokens: int = 512,
+                  purpose: Literal['generation', 'extraction'] = 'generation',
+                  operation: Literal['m3_3_readiness'] | None = None) -> 'LLMClient':
+    """Select exactly the configured operation's provider; never substitute on failure."""
+    if purpose not in {'generation', 'extraction'}:
+        raise ValueError('Unknown LLM operation')
+    if getattr(settings, purpose + '_provider') == 'ollama':
+        return OllamaClient(settings, context_tokens, output_tokens, purpose=purpose)
+    from research_assistant.llm.paid import OpenAIClient
+    return OpenAIClient(settings, context_tokens, output_tokens, purpose=purpose, operation=operation)
 
 
 class LLMClient(Protocol):

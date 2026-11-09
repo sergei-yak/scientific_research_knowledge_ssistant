@@ -18,6 +18,8 @@
 
 Run locally on Windows (32 GB RAM, RTX 4070 Ti 12 GB); preserve Neo4j volumes, verify indexes and measure combined database/encoder/Ollama memory. Python 3.11 is the implementation baseline. Initially resolve dependencies with `uv lock`, then use locked installs/runs. One chosen provider enables early live development; the secondary provider must pass text/structured-output tests before MVP integration acceptance. Offline work can continue while live access is pending. Benchmark one fixed generator. Record exact database/model identities, timeouts, costs and Ollama digest. Paid calls require a user-approved budget; secrets stay out of Git. No Google ADK, CopilotKit, FastAPI, LangChain/LangGraph, or additional application databases.
 
+Paid approvals are operation-scoped and enforced through one durable project ledger. Failed/unknown attempts retain their budget reservation and count toward request limits; readiness approval does not authorize application generation/extraction. Credentials stay outside snapshots.
+
 ## 3. Core Features & MVP (Minimum Viable Product)
 
 1. **Curate and ingest:** Validate the pipeline on **five interconnected papers**, then extend to **20–30** using recorded selection criteria, not observed graph gains or held-out questions. Record identifiers, rights, URLs, hashes, citation metadata and source coverage. Check PDF extraction quality; create extraction passages and stable, tokenizer-safe retrieval chunks. Disclose the pilot's inclusion in the final corpus.

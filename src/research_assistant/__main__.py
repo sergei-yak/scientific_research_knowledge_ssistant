@@ -24,7 +24,7 @@ def main(argv: list[str] | None = None) -> int:
     ingest = subparsers.add_parser("ingest", help="Parse/embed/index a declared local paper")
     ingest.add_argument("--manifest", type=Path, required=True)
     ingest.add_argument("--output", type=Path)
-    ask = subparsers.add_parser("ask", help="Answer with an explicitly selected retrieval mode and local Qwen")
+    ask = subparsers.add_parser("ask", help="Answer with an explicitly selected retrieval mode and configured provider")
     ask.add_argument("--corpus", required=True)
     ask.add_argument("--question", required=True)
     ask.add_argument("--output", type=Path, required=True)
@@ -47,6 +47,19 @@ def main(argv: list[str] | None = None) -> int:
     setup = subparsers.add_parser('search-setup',help='Explicitly create missing chunk/alias search indexes without resetting data')
     setup.add_argument('--corpus',required=True)
     setup.add_argument('--output',type=Path,required=True)
+    providers = subparsers.add_parser('provider-check', help='Explicit live adapters/resource checks; paid access requires approved limits')
+    providers.add_argument('--providers', nargs='+', choices=['ollama', 'openai'], default=['ollama', 'openai'])
+    providers.add_argument('--output', type=Path, required=True)
+    providers.add_argument('--approval', type=Path, help='Explicit recorded M3.3 budget approval; applies only to these probes')
+    backup = subparsers.add_parser('snapshot-export', help='Export a new checksummed logical graph/source/review snapshot')
+    backup.add_argument('--snapshot-dir', type=Path, required=True)
+    backup.add_argument('--review-dir', type=Path, default=Path('data/reviews/pilot'))
+    backup.add_argument('--output', type=Path, required=True)
+    restore = subparsers.add_parser('snapshot-restore', help='Restore only into an attested empty disposable Compose target')
+    restore.add_argument('--snapshot-dir', type=Path, required=True)
+    restore.add_argument('--target-uri', required=True)
+    restore.add_argument('--target-project', required=True)
+    restore.add_argument('--output', type=Path, required=True)
     metadata = subparsers.add_parser("pilot-metadata", help="Bounded OpenAlex lookups for the declared five papers")
     metadata.add_argument("--manifest", type=Path, required=True)
     metadata.add_argument("--cache-dir", type=Path, required=True)
@@ -107,7 +120,18 @@ def main(argv: list[str] | None = None) -> int:
                                   'evidence_units': len(run.retrieval.evidence),
                                   'workflow': view.workflow, 'status': view.status, 'papers': view.paper_count}))
                 return 0
-            if args.command == "ingest":
+            if args.command == 'provider-check':
+                from research_assistant.integrations import provider_checks, readiness_settings
+                selected_settings = readiness_settings(settings, args.approval) if args.approval else settings
+                result = provider_checks(selected_settings, args.providers)
+            elif args.command == 'snapshot-export':
+                from research_assistant.graph.recovery import export_snapshot
+                result = export_snapshot(settings, args.snapshot_dir, args.review_dir)
+            elif args.command == 'snapshot-restore':
+                from research_assistant.graph.recovery import restore_snapshot
+                result = restore_snapshot(args.snapshot_dir,
+                    Settings.model_validate({**settings.model_dump(), 'neo4j_uri': args.target_uri}), args.target_project)
+            elif args.command == "ingest":
                 result = ingest_paper(args.manifest, settings)
             elif args.command == "pilot-metadata":
                 from research_assistant.ingestion.corpus import PilotManifest
@@ -177,6 +201,8 @@ def main(argv: list[str] | None = None) -> int:
                            'effective_mode':retrieval.effective_mode,'fallback_reason':retrieval.fallback_reason,
                            'evidence_units':len(retrieval.evidence),'estimated_tokens':retrieval.estimated_tokens,'new_llm_calls':0}
             print(json.dumps(summary, ensure_ascii=True, indent=2))
+            if args.command == 'provider-check' and any(row['status'] == 'failed' for row in result['checks']):
+                return 1
             return 0
         except Exception as exc:
             from research_assistant.pipeline import QueryExecutionError

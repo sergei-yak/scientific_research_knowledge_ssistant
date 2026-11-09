@@ -11,7 +11,7 @@ from pathlib import Path
 from research_assistant.contracts import Chunk, ClaimRevision, SourceSpanRef, fingerprint, text_sha
 from research_assistant.extraction.contracts import ExtractionPlan, ExtractionResponse, ProposedClaim
 from research_assistant.graph.repository import corpus_names
-from research_assistant.llm import OllamaClient
+from research_assistant.llm import create_client
 from research_assistant.pipeline import write_immutable
 from research_assistant.retrieval.evidence import estimate_tokens
 from research_assistant.review.bundle import export_bundle
@@ -197,7 +197,7 @@ def extract_pilot(corpus_id: str, plan_path: Path, bundle_dir: Path, settings: S
         prepared.append((paper, chunks, pages, passages))
     if bundle_dir.exists():
         raise ValueError("Bundle directory already exists; choose a new export path (requests will be reused)")
-    client = OllamaClient(settings, plan.context_tokens, plan.output_tokens, purpose="extraction")
+    client = create_client(settings, plan.context_tokens, plan.output_tokens, purpose="extraction")
     client.prompt_version = plan.version
     code = {str(p): text_sha(p.read_text(encoding="utf-8")) for p in sorted(Path("src/research_assistant").rglob("*.py"))}
     revision = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, timeout=10).stdout.strip()
@@ -273,7 +273,8 @@ def extract_pilot(corpus_id: str, plan_path: Path, bundle_dir: Path, settings: S
                  "approved": 0, "rejected": 0, "pending": generated, "reviewed": 0, "human_review_seconds": 0,
                  "unknown_candidate_upper_bound": unknown_reserved,
                  "requests_reserved": len(requests), "failed_requests": sum(r["status"] != "completed" for r in requests),
-                 "elapsed_seconds_this_invocation": round(time.perf_counter() - started, 3), "paid_api_cost_usd": 0,
+                 "elapsed_seconds_this_invocation": round(time.perf_counter() - started, 3),
+                 "paid_api_cost_usd": None if settings.extraction_provider == 'openai' else 0,
                  "known_generation_seconds": round(sum(g.get("elapsed_ms", 0) for g in generations) / 1000, 3),
                  "known_prompt_tokens": sum((g.get("usage") or {}).get("prompt_tokens", 0) or 0 for g in generations),
                  "known_output_tokens": sum((g.get("usage") or {}).get("output_tokens", 0) or 0 for g in generations),
@@ -288,7 +289,8 @@ def extract_pilot(corpus_id: str, plan_path: Path, bundle_dir: Path, settings: S
         export_bundle(bundle_dir / paper["paper_id"].replace(":", "-"), bundle, chunks)
         papers_out.append({"paper_id": paper["paper_id"], "bundle": str(bundle_dir / paper["paper_id"].replace(":", "-")), **stats})
     report = {"task_id": "M2.1", "corpus_id": corpus_id, "bundle_dir": str(bundle_dir), "papers": papers_out,
-              "human_review_status": "pending", "approved": 0, "paid_api_cost_usd": 0}
+              "human_review_status": "pending", "approved": 0,
+              "paid_api_cost_usd": None if settings.extraction_provider == 'openai' else 0}
     write_immutable(bundle_dir / "summary.json", json.dumps(report, indent=2) + "\n")
     lines = ["# M2.1 review packets", "", "All claims are pending human review. No scientific claims have been approved or inserted into authoritative retrieval.", "",
              "Open each packet's REVIEW.md, inspect its PDF quotations and proposed mappings, then fill its decisions.csv. Blank decision/reviewer fields stay pending. Initial allowance: 20 minutes per paper; record actual review time. Decision import is M2.2.", "",

@@ -156,7 +156,7 @@ def test_retrieval_only_service_does_not_construct_generator(monkeypatch):
     monkeypatch.setattr(service, 'retrieve_request', lambda *args: (run.corpus_manifest, run.retrieval))
     monkeypatch.setattr(pipeline, 'code_identity', lambda: dict(code_revision='test', code_dirty=False, source_tree_sha256='hash'))
     monkeypatch.setattr(pipeline, 'check_resources', lambda: {})
-    monkeypatch.setattr(pipeline, 'OllamaClient', lambda *args: pytest.fail('No generation requested'))
+    monkeypatch.setattr(pipeline, 'create_client', lambda *args: pytest.fail('No generation requested'))
     result = pipeline.run_query(run.request, Settings(), generate=False, workflow='discovery')
     assert result.result is None and result.generation is None and not result.generation_requested
 
@@ -210,7 +210,7 @@ def test_generation_failure_retains_actual_evidence_and_raw_response(monkeypatch
     monkeypatch.setattr(service, 'retrieve_request', lambda *args: (run.corpus_manifest, run.retrieval))
     monkeypatch.setattr(pipeline, 'code_identity', lambda: dict(code_revision='test', code_dirty=False, source_tree_sha256='hash'))
     monkeypatch.setattr(pipeline, 'check_resources', lambda: {'checked': True})
-    monkeypatch.setattr(pipeline, 'OllamaClient', Client)
+    monkeypatch.setattr(pipeline, 'create_client', Client)
     def invalid(*args): raise ValueError('Unknown evidence citation')
     monkeypatch.setattr(pipeline, 'answer_question', invalid)
     with pytest.raises(pipeline.QueryExecutionError) as captured:

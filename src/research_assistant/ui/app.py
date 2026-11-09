@@ -51,7 +51,7 @@ def display_run(run: RunArtifact, settings: Settings) -> None:
         st.caption(notice)
     st.subheader('LLM synthesis')
     if run.result is None:
-        st.info('Answer not generated. Enable local synthesis and submit to request an answer.')
+        st.info('Answer not generated. Enable synthesis and submit to request an answer.')
     else:
         if run.result.insufficient_evidence:
             st.warning('The generator reported insufficient evidence.')
@@ -107,7 +107,7 @@ def main() -> None:
     with st.form('query'):
         question = st.text_area('Research question', value=WORKFLOWS[workflow], key=f'question_{workflow}', max_chars=2000)
         mode = st.selectbox('Retrieval mode', ['vector', 'hybrid', 'hybrid_facts', 'graph'], index=3)
-        generate = st.checkbox('Generate an answer with the configured local model', value=False)
+        generate = st.checkbox('Generate an answer with the configured model', value=False)
         st.caption(f'Configured generator: {settings.generation_provider} / {settings.generation_model}. Context 4096, output limit 512; one request, no automatic retry or provider switching.')
         with st.expander('Corpus snapshot'):
             corpus = st.text_input('Corpus ID', value=PILOT_CORPUS)
@@ -115,7 +115,7 @@ def main() -> None:
     if submitted:
         st.session_state.pop('run', None)
         try:
-            with st.spinner('Retrieving evidence' + (' and generating a local answer…' if generate else '…')):
+            with st.spinner('Retrieving evidence' + (' and generating an answer…' if generate else '…')):
                 request = QueryRequest(question=question.strip(), corpus_id=corpus, mode=mode)
                 run = run_query(request, settings, generate=generate, workflow=workflow, encoder=cached_encoder())
                 write_immutable(Path('runs/ui') / run.run_id / 'run.json', run.model_dump_json(indent=2) + '\n')

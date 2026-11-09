@@ -17,7 +17,7 @@ from research_assistant.embeddings import Encoder
 from research_assistant.generation import answer_question
 from research_assistant.graph.repository import GraphRepository
 from research_assistant.ingestion.pdf import CHUNKER_VERSION, PARSER_VERSION, make_chunks, parse_pages
-from research_assistant.llm import OllamaClient
+from research_assistant.llm import create_client
 from research_assistant.retrieval.evidence import assemble_evidence, context_hash
 from research_assistant.settings import Settings
 from research_assistant.smoke import check_resources
@@ -159,7 +159,7 @@ def run_query(request: QueryRequest, settings: Settings, context_tokens: int = 4
     client = None
     try:
         if generate:
-            client = OllamaClient(settings, context_tokens, output_tokens) if retrieval.evidence else None
+            client = create_client(settings, context_tokens, output_tokens) if retrieval.evidence else None
             run.result, run.generation = answer_question(request.question, retrieval, client)
     except Exception as exc:
         run.generation = getattr(client, 'last_result', None)

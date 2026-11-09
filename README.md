@@ -217,6 +217,11 @@ The displayed result retains its actual submitted question/mode until another su
 Runs are saved under ignored `runs/ui/<run-id>/run.json`; generation failures preserve available raw
 responses in `failed-run.json`. No application data is deleted or reset by the UI.
 
+After changing shared package interfaces, stop Streamlit with `Ctrl+C` in its terminal and repeat the
+launch command. A browser refresh or Streamlit rerun can retain previously imported Python modules.
+If a newly added symbol imports in a fresh Python process but fails in the running app, restart the
+app server, then verify an actual page/query; the HTTP health endpoint alone does not execute the app.
+
 The page separates approved claims, raw excerpts, selected graph paths and LLM synthesis. Structured
 rows use only selected approved claims matching explicitly mentioned reviewed method/dataset identities.
 Conditions remain per claim/reporting paper; unknown fields do not become known from a different row.

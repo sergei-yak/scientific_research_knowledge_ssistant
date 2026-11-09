@@ -13,6 +13,7 @@
 - Use typed contracts, small functions, docstrings, fixed parameterized Cypher and the specified dependencies.
 - Keep schema validation, evidence rendering, approval eligibility, and budget enforcement shared across modes. Never create mode-specific copies of these rules.
 - Run relevant offline tests and configured integration checks. Report exact results, failures and skips; planned checks are not passes.
+- After changing shared package interfaces, restart any running Streamlit server before handoff and verify an actual page/query. Browser refresh/rerun can retain stale imports; the HTTP health check alone does not execute the app.
 - Finish milestones with task IDs, changes, checks/skips, deviations, artifacts and blockers; update progress/decisions. Continue authorized work without per-milestone approval. Pause only dependent work at human-review or final-evaluation checkpoints.
 
 ## Operations and authorization

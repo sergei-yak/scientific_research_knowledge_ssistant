@@ -101,3 +101,18 @@ No M3.2 blocker remains. **Next: M3.3**, both adapters' live readiness and a ver
 fresh disposable target. OpenAI credentials/approved numerical paid budget remain unavailable;
 paid checks stay pending. No recovery test, corpus expansion, MPNet comparison or final evaluation
 was performed in M3.2. The full five-paper gate remains closed until the remaining requirements pass.
+
+## Follow-up — stale Streamlit import after handoff
+
+The running app later raised `ImportError` for `pipeline.QueryExecutionError`. The class existed in
+the committed source and imported successfully in a fresh locked-environment Python process;
+the long-lived Streamlit process had started before that interface was added. Its cached module
+was stale. Stopping the verified app process, launching Streamlit again and reloading the existing
+browser tab resolved the error. No application-code or dependency change was needed.
+
+Verification: three existing offline UI tests passed; the restarted browser session loaded the
+application and completed a real retrieval-only discovery query (two reporting papers, six units,
+1518 estimated tokens, explicit Graph → Hybrid + Facts fallback). No new LLM/paid calls were made.
+`runs/m3-2/import-fix-discovery.png` records the working page. README and AGENTS now require a full
+app-server restart after shared-interface changes and an actual page/query check before handoff;
+HTTP health alone is insufficient. Existing data, approvals and historical run artifacts remain intact.

@@ -199,7 +199,57 @@ try {
 An optional `M3_FIXTURE_REPORT` must name a fresh report path. Fixtures remove only their UUID-owned
 nodes/indexes; existing corpora, review history, volumes and shared schema are preserved. The
 deadline fixture uses a bounded three-second idle interval. Reports and real source/run data stay
-ignored locally. Next: M3.2 Streamlit workflows/export, then M3.3 integrations and restore verification.
+ignored locally. M3.2 workflows/export are implemented below; next is M3.3 integrations and restore verification.
+
+## Research workflows and evidence export (M3.2)
+
+With Neo4j healthy and the pilot source/review caches present, launch from the project root:
+
+```powershell
+uv run --locked --offline streamlit run src/research_assistant/ui/app.py
+```
+
+Open `http://127.0.0.1:8501`. Discovery, comparison and limitations have editable starter questions;
+Ask accepts a free-form question. Select any of the four retrieval modes. Synthesis is disabled by
+default: enable it to use the configured local Qwen (context 4096, output 512, no automatic retry).
+Submission runs the shared query service; changing controls or downloading never repeats inference.
+The displayed result retains its actual submitted question/mode until another successful query.
+Runs are saved under ignored `runs/ui/<run-id>/run.json`; generation failures preserve available raw
+responses in `failed-run.json`. No application data is deleted or reset by the UI.
+
+The page separates approved claims, raw excerpts, selected graph paths and LLM synthesis. Structured
+rows use only selected approved claims matching explicitly mentioned reviewed method/dataset identities.
+Conditions remain per claim/reporting paper; unknown fields do not become known from a different row.
+Comparison notices qualify missing/differing conditions and prohibit unsupported numerical ranking.
+PDF page links are primary; parsed sections and numerical tables remain unverified. Requested/effective
+mode and graph fallback stay visible. Approval changes or unavailable current projection disable display
+and export until a fresh query passes validation. Previously downloaded files remain historical snapshots.
+
+Use the checked download buttons, or export a shared `RunArtifact` saved by `ask`, `retrieve` or the UI:
+
+```powershell
+uv run --locked --offline python -m research_assistant export-evidence --run <saved-run.json> --output <new-evidence.csv>
+```
+
+CSV has one row per actually shown excerpt: paper, source URL/PDF page, approved claim/revision (blank
+for raw excerpts), JSON conditions, exact quotation, source hash/chunk/offsets, paths and run/mode/context
+identity. UTF-8 CSV quoting preserves commas/newlines. Spreadsheet-sensitive cells receive a leading
+apostrophe; `escaped_fields` names these fields so removing exactly one apostrophe recovers original text.
+The run JSON always retains verbatim quotations. Export rechecks shared source/context/current-review
+rules; it performs no retrieval, generation, approval or write to Neo4j. A failed export creates no CSV.
+Earlier M3.1 diagnostic retrieval JSON remains historical; use a new `retrieve` run for this export schema.
+
+Reproduce bounded product checks (fresh output directory required):
+
+```powershell
+uv run --locked --offline python scripts/accept_m3_2.py --output-dir runs/m3-2/<new-check>
+# Optional: one local call per scenario, at most four, with no retries or paid calls:
+uv run --locked --offline python scripts/accept_m3_2.py --output-dir runs/m3-2/<new-local-check> --generate
+# Repeat only a changed scenario when needed: add --scenario abstention
+```
+
+See `docs/M3_2_REPORT.md` for actual checks, the corrected abstention behavior and remaining limits.
+Product availability is not a semantic answer-quality score; M3.3 and the full expansion gate remain open.
 
 ## Source/evidence contracts
 

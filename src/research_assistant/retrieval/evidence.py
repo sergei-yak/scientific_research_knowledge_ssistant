@@ -5,7 +5,29 @@ from __future__ import annotations
 import json
 from typing import Callable
 
-from research_assistant.contracts import EvidenceItem, SourceExcerpt, text_sha
+from research_assistant.contracts import Chunk, EvidenceItem, RetrievalResult, SourceExcerpt, text_sha
+
+
+def validate_context(result: RetrievalResult, chunks: dict[str, Chunk]) -> dict[tuple, list[tuple[int, int, str]]]:
+    """Verify the exact rendered context and immutable source spans for scoring and product output."""
+    context, aliases = render_context(result.evidence)
+    if context != result.context or text_sha(context) != result.context_sha256 or aliases != result.aliases:
+        raise ValueError('Context/evidence integrity mismatch')
+    if estimate_tokens(context) != result.estimated_tokens or result.estimated_tokens > 1800:
+        raise ValueError('Context token estimate/budget mismatch')
+    shown: dict[tuple, list[tuple[int, int, str]]] = {}
+    for item in result.evidence:
+        for excerpt in item.excerpts:
+            chunk = chunks.get(excerpt.chunk_id)
+            if (chunk is None or excerpt.paper_id != chunk.paper_id or excerpt.source_sha256 != chunk.source_sha256
+                    or excerpt.source_url != chunk.source_url or excerpt.section != chunk.section
+                    or excerpt.page != chunk.page or excerpt.chunk_page_start != chunk.page_start
+                    or excerpt.end > len(chunk.text) or chunk.text[excerpt.start:excerpt.end] != excerpt.text):
+                raise ValueError('Rendered excerpt is not an exact source span')
+            key = (chunk.paper_id, chunk.source_sha256, chunk.page, chunk.parser_version, chunk.chunker_version)
+            shown.setdefault(key, []).append((chunk.page_start + excerpt.start,
+                                              chunk.page_start + excerpt.end, excerpt.text))
+    return shown
 
 
 def estimate_tokens(text: str) -> int:

@@ -184,7 +184,7 @@ class EvidenceItem(Contract):
 
 
 class QueryRequest(Contract):
-    """A snapshot-scoped question; M1 implements vector mode only."""
+    """A snapshot-scoped question with an explicitly selected retrieval condition."""
 
     question: str = Field(min_length=1, max_length=2000)
     corpus_id: str
@@ -237,7 +237,7 @@ class AnswerResult(Contract):
 
 
 class RunArtifact(Contract):
-    """Replayable baseline inputs, evidence, provider output and result."""
+    """Replayable query inputs, evidence, provider output and optional accepted answer."""
 
     run_id: str
     created_at: str
@@ -248,7 +248,9 @@ class RunArtifact(Contract):
     configuration: dict[str, Any]
     retrieval: RetrievalResult
     generation: LLMResult | None
-    result: AnswerResult
+    result: AnswerResult | None
+    generation_requested: bool = True
+    workflow: Literal["ask", "discovery", "comparison", "limitations"] = "ask"
 
 
 class GoldFact(Contract):

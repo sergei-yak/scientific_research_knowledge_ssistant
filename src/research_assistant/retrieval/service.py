@@ -152,14 +152,14 @@ def retrieve_modes(request: QueryRequest, repo: SearchRepository, encoder, chunk
 
 
 def retrieve_request(request: QueryRequest, settings: Settings, review_directory: Path = Path('data/reviews/pilot'),
-                     minimum_similarity: float = 0.30) -> tuple[dict, RetrievalResult]:
+                     minimum_similarity: float = 0.30, encoder: Encoder | None = None) -> tuple[dict, RetrievalResult]:
     """Entry-point service; no gold loading or generator calls, and no automatic index setup."""
     if request.mode=='vector':
         from research_assistant.pipeline import retrieve_vector
         repo = GraphRepository(settings)
         try:
             snapshot = repo.snapshot(request.corpus_id)
-            encoder = Encoder()
+            encoder = encoder if encoder is not None else Encoder()
             if snapshot['encoder_revision'] != encoder.revision:
                 raise ValueError('Query encoder revision differs from the indexed snapshot')
             return snapshot,retrieve_vector(request,repo,encoder,minimum_similarity)
@@ -169,7 +169,7 @@ def retrieve_request(request: QueryRequest, settings: Settings, review_directory
     try:
         snapshot = repo.snapshot(request.corpus_id)
         chunks = load_corpus_chunks(request.corpus_id)
-        encoder = Encoder()
+        encoder = encoder if encoder is not None else Encoder()
         if snapshot['encoder_revision'] != encoder.revision:
             raise ValueError('Query encoder revision differs from the indexed snapshot')
         if request.mode=='hybrid':

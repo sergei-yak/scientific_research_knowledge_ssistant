@@ -8,7 +8,7 @@ from research_assistant.contracts import (
 )
 from research_assistant.evaluation.scoring import score_evidence
 from research_assistant.generation import answer_question, validate_answer
-from research_assistant.retrieval.evidence import assemble_evidence, render_context
+from research_assistant.retrieval.evidence import assemble_evidence, estimate_tokens, render_context
 
 
 def source(text="Method X uses Dataset Y.", identity="c1", base=0):
@@ -34,7 +34,7 @@ def item(chunk, start=0, end=None, fact=False):
 def retrieval(items):
     context, aliases = render_context(items)
     return RetrievalResult(requested_mode="vector", effective_mode="vector", evidence=items,
-        context=context, context_sha256=text_sha(context), estimated_tokens=len(context),
+        context=context, context_sha256=text_sha(context), estimated_tokens=estimate_tokens(context),
         aliases=aliases, candidates=[], retrieval_ms=0)
 
 

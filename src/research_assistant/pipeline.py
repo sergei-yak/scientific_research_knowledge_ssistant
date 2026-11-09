@@ -23,6 +23,14 @@ from research_assistant.settings import Settings
 from research_assistant.smoke import check_resources
 
 
+class QueryExecutionError(RuntimeError):
+    """A failed generation retains its source-backed retrieval and any available raw provider result."""
+
+    def __init__(self, message: str, artifact: RunArtifact) -> None:
+        super().__init__(message)
+        self.artifact = artifact
+
+
 def write_immutable(path: Path, text: str) -> None:
     """Preserve earlier artifacts with identical text; new files use UTF-8/LF."""
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -120,14 +128,23 @@ def retrieve_vector(request: QueryRequest, repository: GraphRepository,
 def ask_question(request: QueryRequest, settings: Settings, context_tokens: int = 4096,
                  output_tokens: int = 512, minimum_similarity: float = 0.30,
                  review_directory: Path = Path('data/reviews/pilot')) -> RunArtifact:
-    """Answer from the selected mode with inspectable prompts, evidence and source metadata."""
+    """Compatibility entry point for a grounded answer using the shared run service."""
+    return run_query(request, settings, context_tokens, output_tokens, minimum_similarity, review_directory)
+
+
+def run_query(request: QueryRequest, settings: Settings, context_tokens: int = 4096,
+              output_tokens: int = 512, minimum_similarity: float = 0.30,
+              review_directory: Path = Path('data/reviews/pilot'), *, generate: bool = True,
+              workflow: str = 'ask', encoder: Encoder | None = None) -> RunArtifact:
+    """Execute one query; retrieval-only runs never construct a provider or call a model."""
     from research_assistant.retrieval.service import retrieve_request
     identity = code_identity()
-    snapshot,retrieval = retrieve_request(request,settings,review_directory,minimum_similarity)
+    if encoder is None:
+        snapshot,retrieval = retrieve_request(request,settings,review_directory,minimum_similarity)
+    else:
+        snapshot,retrieval = retrieve_request(request,settings,review_directory,minimum_similarity,encoder=encoder)
     before = check_resources()
-    client = OllamaClient(settings, context_tokens, output_tokens) if retrieval.evidence else None
-    answer, generation = answer_question(request.question, retrieval, client)
-    return RunArtifact(
+    run = RunArtifact(
         run_id=uuid.uuid4().hex, created_at=datetime.now(timezone.utc).isoformat(),
         request=request, corpus_manifest=snapshot, code_revision=identity['code_revision'],
         code_dirty=identity['code_dirty'],
@@ -135,6 +152,19 @@ def ask_question(request: QueryRequest, settings: Settings, context_tokens: int 
                        "encoder": "all-MiniLM-L6-v2", "encoder_revision": snapshot['encoder_revision'],
                        "source_tree_sha256": identity['source_tree_sha256'],
                        "retrieval_rules":retrieval.audit,
-                       "resources_before_generation": before, "resources_after_generation": check_resources()},
-        retrieval=retrieval, generation=generation, result=answer,
+                       "resources_before_generation": before},
+        retrieval=retrieval, generation=None, result=None,
+        generation_requested=generate, workflow=workflow,
     )
+    client = None
+    try:
+        if generate:
+            client = OllamaClient(settings, context_tokens, output_tokens) if retrieval.evidence else None
+            run.result, run.generation = answer_question(request.question, retrieval, client)
+    except Exception as exc:
+        run.generation = getattr(client, 'last_result', None)
+        run.configuration['generation_error'] = {'type': type(exc).__name__, 'message': settings.redact(str(exc))}
+        raise QueryExecutionError(settings.redact(str(exc)), run) from exc
+    finally:
+        run.configuration['resources_after_generation'] = check_resources()
+    return run

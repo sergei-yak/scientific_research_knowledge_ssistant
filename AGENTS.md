@@ -2,7 +2,7 @@
 
 ## Read first
 
-- Read `project_spec.md` for requirements and `IMPLEMENTATION_PLAN.md` for milestone/boundaries/decisions. `README.md` has executable commands; milestone reports through `docs/M3_1_REPORT.md` record actual results and limits. Check `docs/M2_PDF_INSPECTION.md` before relying on parsed sections/tables.
+- Read `project_spec.md` for requirements and `IMPLEMENTATION_PLAN.md` for milestone/boundaries/decisions. `README.md` has executable commands; milestone reports through `docs/M3_2_REPORT.md` record actual results and limits. Check `docs/M2_PDF_INSPECTION.md` before relying on parsed sections/tables.
 - `project_spec.md` is authoritative; `project_spec_submission.md` is its submission summary. Reference requirements instead of duplicating algorithms.
 - Resolve routine details autonomously; record consequential decisions in the plan. Fix agreed requirement changes in the spec and synchronize its summary; the plan must not override conflicting requirements.
 
@@ -35,7 +35,7 @@
 
 ## Commands
 
-M0–M3.1 commands are implemented; two timeboxed graph drafts remain pending. M3.2 is next, and full five-paper product/integration/recovery acceptance is still required before expansion. Use the recorded reports for outcomes. Keep this list current as later milestones add entry points:
+M0–M3.2 commands are implemented; two timeboxed graph drafts remain pending. M3.3 integration/recovery is next, and the full five-paper gate is still required before expansion. Use the recorded reports for outcomes. Keep this list current as later milestones add entry points:
 
 - Initial resolution: `uv lock`, then `uv sync --locked`; commit the lockfile.
 - Subsequent installation: `uv sync --locked`; check consistency with `uv lock --check`.
@@ -55,6 +55,7 @@ M0–M3.1 commands are implemented; two timeboxed graph drafts remain pending. M
 - Development annotation checks: `uv run --locked --offline python -m research_assistant dev-check --dataset-dir data/evaluation/development/pilot-v1 --output <new-report.json>`. This accepts development-only data and reports human readiness; it does not grant validation or run retrieval/generation.
 - Cached setup probes: `uv run --locked python -m research_assistant smoke --checks imports resources embeddings openai` (OpenAI config only; zero paid calls).
 - Explicit local service probes: add `--checks neo4j ollama --resident-encoder` to the smoke command; choose a fresh `--output` report path. See README for artifact download opt-in.
-- UI (planned, not implemented): `uv run --locked streamlit run src/research_assistant/ui/app.py`.
+- Evidence export: `uv run --locked --offline python -m research_assistant export-evidence --run <saved-run.json> --output <new-evidence.csv>`; revalidates current sources/approvals and never makes an LLM call. Optional `--review-dir` selects the explicit matching review store.
+- UI: `uv run --locked --offline streamlit run src/research_assistant/ui/app.py`; local-only port 8501. Submit triggers one query; synthesis is opt-in. Reruns/downloads validate stored evidence without repeating generation. Failure artifacts and immutable runs stay under ignored `runs/ui/`.
 
 Integration checks use the plan's recorded service/credential prerequisites; setup never routinely resets volumes.

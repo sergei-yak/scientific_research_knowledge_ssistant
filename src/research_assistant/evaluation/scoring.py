@@ -3,25 +3,12 @@
 from __future__ import annotations
 
 from research_assistant.contracts import Chunk, EvaluationQuestion, RetrievalResult, text_sha
-from research_assistant.retrieval.evidence import render_context
+from research_assistant.retrieval.evidence import validate_context
 
 
 def score_evidence(question: EvaluationQuestion, result: RetrievalResult, chunks: dict[str, Chunk]) -> dict:
     """Credit only valid source spans actually present in the assembled context."""
-    context, aliases = render_context(result.evidence)
-    if context != result.context or text_sha(context) != result.context_sha256 or aliases != result.aliases:
-        raise ValueError("Context/evidence integrity mismatch")
-    shown: dict[tuple, list[tuple[int, int, str]]] = {}
-    for item in result.evidence:
-        for excerpt in item.excerpts:
-            chunk = chunks[excerpt.chunk_id]
-            if (excerpt.paper_id != chunk.paper_id or excerpt.source_sha256 != chunk.source_sha256
-                    or excerpt.page != chunk.page or excerpt.chunk_page_start != chunk.page_start
-                    or excerpt.end > len(chunk.text) or chunk.text[excerpt.start:excerpt.end] != excerpt.text):
-                raise ValueError("Rendered excerpt is not an exact source span")
-            key = (chunk.paper_id, chunk.source_sha256, chunk.page, chunk.parser_version, chunk.chunker_version)
-            shown.setdefault(key, []).append((chunk.page_start + excerpt.start,
-                                              chunk.page_start + excerpt.end, excerpt.text))
+    shown = validate_context(result, chunks)
     covered = set()
     for fact in question.facts:
         alternatives = []

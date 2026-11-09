@@ -44,7 +44,7 @@ class OllamaClient:
         self.client = ollama.Client(host=settings.ollama_base_url, timeout=settings.request_timeout_seconds)
         self.model = getattr(settings, purpose + "_model")
         self.purpose = purpose
-        self.prompt_version = "bounded-claims-v1" if purpose == "extraction" else "grounded-vector-v1"
+        self.prompt_version = "bounded-claims-v1" if purpose == "extraction" else "grounded-evidence-v2"
         self.last_result: LLMResult | None = None
         self.digest = self._digest()
 

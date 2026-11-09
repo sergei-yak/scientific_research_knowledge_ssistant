@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -41,6 +40,10 @@ def main(argv: list[str] | None = None) -> int:
     retrieve.add_argument('--review-dir',type=Path,default=Path('data/reviews/pilot'))
     retrieve.add_argument('--minimum-similarity',type=float,default=0.30,help='Vector-only threshold; hybrid channels use fixed top-12 rankings')
     retrieve.add_argument('--output',type=Path,required=True)
+    export = subparsers.add_parser('export-evidence', help='Validate a saved run and export its exact evidence as CSV')
+    export.add_argument('--run', type=Path, required=True)
+    export.add_argument('--review-dir', type=Path, default=Path('data/reviews/pilot'))
+    export.add_argument('--output', type=Path, required=True)
     setup = subparsers.add_parser('search-setup',help='Explicitly create missing chunk/alias search indexes without resetting data')
     setup.add_argument('--corpus',required=True)
     setup.add_argument('--output',type=Path,required=True)
@@ -94,6 +97,16 @@ def main(argv: list[str] | None = None) -> int:
         from research_assistant.contracts import QueryRequest
         from research_assistant.pipeline import ask_question, ingest_paper, write_immutable
         try:
+            if args.command == 'export-evidence':
+                from research_assistant.contracts import RunArtifact
+                from research_assistant.product import prepare_output
+                run = RunArtifact.model_validate_json(args.run.read_text(encoding='utf-8'))
+                view, csv_text = prepare_output(run, settings, args.review_dir)
+                write_immutable(args.output, csv_text)
+                print(json.dumps({'output': str(args.output), 'run_id': run.run_id,
+                                  'evidence_units': len(run.retrieval.evidence),
+                                  'workflow': view.workflow, 'status': view.status, 'papers': view.paper_count}))
+                return 0
             if args.command == "ingest":
                 result = ingest_paper(args.manifest, settings)
             elif args.command == "pilot-metadata":
@@ -139,15 +152,12 @@ def main(argv: list[str] | None = None) -> int:
                 finally:
                     repository.close()
             elif args.command == 'retrieve':
-                from research_assistant.retrieval.service import retrieve_request
-                from research_assistant.pipeline import code_identity
+                from research_assistant.pipeline import run_query
                 request = QueryRequest(question=args.question,corpus_id=args.corpus,mode=args.mode)
-                started = time.perf_counter()
-                snapshot,retrieval = retrieve_request(request,settings,args.review_dir,args.minimum_similarity)
-                result = {'created_at':datetime.now(timezone.utc).isoformat(),**code_identity(),
-                          'request':request.model_dump(), 'corpus_manifest':snapshot,
-                          'elapsed_ms':(time.perf_counter()-started)*1000,
-                          'retrieval':retrieval.model_dump(), 'generation':None, 'new_llm_calls':0}
+                run = run_query(request, settings, minimum_similarity=args.minimum_similarity,
+                                review_directory=args.review_dir, generate=False)
+                retrieval = run.retrieval
+                result = run.model_dump(mode='json')
             else:
                 request = QueryRequest(question=args.question, corpus_id=args.corpus, mode=args.mode)
                 result = ask_question(request, settings, args.context_tokens,
@@ -169,10 +179,13 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(summary, ensure_ascii=True, indent=2))
             return 0
         except Exception as exc:
+            from research_assistant.pipeline import QueryExecutionError
             failure = {"status": "failed", "created_at": datetime.now(timezone.utc).isoformat(),
                        "command": args.command, "error": type(exc).__name__,
                        "message": settings.redact(str(exc))}
-            if args.output and not args.output.exists():
+            if isinstance(exc, QueryExecutionError):
+                failure['failed_run'] = exc.artifact.model_dump(mode='json')
+            if args.command != 'export-evidence' and args.output and not args.output.exists():
                 try:
                     write_immutable(args.output, json.dumps(failure, indent=2) + "\n")
                 except OSError:

@@ -1,9 +1,10 @@
-"""Thin command-line entry point for setup and the M1 vector baseline."""
+"""Thin entry points for setup, review, controlled retrieval and grounded answers."""
 
 from __future__ import annotations
 
 import argparse
 import json
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -24,13 +25,25 @@ def main(argv: list[str] | None = None) -> int:
     ingest = subparsers.add_parser("ingest", help="Parse/embed/index a declared local paper")
     ingest.add_argument("--manifest", type=Path, required=True)
     ingest.add_argument("--output", type=Path)
-    ask = subparsers.add_parser("ask", help="Answer from a ready vector corpus using local Qwen")
+    ask = subparsers.add_parser("ask", help="Answer with an explicitly selected retrieval mode and local Qwen")
     ask.add_argument("--corpus", required=True)
     ask.add_argument("--question", required=True)
     ask.add_argument("--output", type=Path, required=True)
     ask.add_argument("--context-tokens", type=int, default=4096, help="M1 answer context; default 4096, separate from M0 smoke limits")
     ask.add_argument("--max-output-tokens", type=int, default=512, help="M1 output limit; default 512")
     ask.add_argument("--minimum-similarity", type=float, default=0.30)
+    ask.add_argument('--mode',choices=['vector','hybrid','hybrid_facts','graph'],default='vector')
+    ask.add_argument('--review-dir',type=Path,default=Path('data/reviews/pilot'))
+    retrieve = subparsers.add_parser('retrieve',help='Retrieve evidence without generation or gold inputs')
+    retrieve.add_argument('--corpus',required=True)
+    retrieve.add_argument('--question',required=True)
+    retrieve.add_argument('--mode',choices=['vector','hybrid','hybrid_facts','graph'],default='vector')
+    retrieve.add_argument('--review-dir',type=Path,default=Path('data/reviews/pilot'))
+    retrieve.add_argument('--minimum-similarity',type=float,default=0.30,help='Vector-only threshold; hybrid channels use fixed top-12 rankings')
+    retrieve.add_argument('--output',type=Path,required=True)
+    setup = subparsers.add_parser('search-setup',help='Explicitly create missing chunk/alias search indexes without resetting data')
+    setup.add_argument('--corpus',required=True)
+    setup.add_argument('--output',type=Path,required=True)
     metadata = subparsers.add_parser("pilot-metadata", help="Bounded OpenAlex lookups for the declared five papers")
     metadata.add_argument("--manifest", type=Path, required=True)
     metadata.add_argument("--cache-dir", type=Path, required=True)
@@ -118,10 +131,27 @@ def main(argv: list[str] | None = None) -> int:
             elif args.command == "dev-check":
                 from research_assistant.evaluation.development import check_dataset
                 result = check_dataset(args.dataset_dir)
+            elif args.command == 'search-setup':
+                from research_assistant.graph.search import SearchRepository
+                repository = SearchRepository(settings)
+                try:
+                    result = repository.prepare_indexes(args.corpus)
+                finally:
+                    repository.close()
+            elif args.command == 'retrieve':
+                from research_assistant.retrieval.service import retrieve_request
+                from research_assistant.pipeline import code_identity
+                request = QueryRequest(question=args.question,corpus_id=args.corpus,mode=args.mode)
+                started = time.perf_counter()
+                snapshot,retrieval = retrieve_request(request,settings,args.review_dir,args.minimum_similarity)
+                result = {'created_at':datetime.now(timezone.utc).isoformat(),**code_identity(),
+                          'request':request.model_dump(), 'corpus_manifest':snapshot,
+                          'elapsed_ms':(time.perf_counter()-started)*1000,
+                          'retrieval':retrieval.model_dump(), 'generation':None, 'new_llm_calls':0}
             else:
-                request = QueryRequest(question=args.question, corpus_id=args.corpus)
+                request = QueryRequest(question=args.question, corpus_id=args.corpus, mode=args.mode)
                 result = ask_question(request, settings, args.context_tokens,
-                                      args.max_output_tokens, args.minimum_similarity).model_dump(mode="json")
+                                      args.max_output_tokens, args.minimum_similarity,args.review_dir).model_dump(mode="json")
             if args.output:
                 write_immutable(args.output, json.dumps(result, ensure_ascii=False, indent=2) + "\n")
             summary = result if args.command != "ask" else {
@@ -132,6 +162,10 @@ def main(argv: list[str] | None = None) -> int:
             if args.command == "pilot-metadata":
                 summary = {"output": str(args.output), "matched": sum(bool(p["openalex_id"]) for p in result["papers"]),
                            "papers": len(result["papers"]), "citation_edges": len(result["citation_edges"])}
+            if args.command == 'retrieve':
+                summary = {'output':str(args.output),'requested_mode':retrieval.requested_mode,
+                           'effective_mode':retrieval.effective_mode,'fallback_reason':retrieval.fallback_reason,
+                           'evidence_units':len(retrieval.evidence),'estimated_tokens':retrieval.estimated_tokens,'new_llm_calls':0}
             print(json.dumps(summary, ensure_ascii=True, indent=2))
             return 0
         except Exception as exc:

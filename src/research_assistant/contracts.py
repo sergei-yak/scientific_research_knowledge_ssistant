@@ -204,6 +204,7 @@ class RetrievalResult(Contract):
     aliases: dict[str, str]
     candidates: list[dict[str, Any]]
     retrieval_ms: float = Field(ge=0)
+    audit: dict[str, Any] = Field(default_factory=dict)
 
 
 class LLMResult(Contract):

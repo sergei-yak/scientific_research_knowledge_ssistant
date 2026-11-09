@@ -1,9 +1,10 @@
 # Scientific Research Knowledge Assistant
 
-Current implementation: **M0 setup, M1 vector RAG and the completed M2 five-paper evidence/review pilot**.
+Current implementation: **M0–M3.1**, including four controlled retrieval modes on the five-paper pilot.
 The CLI indexes MiniLM vectors in Neo4j, answers with local Qwen, and exports source-linked review packets.
-Human-decision import and approved-fact indexing are implemented; hybrid/graph search, the UI and
-the frozen benchmark remain later milestones. Current human-review counts are recorded in `docs/M2_2_REPORT.md`.
+Human review, approved-fact indexing, hybrid search and bounded graph traversal are implemented.
+The UI, full product/recovery acceptance and frozen benchmark remain later milestones. Current
+retrieval results and limits are in `docs/M3_1_REPORT.md`; claim counts are in `docs/M2_2_REPORT.md`.
 All eight M2.3 development annotations are human-validated and final readiness is true; see `docs/M2_3_REPORT.md`.
 Read `project_spec.md` and `AGENTS.md` before making changes.
 
@@ -126,7 +127,7 @@ Remove-Item Env:RUN_REVIEW_SMOKE
 The fixture removes only its UUID-owned synthetic nodes/indexes. It never resets application data
 or volumes. M2.2 has 23 current human-approved facts across five papers; two GraphRAG drafts remain
 pending at the initial review timebox. See `docs/M2_2_REPORT.md` and the local handoff index
-`runs/m2/m2-2-session/FINAL_STATUS.md`. M3 retrievers have not started; the M2.3 checkpoint is below.
+`runs/m2/m2-2-session/FINAL_STATUS.md`. M3.1 retrieval is implemented; later checkpoints are below.
 
 ## M2.3 development gold validation
 
@@ -149,7 +150,56 @@ Use `docs/M2_3_REPORT.md` for current status. Changes require a new immutable da
 fresh validation. Gold decisions do not approve graph claims or reopen extraction/review caps.
 The creation manifest's draft label is historical; current readiness is determined by source/hash
 checks and exact-bound receipt replay. `runs/m2/m2-3-session/acceptance.json` records development
-acceptance, which is separate from M4's final-evaluation freeze. M3.1 is next; expansion stays closed.
+acceptance, which is separate from M4's final-evaluation freeze. M3.1 is complete; expansion stays closed.
+
+## M3.1 controlled retrieval
+
+`vector`, `hybrid`, `hybrid_facts` and `graph` call the same evidence renderer/packer. Vector retains
+the M1 threshold; the other semantic channels use fixed top-12 rankings and RRF. Graph starts with
+the identical Hybrid + Facts pool and adds only current, source-backed approved targets. See the
+spec and `docs/M3_1_REPORT.md` for selection rules and actual query-plan checks.
+
+```powershell
+$corpus = '74260b76836e297402fd7d25804a70eba873de0a00327260b0d348964eb4e329'
+$tag = Get-Date -Format 'yyyyMMdd-HHmmss'
+# Explicit setup adds missing indexes; it does not reset or reingest source/claim data.
+uv run --locked --offline python -m research_assistant search-setup --corpus $corpus --output "runs/m3/setup-$tag.json"
+# Retrieval only: no generator or paid calls.
+uv run --locked --offline python -m research_assistant retrieve --corpus $corpus --mode graph --review-dir data/reviews/pilot --question 'Which methods were evaluated on MuSiQue?' --output "runs/m3/retrieve-$tag.json"
+# Answer generation is a separate explicit command using configured local Qwen.
+uv run --locked --offline python -m research_assistant ask --corpus $corpus --mode graph --review-dir data/reviews/pilot --question 'Which methods were evaluated on MuSiQue?' --output "runs/m3/answer-$tag.json"
+```
+
+`--mode` defaults to `vector`. Fact modes require the matching current review store; they hold its
+lock and check graph/source/approval bindings. Stale or unavailable services/indexes fail explicitly.
+Queries never prepare indexes or synchronize approvals automatically. Setup rejects frozen/unready
+targets. `--minimum-similarity` applies to Vector only. `GRAPH_QUERY_TIMEOUT_SECONDS` defaults to 30;
+0.001–30 seconds is allowed and applies to the whole retrieval read transaction. Timeout monitoring
+is not a strict wall-clock SLA. Gold/reference answers must never be passed to retrieval/generation.
+
+Outputs expose requested/effective mode and fallback reason. Graph returns the exact Hybrid + Facts
+assembly if no new graph item survives selection/unit/token limits. All eight actual development
+Graph reads did so; there is no observed added graph evidence in this pilot. A separate native
+synthetic fixture proves new cross-paper traversal outside the fused baseline pool. Development
+scores are exploratory; no generation/held-out superiority claim is made.
+
+Optional isolated native fixtures (synthetic approvals only):
+
+```powershell
+$env:RUN_RETRIEVAL_SMOKE = '1'
+$env:RUN_REVIEW_SMOKE = '1'
+try {
+    uv run --locked --offline pytest -m integration tests/integration/test_graph_retrieval_repository.py tests/integration/test_review_repository.py
+} finally {
+    Remove-Item Env:RUN_RETRIEVAL_SMOKE
+    Remove-Item Env:RUN_REVIEW_SMOKE
+}
+```
+
+An optional `M3_FIXTURE_REPORT` must name a fresh report path. Fixtures remove only their UUID-owned
+nodes/indexes; existing corpora, review history, volumes and shared schema are preserved. The
+deadline fixture uses a bounded three-second idle interval. Reports and real source/run data stay
+ignored locally. Next: M3.2 Streamlit workflows/export, then M3.3 integrations and restore verification.
 
 ## Source/evidence contracts
 

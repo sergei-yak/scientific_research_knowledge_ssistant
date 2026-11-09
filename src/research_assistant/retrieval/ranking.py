@@ -1,4 +1,4 @@
-"""Frozen rank-only fusion contract for later retrievers; no hybrid search in M1."""
+"""Frozen equal-contribution rank-only fusion; native lexical/vector scores are never mixed."""
 
 from __future__ import annotations
 

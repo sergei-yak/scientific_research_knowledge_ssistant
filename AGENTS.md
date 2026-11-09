@@ -2,7 +2,7 @@
 
 ## Read first
 
-- Read `project_spec.md` for requirements and `IMPLEMENTATION_PLAN.md` for milestone/boundaries/decisions. `README.md` has executable commands; milestone reports through `docs/M2_3_REPORT.md` record actual results and limits. Check `docs/M2_PDF_INSPECTION.md` before relying on parsed sections/tables.
+- Read `project_spec.md` for requirements and `IMPLEMENTATION_PLAN.md` for milestone/boundaries/decisions. `README.md` has executable commands; milestone reports through `docs/M3_1_REPORT.md` record actual results and limits. Check `docs/M2_PDF_INSPECTION.md` before relying on parsed sections/tables.
 - `project_spec.md` is authoritative; `project_spec_submission.md` is its submission summary. Reference requirements instead of duplicating algorithms.
 - Resolve routine details autonomously; record consequential decisions in the plan. Fix agreed requirement changes in the spec and synchronize its summary; the plan must not override conflicting requirements.
 
@@ -31,10 +31,11 @@
 - Tune on development questions only. Held-out questions/gold/reveal files belong in an evaluator-controlled external directory; never list/search/read it during development. `.gitignore` is not access control. Only the authorized frozen evaluation runner consumes private inputs; keep them out of agent context and disclose exposure/corrections.
 - Keep requested mode, effective mode, and any fallback reason visible. Provider substitution is never automatic.
 - M2.3 development annotations live only in versioned `data/evaluation/development/` directories. All eight pilot annotations are human-validated; preserve exact question/answer/span bindings and do not inherit approval after edits. Gold validation is separate from graph-claim approval; keep gold out of retrieval inputs. Oracle source witnesses verify annotation feasibility, never retrieval performance; absence-keyword triage never proves unanswerability. Use current receipt/source replay for readiness, not the creation manifest's historical draft label. See `docs/M2_3_REPORT.md` for acceptance and scope limits.
+- M3.1 retrieval uses the frozen channel/ranking contracts. Resolve alias fallback per entity kind; seed-only aliases never count as question matches. Fact modes hold the review lock and require the current graph head. Index/service/stale-data failures are errors; only successful no-new-selected-graph-evidence cases return the exact Hybrid + Facts assembly. Preserve graph paths and requested/effective mode in artifacts/UI. See `docs/M3_1_REPORT.md` for the pilot's eight actual fallbacks and limits.
 
 ## Commands
 
-M0–M2 commands are implemented and the bounded evidence pilot is complete; two timeboxed graph drafts remain pending. M3.1 is next, and full five-paper product/integration acceptance is still required before expansion. Use the recorded reports for outcomes. Keep this list current as later milestones add entry points:
+M0–M3.1 commands are implemented; two timeboxed graph drafts remain pending. M3.2 is next, and full five-paper product/integration/recovery acceptance is still required before expansion. Use the recorded reports for outcomes. Keep this list current as later milestones add entry points:
 
 - Initial resolution: `uv lock`, then `uv sync --locked`; commit the lockfile.
 - Subsequent installation: `uv sync --locked`; check consistency with `uv lock --check`.
@@ -43,7 +44,10 @@ M0–M2 commands are implemented and the bounded evidence pilot is complete; two
 - Configured service tests: `uv run --locked pytest -m integration` (register the marker during setup; select only configured services).
 - CLI help: `uv run --locked python -m research_assistant --help`.
 - Ingest: `uv run --locked --offline python -m research_assistant ingest --manifest manifests/pilot-paper.json --output <new-report.json>`.
-- Ask: `uv run --locked --offline python -m research_assistant ask --corpus <corpus-id> --question <question> --output <new-run.json>` (M1 local defaults: context 4096, output 512).
+- Ask: `uv run --locked --offline python -m research_assistant ask --corpus <corpus-id> --mode <vector|hybrid|hybrid_facts|graph> --question <question> --output <new-run.json>` (default mode vector; local context 4096/output 512). Fact modes accept `--review-dir`, default `data/reviews/pilot`.
+- Explicit search indexes: `uv run --locked --offline python -m research_assistant search-setup --corpus <corpus-id> --output <new-report.json>`; no source/claim resets or implicit query-time setup. Rejects frozen/unready targets.
+- Retrieval without generation: `uv run --locked --offline python -m research_assistant retrieve --corpus <corpus-id> --mode <mode> --question <question> --output <new-report.json>`. Readiness requires ONLINE indexes and a matching current review store for fact modes. `GRAPH_QUERY_TIMEOUT_SECONDS` defaults to 30 (0.001–30 allowed); the vector-only similarity threshold does not filter hybrid channel rankings.
+- Native retrieval fixture: set `RUN_RETRIEVAL_SMOKE=1`, then `uv run --locked --offline pytest -m integration tests/integration/test_graph_retrieval_repository.py`; unset afterward. Optional `M3_FIXTURE_REPORT` must name a new local report. Fixtures clean only their UUID-owned nodes/indexes, never production volumes/data.
 - Five-paper metadata/ingestion: `pilot-metadata --manifest manifests/pilot-five-papers.json --cache-dir data/metadata/pilot-v1 --output <new-metadata.json>`, then `pilot-ingest --manifest manifests/pilot-five-papers.json --metadata <metadata.json> --output <new-report.json>` using the same `uv run --locked --offline python -m research_assistant` prefix. Full commands are in README.
 - Extract/export: `uv run --locked --offline python -u -m research_assistant extract --corpus <corpus-id> --plan manifests/pilot-extraction.json --bundle-dir <new-packet-directory> --output <new-report.json>`.
 - Offline packet audit: `uv run --locked --offline python -m research_assistant review-check --bundle-dir <packet-directory> --output <new-report.json>`; this never grants approval.

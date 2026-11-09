@@ -167,6 +167,8 @@ class GraphRepository:
         """Retrieve a bounded ANN pool, then order by actual cosine and stable ID."""
         _, index = corpus_names(corpus_id)
         snapshot = self.snapshot(corpus_id)
+        from research_assistant.ingestion.sources import load_corpus_chunks, verified_chunk
+        sources = load_corpus_chunks(corpus_id)
         q = np.asarray(query, dtype=float)
         if q.shape != (384,) or not np.isfinite(q).all() or np.linalg.norm(q) == 0:
             raise ValueError("Query vector is invalid")
@@ -183,5 +185,5 @@ class GraphRepository:
                     or np.linalg.norm(vector) == 0 or row["revision"] != snapshot["encoder_revision"]):
                 raise ValueError("Indexed vector is invalid or uses a different encoder")
             score = float(np.dot(q, vector) / (np.linalg.norm(q) * np.linalg.norm(vector)))
-            candidates.append((Chunk.model_validate_json(row["source"]), max(-1.0, min(1.0, score))))
+            candidates.append((verified_chunk(row['source'],sources), max(-1.0, min(1.0, score))))
         return sorted(candidates, key=lambda pair: (-pair[1], pair[0].chunk_id))[:12]

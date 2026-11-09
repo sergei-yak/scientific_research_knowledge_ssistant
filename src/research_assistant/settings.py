@@ -36,6 +36,7 @@ class Settings(BaseModel):
     max_concurrency: int = Field(default=1, ge=1, le=8)
     max_retries: int = Field(default=0, ge=0, le=3)
     ollama_context_tokens: int = Field(default=2048, ge=512, le=8192)
+    graph_query_timeout_seconds: float = Field(default=30, ge=0.001, le=30, allow_inf_nan=False)
 
     @field_validator("neo4j_uri", "ollama_base_url")
     @classmethod

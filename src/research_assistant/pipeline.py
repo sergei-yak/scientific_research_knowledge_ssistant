@@ -1,4 +1,4 @@
-"""M1 services shared by CLI and the future UI; raw evidence only."""
+"""Shared ingestion and answer entry points; retrieval modes use the same evidence contracts."""
 
 from __future__ import annotations
 
@@ -32,6 +32,15 @@ def write_immutable(path: Path, text: str) -> None:
         return
     with path.open("x", encoding="utf-8", newline="\n") as handle:
         handle.write(text)
+
+
+def code_identity() -> dict:
+    """Record code content as well as Git state, including uncommitted implementation checks."""
+    files = sorted(Path('src/research_assistant').rglob('*.py'))
+    revision = subprocess.run(['git','rev-parse','HEAD'],capture_output=True,text=True,timeout=10)
+    dirty = subprocess.run(['git','status','--porcelain'],capture_output=True,text=True,timeout=10)
+    return {'code_revision':revision.stdout.strip() or 'unversioned', 'code_dirty':bool(dirty.stdout.strip()),
+            'source_tree_sha256':fingerprint({str(p):fingerprint(p.read_text(encoding='utf-8')) for p in files})}
 
 
 def ingest_paper(manifest_path: Path, settings: Settings) -> dict:
@@ -109,31 +118,23 @@ def retrieve_vector(request: QueryRequest, repository: GraphRepository,
 
 
 def ask_question(request: QueryRequest, settings: Settings, context_tokens: int = 4096,
-                 output_tokens: int = 512, minimum_similarity: float = 0.30) -> RunArtifact:
-    """Run the real vector baseline with inspectable prompts/evidence/source metadata."""
-    code_files = sorted(Path("src/research_assistant").rglob("*.py"))
-    source_tree = fingerprint({str(p): fingerprint(p.read_text(encoding="utf-8")) for p in code_files})
-    encoder = Encoder()
-    repository = GraphRepository(settings)
-    try:
-        snapshot = repository.snapshot(request.corpus_id)
-        if snapshot["encoder_revision"] != encoder.revision:
-            raise ValueError("Query encoder revision differs from the indexed snapshot")
-        retrieval = retrieve_vector(request, repository, encoder, minimum_similarity)
-    finally:
-        repository.close()
+                 output_tokens: int = 512, minimum_similarity: float = 0.30,
+                 review_directory: Path = Path('data/reviews/pilot')) -> RunArtifact:
+    """Answer from the selected mode with inspectable prompts, evidence and source metadata."""
+    from research_assistant.retrieval.service import retrieve_request
+    identity = code_identity()
+    snapshot,retrieval = retrieve_request(request,settings,review_directory,minimum_similarity)
     before = check_resources()
     client = OllamaClient(settings, context_tokens, output_tokens) if retrieval.evidence else None
     answer, generation = answer_question(request.question, retrieval, client)
-    revision = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, timeout=10)
-    dirty = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, timeout=10)
     return RunArtifact(
         run_id=uuid.uuid4().hex, created_at=datetime.now(timezone.utc).isoformat(),
-        request=request, corpus_manifest=snapshot, code_revision=revision.stdout.strip() or "unversioned",
-        code_dirty=bool(dirty.stdout.strip()),
+        request=request, corpus_manifest=snapshot, code_revision=identity['code_revision'],
+        code_dirty=identity['code_dirty'],
         configuration={"minimum_similarity": minimum_similarity, "evidence_budget": 1800,
-                       "encoder": "all-MiniLM-L6-v2", "encoder_revision": encoder.revision,
-                       "source_tree_sha256": source_tree,
+                       "encoder": "all-MiniLM-L6-v2", "encoder_revision": snapshot['encoder_revision'],
+                       "source_tree_sha256": identity['source_tree_sha256'],
+                       "retrieval_rules":retrieval.audit,
                        "resources_before_generation": before, "resources_after_generation": check_resources()},
         retrieval=retrieval, generation=generation, result=answer,
     )

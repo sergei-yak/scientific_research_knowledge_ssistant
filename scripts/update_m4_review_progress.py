@@ -8,7 +8,7 @@ from research_assistant.contracts import fingerprint
 from research_assistant.evaluation.development import review_status
 from research_assistant.pipeline import write_immutable
 from research_assistant.review.facts import projection
-from research_assistant.review.store import load_chunks
+from research_assistant.review.store import load_chunks, state
 
 
 def main() -> None:
@@ -16,6 +16,22 @@ def main() -> None:
     directory = Path('data/reviews/expansion-v1')
     review = projection(directory, load_chunks(directory))
     registry = json.loads(Path('runs/m4-1/mapping-proposals.json').read_text(encoding='utf-8'))['batches']
+    current = state(directory)['current']
+    packet_root = Path('runs/m4-1/review-batches').resolve()
+    for path in sorted(Path('runs/m4-1/packet-amendments').glob('*.json')):
+        amendment = json.loads(path.read_text(encoding='utf-8'))
+        packet = Path(amendment['packet']).resolve()
+        if not packet.is_relative_to(packet_root):
+            raise ValueError('Review packet amendment escaped the claim-review directory')
+        presented = json.loads(packet.with_name('batch.json').read_text(encoding='utf-8'))
+        if fingerprint(presented) != amendment['batch_sha256']:
+            raise ValueError('Amended packet hash mismatch')
+        row = next(row for row in registry if row['batch'] == amendment['batch'])
+        expected = {key for key, value in current.items() if value.paper.paper_id == row['paper_id']}
+        items = presented['items']
+        if ({item['claim_id'] for item in items} == expected and len(items) == len(expected)
+                and all(current[item['claim_id']].sha256 == item['revision_sha256'] for item in items)):
+            row['packet'] = amendment['packet']
     papers = {row['paper_id'] for row in registry}
     counts = Counter(row['status'] for row in review['statuses'] if row['paper_id'] in papers)
     batches = []

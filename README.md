@@ -429,7 +429,7 @@ nonempty subset without resetting the global per-PDF ledger.
 `review-check` audits packets; `review-prepare` registers candidates into the matching review
 scope; neither grants approval. Use the existing review-import/chat-receipt workflow for actual
 human decisions, then `review-sync --review-dir data/reviews/expansion-v1 --output <new-report.json>`.
-The original review queue is `runs/m4-1/review-batches/queue.json`; `mapping-proposals.json` records current packet replacements. `scripts/update_m4_review_progress.py` derives a head-addressed checkpoint under `runs/m4-1/review-progress/`; immutable packets and prior checkpoints remain historical.
+The original review queue is `runs/m4-1/review-batches/queue.json`; `mapping-proposals.json` records packet replacements; hash-bound `packet-amendments/` records supersede them when a pending claim is narrowed again. `scripts/update_m4_review_progress.py` derives a head-addressed checkpoint under `runs/m4-1/review-progress/`; immutable packets and prior checkpoints remain historical.
 Current eligibility comes from journal replay, not an old queue label or packet.
 
 The development-only scoring API is `evaluation.blinding`: `build_development_bundle`,

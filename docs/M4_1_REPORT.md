@@ -1,6 +1,6 @@
 # M4.1 — Corpus/scoring readiness: human-review checkpoint
 
-**Status: waiting_for_human, not complete.** Local implementation and independent checks are finished. Ten expansion claims are human-approved; 18 remain pending. Eight expanded-scope development annotations and evaluator-owned final 24-question readiness remain pending. No M4.2 freeze, held-out execution or new paid spending is authorized. Outcomes below were recorded on 2026-11-08 America/Chicago; UTC artifacts cross into November 9.
+**Status: waiting_for_human, not complete.** Local implementation and independent checks are finished. Thirteen expansion claims are human-approved; 15 remain pending. Eight expanded-scope development annotations and evaluator-owned final 24-question readiness remain pending. No M4.2 freeze, held-out execution or new paid spending is authorized. Outcomes below were recorded on 2026-11-08 America/Chicago; UTC artifacts cross into November 9.
 
 ## Changes and actual corpus
 
@@ -15,9 +15,11 @@
 
 Sergei Iakovlev approved E1 revision 1 and E2 revision 2 from the first paper, with **approximately 15 minutes batch review time**; per-claim time is unknown. The verbatim response and exact bindings are in the local receipt `data/reviews/expansion-v1/human-inputs/m4-1-batch-01-sergei.json`. Publication verified **25 active claims** in the expanded scope: 23 carried pilot approvals plus these two new approvals. The pilot remains at 23 approvals and its original head.
 
-The queue contains **15 small paper-specific batches** (one to three claims each): `runs/m4-1/review-batches/queue.json`. Batches 1–6 are complete (~15 + 5 + 10 + 10 + 5 + 10 minutes); batch 7 (TRACE) is presented in chat. `mapping-proposals.json` points to the current remaining packets; the original queue and packets remain historical. Initial review allowance remains 20 minutes per paper, without invented elapsed times. The other 18 expansion claims and two previously timeboxed pilot drafts remain ineligible. The expanded graph currently has 33 active claims, including ten new human approvals. No additional inference is needed merely to review these packets.
+The queue contains **15 small paper-specific batches** (one to three claims each): `runs/m4-1/review-batches/queue.json`. Batches 1–7 are complete (~15 + 5 + 10 + 10 + 5 + 10 + 15 minutes); batch 8 (Think-on-Graph 2.0) is presented in chat. `mapping-proposals.json` and hash-bound `packet-amendments/` records point to the current remaining packets; the original queue and packets remain historical. Initial review allowance remains 20 minutes per paper, without invented elapsed times. The other 15 expansion claims and two previously timeboxed pilot drafts remain ineligible. The expanded graph currently has 36 active claims, including thirteen new human approvals. No additional inference is needed merely to review these packets.
 
 Batch 6 import and graph publication passed exact revision/source/entity bindings: `runs/m4-1/import-batch-06.json`, `sync-batch-06.json`. PG1 revision 2 is approved; ~600 seconds is recorded for this batch, bringing expansion review to ~3,300 seconds. The synchronized expanded graph has 33 active claims. No application code, dependencies, extraction requests or gold annotations changed; the full test suite was not rerun for this data-only decision import.
+
+Batch 7: TR1/TR2 revision 2 and TR3 revision 3 were explicitly approved by Sergei Iakovlev; ~900 seconds was recorded, bringing expansion review to ~4,200 seconds. Exact receipt import and graph synchronization passed (`runs/m4-1/import-batch-07.json`, `sync-batch-07.json`): 36 active facts. Before presenting Batch 8, TG1 was narrowed to its two exact quotations as unapproved revision 3; earlier packet/revision retained. The current packet is `batch-08-narrowed/REVIEW.md`, with a hash-bound amendment under `packet-amendments/`. The progress helper resolves matching current amendments; its real replay is checked. No application code, dependencies, model calls or gold changed; full application tests were not rerun for this review/helper-only update.
 
 ## Scoring and evaluator boundary
 

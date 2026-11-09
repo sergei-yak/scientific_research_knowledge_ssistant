@@ -75,5 +75,5 @@ def audit_packets(directory: Path) -> dict:
                         "validated": stats["validated"], "requests_reserved": stats["requests_reserved"],
                         "unknown_candidate_upper_bound": stats["unknown_candidate_upper_bound"],
                         "decisions_entered_not_imported": sum(bool(r["decision"]) for r in decisions), "status": "passed"})
-    return {"task_id": "M2.1", "status": "passed", "corpus_id": summary["corpus_id"], "papers": reports,
+    return {"task_id": summary.get("task_id", "M2.1"), "status": "passed", "corpus_id": summary["corpus_id"], "papers": reports,
             "note": "Mechanical replay only; human decisions are not imported or approved by this check."}

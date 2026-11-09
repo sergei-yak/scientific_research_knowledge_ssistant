@@ -68,11 +68,20 @@ def main(argv: list[str] | None = None) -> int:
     pilot.add_argument("--manifest", type=Path, required=True)
     pilot.add_argument("--metadata", type=Path, required=True)
     pilot.add_argument("--output", type=Path, required=True)
+    expanded_metadata = subparsers.add_parser("corpus-metadata", help="Bounded metadata for a declared 20–30-paper expansion")
+    expanded_metadata.add_argument("--manifest", type=Path, required=True)
+    expanded_metadata.add_argument("--cache-dir", type=Path, required=True)
+    expanded_metadata.add_argument("--output", type=Path, required=True)
+    expanded = subparsers.add_parser("corpus-ingest", help="Ingest a separate 20–30-paper corpus, preserving previous data")
+    expanded.add_argument("--manifest", type=Path, required=True)
+    expanded.add_argument("--metadata", type=Path, required=True)
+    expanded.add_argument("--output", type=Path, required=True)
     extract = subparsers.add_parser("extract", help="Prepare bounded local-Qwen claim-review bundles; no approvals")
     extract.add_argument("--corpus", required=True)
     extract.add_argument("--plan", type=Path, required=True)
     extract.add_argument("--bundle-dir", type=Path, required=True)
     extract.add_argument("--output", type=Path, required=True)
+    extract.add_argument("--selected-papers", action="store_true", help="Explicitly extract only the plan's nonempty subset; cumulative per-PDF caps remain enforced")
     review_check = subparsers.add_parser("review-check", help="Replay packet source/identity/cap checks with no model calls")
     review_check.add_argument("--bundle-dir", type=Path, required=True)
     review_check.add_argument("--output", type=Path, required=True)
@@ -80,6 +89,11 @@ def main(argv: list[str] | None = None) -> int:
     prepare.add_argument("--bundle-dir", type=Path, required=True)
     prepare.add_argument("--review-dir", type=Path, required=True)
     prepare.add_argument("--output", type=Path, required=True)
+    extend = subparsers.add_parser("review-extend", help="Copy unchanged review history into a separate superset corpus scope")
+    extend.add_argument("--source-dir", type=Path, required=True)
+    extend.add_argument("--review-dir", type=Path, required=True)
+    extend.add_argument("--corpus", required=True)
+    extend.add_argument("--output", type=Path, required=True)
     review_import = subparsers.add_parser("review-import", help="Import explicit human CSV rows into review history")
     review_import.add_argument("--review-dir", type=Path, required=True)
     review_import.add_argument("--decisions", type=Path, required=True)
@@ -133,23 +147,30 @@ def main(argv: list[str] | None = None) -> int:
                     Settings.model_validate({**settings.model_dump(), 'neo4j_uri': args.target_uri}), args.target_project)
             elif args.command == "ingest":
                 result = ingest_paper(args.manifest, settings)
-            elif args.command == "pilot-metadata":
-                from research_assistant.ingestion.corpus import PilotManifest
+            elif args.command in {"pilot-metadata", "corpus-metadata"}:
+                from research_assistant.ingestion.corpus import ExpansionManifest, PilotManifest
                 from research_assistant.ingestion.metadata import fetch_metadata
-                manifest = PilotManifest.model_validate_json(args.manifest.read_text(encoding="utf-8"))
+                manifest_type = PilotManifest if args.command == "pilot-metadata" else ExpansionManifest
+                manifest = manifest_type.model_validate_json(args.manifest.read_text(encoding="utf-8"))
                 result = fetch_metadata(manifest.papers, settings, args.cache_dir)
             elif args.command == "pilot-ingest":
                 from research_assistant.ingestion.corpus import ingest_pilot
                 result = ingest_pilot(args.manifest, args.metadata, settings)
+            elif args.command == "corpus-ingest":
+                from research_assistant.ingestion.corpus import ingest_expansion
+                result = ingest_expansion(args.manifest, args.metadata, settings)
             elif args.command == "extract":
                 from research_assistant.extraction.pilot import extract_pilot
-                result = extract_pilot(args.corpus, args.plan, args.bundle_dir, settings)
+                result = extract_pilot(args.corpus, args.plan, args.bundle_dir, settings, selected_only=args.selected_papers)
             elif args.command == "review-check":
                 from research_assistant.review.audit import audit_packets
                 result = audit_packets(args.bundle_dir)
             elif args.command == "review-prepare":
                 from research_assistant.review.store import prepare_review
                 result = prepare_review(args.bundle_dir, args.review_dir)
+            elif args.command == "review-extend":
+                from research_assistant.review.scope import extend_scope
+                result = extend_scope(args.source_dir, args.review_dir, args.corpus)
             elif args.command == "review-import":
                 from research_assistant.review.store import import_csv
                 result = import_csv(args.review_dir, args.decisions)

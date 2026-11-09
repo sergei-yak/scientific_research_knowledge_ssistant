@@ -172,20 +172,25 @@ def source_ledger(corpus_id: str, paper: dict) -> Path:
     return directory
 
 
-def extract_pilot(corpus_id: str, plan_path: Path, bundle_dir: Path, settings: Settings) -> dict:
+def extract_pilot(corpus_id: str, plan_path: Path, bundle_dir: Path, settings: Settings,
+                  selected_only: bool = False) -> dict:
     """Run only the frozen requests, preserving attempts/failures and never creating approvals."""
     plan = ExtractionPlan.model_validate_json(plan_path.read_text(encoding="utf-8"))
     corpus_names(corpus_id)
     root = Path("data/processed") / corpus_id
     snapshot = json.loads((root / "snapshot.json").read_text(encoding="utf-8"))
     members = json.loads((root / "members.json").read_text(encoding="utf-8"))
-    if set(plan.selections) != {p["paper_id"] for p in snapshot["papers"]}:
-        raise ValueError("Extraction plan must cover exactly the selected corpus papers")
+    declared = {p["paper_id"] for p in snapshot["papers"]}
+    selected = set(plan.selections)
+    if not selected or not selected <= declared or (not selected_only and selected != declared):
+        raise ValueError("Extraction plan must cover exactly the corpus, or an explicitly enabled nonempty subset")
     # Build/validate every passage before any model calls or output creation.
     prepared = []
     for paper, member in zip(snapshot["papers"], members):
         if paper["paper_id"] != member["paper_id"]:
             raise ValueError("Member/source order mismatch")
+        if paper["paper_id"] not in selected:
+            continue
         chunks = [Chunk.model_validate_json(line) for line in Path(member["chunk_path"]).read_text(encoding="utf-8").splitlines()]
         member_snapshot = json.loads(Path(member["snapshot_path"]).read_text(encoding="utf-8"))
         if (fingerprint([c.model_dump() for c in chunks]) != member_snapshot["chunks_sha256"]
@@ -288,11 +293,12 @@ def extract_pilot(corpus_id: str, plan_path: Path, bundle_dir: Path, settings: S
                   "approval_note": "No decisions recorded. Validation is mechanical, not human approval."}
         export_bundle(bundle_dir / paper["paper_id"].replace(":", "-"), bundle, chunks)
         papers_out.append({"paper_id": paper["paper_id"], "bundle": str(bundle_dir / paper["paper_id"].replace(":", "-")), **stats})
-    report = {"task_id": "M2.1", "corpus_id": corpus_id, "bundle_dir": str(bundle_dir), "papers": papers_out,
+    task_id = "M4.1" if selected_only else "M2.1"
+    report = {"task_id": task_id, "corpus_id": corpus_id, "bundle_dir": str(bundle_dir), "papers": papers_out,
               "human_review_status": "pending", "approved": 0,
               "paid_api_cost_usd": None if settings.extraction_provider == 'openai' else 0}
     write_immutable(bundle_dir / "summary.json", json.dumps(report, indent=2) + "\n")
-    lines = ["# M2.1 review packets", "", "All claims are pending human review. No scientific claims have been approved or inserted into authoritative retrieval.", "",
+    lines = [f"# {task_id} review packets", "", "All claims are pending human review. No scientific claims have been approved or inserted into authoritative retrieval.", "",
              "Open each packet's REVIEW.md, inspect its PDF quotations and proposed mappings, then fill its decisions.csv. Blank decision/reviewer fields stay pending. Initial allowance: 20 minutes per paper; record actual review time. Decision import is M2.2.", "",
              "| Paper | Generated | Unique | Mechanically validated | Unknown possible | Packet |", "|---|---:|---:|---:|---:|---|"]
     for row in papers_out:

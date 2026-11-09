@@ -102,8 +102,16 @@ def prepare_review(packet_directory: Path, directory: Path) -> dict:
     corpus_names(audit["corpus_id"])
     config = {"corpus_id": audit["corpus_id"], "packet_directory": str(packet_directory.resolve()),
               "mapping_policy": "paper_and_proposal_scoped_until_explicitly_revised"}
-    write_immutable(directory / "config.json", json.dumps(config, indent=2) + "\n")
     with review_lock(directory):
+        config_path = directory / "config.json"
+        if config_path.exists():
+            existing = json.loads(config_path.read_text(encoding="utf-8"))
+            if existing["corpus_id"] != audit["corpus_id"]:
+                raise ValueError("Review packet belongs to a different corpus")
+        else:
+            write_immutable(config_path, json.dumps(config, indent=2) + "\n")
+        write_immutable(directory / "imports" / (fingerprint(config) + ".json"),
+                        json.dumps(config, indent=2) + "\n")
         for paper in audit["papers"]:
             bundle = json.loads((packet_directory / paper["paper_id"].replace(":", "-") / "bundle.json").read_text(encoding="utf-8"))
             for candidate in bundle["candidates"]:
@@ -112,7 +120,7 @@ def prepare_review(packet_directory: Path, directory: Path) -> dict:
                     draft=draft, support=candidate["claim"]["support"] if candidate["claim"] else [],
                     validation_errors=candidate["validation_errors"], entity_revision=candidate["entity_revision"],
                     entities=entities_for(paper["paper_id"], draft, candidate["entity_revision"]),
-                    change_reason="Original audited M2.1 candidate; no human decision")
+                    change_reason=f"Original audited {audit.get('task_id', 'M2.1')} candidate; no human decision")
                 append_event(directory, "revision", revision.model_dump(mode="json"))
     return export_decisions(directory)
 

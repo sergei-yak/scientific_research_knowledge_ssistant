@@ -173,7 +173,8 @@ def validate_annotations(entries: list[DevelopmentAnnotation], chunks: dict[str,
 
 
 def create_dataset(directory: Path, corpus_id: str, entries: list[DevelopmentAnnotation],
-                   chunks: dict[str, Chunk], absence_audit: dict) -> dict:
+                   chunks: dict[str, Chunk], absence_audit: dict,
+                   selection_note: str = "Pilot topics and source coverage only; no held-out inputs or observed retrieval gains.") -> dict:
     """Write an immutable development version; edited annotations require a new version directory."""
     directory = development_directory(directory)
     reports = validate_annotations(entries, chunks)
@@ -190,7 +191,7 @@ def create_dataset(directory: Path, corpus_id: str, entries: list[DevelopmentAnn
         "source_chunks_sha256": source_identity(chunks), "annotations_sha256": text_sha(gold_text),
         "questions_sha256": text_sha(questions_text), "absence_audit_sha256": text_sha(audit_text),
         "question_count": 8, "category_counts": dict(Counter(e.gold.category for e in entries)),
-        "selection": "Pilot topics and source coverage only; no held-out inputs or observed retrieval gains.",
+        "selection": selection_note,
         "review_status": "Drafts; mechanical checks do not grant human validation"}
     for name, content in [("annotations.jsonl", gold_text), ("questions.jsonl", questions_text),
                           ("absence-audit.json", audit_text), ("manifest.json", json.dumps(manifest, indent=2) + "\n")]:
@@ -267,7 +268,7 @@ def export_review_batch(directory: Path, question_ids: list[str], batch_name: st
         for key in question_ids]}
     target = directory / "review-batches" / batch_name
     lines = ["# Development gold validation", "", "Approve, reject or request changes for each complete annotation, not just its answer. This does not approve graph claims or certify scientific truth.", "",
-        "All sources are the pinned pilot's indexed pages. HippoRAG 2's stored Front matter section label is inaccurate; use PDF pages. Absence triage is not a proof of unanswerability. Review its corpus scope and nearby evidence.", ""]
+        f"All sources are indexed pages of corpus `{manifest['corpus_id']}`. Parsed section labels are unverified; use PDF pages. Absence triage is not a proof of unanswerability. Review its corpus scope and nearby evidence.", ""]
     for item in batch["items"]:
         q = item["gold"]
         lines += [f"## {q['question_id']} — {q['category']}, revision {item['revision']}", "", q["question"], "",

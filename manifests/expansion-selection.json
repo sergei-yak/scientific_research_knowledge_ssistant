@@ -1,0 +1,1580 @@
+{
+  "protocol": "manifests/CORPUS_SELECTION.md",
+  "selection_sha256": "86def0d33acff6a8b66edea11e7e65482dc45c0a9ce907403b21bf185bb276f9",
+  "discovery_sha256": "2040c8c0e9866a4004548ee4f1355715b80bf7e9fae97a1291b624db19490946",
+  "candidates": [
+    {
+      "discovery_index": 0,
+      "base_id": "2401.13444",
+      "first_submitted": "2024-01-24T13:36:50Z",
+      "discovery_title": "Fine-grained Stateful Knowledge Exploration: Effective and Efficient Graph Retrieval with Large Language Models",
+      "url": "https://arxiv.org/abs/2401.13444",
+      "status": "excluded",
+      "reason": "External-KG-only reasoning; no document collection retrieval."
+    },
+    {
+      "discovery_index": 1,
+      "base_id": "2402.05135",
+      "first_submitted": "2024-02-06T11:29:44Z",
+      "discovery_title": "CADReN: Contextual Anchor-Driven Relational Network for Controllable Cross-Graphs Node Importance Estimation",
+      "url": "https://arxiv.org/abs/2402.05135",
+      "status": "excluded",
+      "reason": "Node-importance estimation rather than document RAG/QA."
+    },
+    {
+      "discovery_index": 2,
+      "base_id": "2402.06764",
+      "first_submitted": "2024-02-09T19:53:29Z",
+      "discovery_title": "GLaM: Fine-Tuning Large Language Models for Domain Knowledge Graph Alignment via Neighborhood Partitioning and Generative Subgraph Encoding",
+      "url": "https://arxiv.org/abs/2402.06764",
+      "status": "excluded",
+      "reason": "Graph alignment/fine-tuning rather than document retrieval."
+    },
+    {
+      "discovery_index": 3,
+      "base_id": "2402.07016",
+      "first_submitted": "2024-02-10T18:27:28Z",
+      "discovery_title": "REALM: RAG-Driven Enhancement of Multimodal Electronic Health Records Analysis via Large Language Models",
+      "url": "https://arxiv.org/abs/2402.07016",
+      "status": "excluded",
+      "reason": "Multimodal EHR prediction using external PrimeKG."
+    },
+    {
+      "discovery_index": 4,
+      "base_id": "2402.07630",
+      "first_submitted": "2024-02-12T13:13:04Z",
+      "discovery_title": "G-Retriever: Retrieval-Augmented Generation for Textual Graph Understanding and Question Answering",
+      "url": "https://arxiv.org/abs/2402.07630",
+      "status": "excluded",
+      "reason": "General graph QA; no document-collection retrieval demonstrated in screened scope."
+    },
+    {
+      "discovery_index": 5,
+      "base_id": "2402.11034",
+      "first_submitted": "2024-02-16T19:26:09Z",
+      "discovery_title": "PAT-Questions: A Self-Updating Benchmark for Present-Anchored Temporal Question-Answering",
+      "url": "https://arxiv.org/abs/2402.11034",
+      "status": "excluded",
+      "reason": "Temporal QA benchmark; no eligible document graph retrieval method."
+    },
+    {
+      "discovery_index": 6,
+      "base_id": "2402.12352",
+      "first_submitted": "2024-02-19T18:31:11Z",
+      "discovery_title": "Graph-Based Retriever Captures the Long Tail of Biomedical Knowledge",
+      "url": "https://arxiv.org/abs/2402.12352",
+      "status": "selected",
+      "reason": "Graph-guided retrieval/organization over text or document collections; eligible in recorded date order.",
+      "pinned_title": "Graph-Based Retriever Captures the Long Tail of Biomedical Knowledge",
+      "pinned_arxiv_id": "2402.12352v1",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "source_sha256": "66b865274319c1df380d237f3c3a4b1fb7ed20a2641db770c9ea2ad605cc3f11",
+      "screening_basis": "Cached pinned v1 PDF and arXiv landing page; no retrieval/generation scores."
+    },
+    {
+      "discovery_index": 7,
+      "base_id": "2403.04197",
+      "first_submitted": "2024-03-07T03:58:28Z",
+      "discovery_title": "Large Language Models are In-Context Molecule Learners",
+      "url": "https://arxiv.org/abs/2403.04197",
+      "status": "excluded",
+      "reason": "Molecular graph modality, not document retrieval."
+    },
+    {
+      "discovery_index": 8,
+      "base_id": "2403.08345",
+      "first_submitted": "2024-03-13T08:50:15Z",
+      "discovery_title": "From human experts to machines: An LLM supported approach to ontology and knowledge graph construction",
+      "url": "https://arxiv.org/abs/2403.08345",
+      "status": "excluded",
+      "reason": "Pinned PDF describes KG construction; RAG answers competency questions before graph construction, not graph-guided document retrieval."
+    },
+    {
+      "discovery_index": 9,
+      "base_id": "2403.10171",
+      "first_submitted": "2024-03-15T10:27:17Z",
+      "discovery_title": "AUTONODE: A Neuro-Graphic Self-Learnable Engine for Cognitive GUI Automation",
+      "url": "https://arxiv.org/abs/2403.10171",
+      "status": "excluded",
+      "reason": "GUI automation graph, not document QA."
+    },
+    {
+      "discovery_index": 10,
+      "base_id": "2404.03868",
+      "first_submitted": "2024-04-05T02:53:51Z",
+      "discovery_title": "Extract, Define, Canonicalize: An LLM-based Framework for Knowledge Graph Construction",
+      "url": "https://arxiv.org/abs/2404.03868",
+      "status": "excluded",
+      "reason": "KG construction/schema retrieval, not graph-guided document QA."
+    },
+    {
+      "discovery_index": 11,
+      "base_id": "2404.09296",
+      "first_submitted": "2024-04-14T16:34:31Z",
+      "discovery_title": "Cross-Data Knowledge Graph Construction for LLM-enabled Educational Question-Answering System: A Case Study at HCMUT",
+      "url": "https://arxiv.org/abs/2404.09296",
+      "status": "selected",
+      "reason": "Graph-guided retrieval/organization over text or document collections; eligible in recorded date order.",
+      "pinned_title": "Cross-Data Knowledge Graph Construction for LLM-enabled Educational Question-Answering System: A~Case~Study~at~HCMUT",
+      "pinned_arxiv_id": "2404.09296v1",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "source_sha256": "a31eb1e5e28786a6db88a09e529bad71e2c1209a777aedf12a81a7cb7a132ca9",
+      "screening_basis": "Cached pinned v1 PDF and arXiv landing page; no retrieval/generation scores."
+    },
+    {
+      "discovery_index": 12,
+      "base_id": "2404.16130",
+      "first_submitted": "2024-04-24T18:38:11Z",
+      "discovery_title": "From Local to Global: A Graph RAG Approach to Query-Focused Summarization",
+      "url": "https://arxiv.org/abs/2404.16130",
+      "status": "excluded",
+      "reason": "Pilot base ID retained at its already pinned v1."
+    },
+    {
+      "discovery_index": 13,
+      "base_id": "2404.17723",
+      "first_submitted": "2024-04-26T23:05:20Z",
+      "discovery_title": "Retrieval-Augmented Generation with Knowledge Graphs for Customer Service Question Answering",
+      "url": "https://arxiv.org/abs/2404.17723",
+      "status": "selected",
+      "reason": "Graph-guided retrieval/organization over text or document collections; eligible in recorded date order.",
+      "pinned_title": "Retrieval-Augmented Generation with Knowledge Graphs for Customer Service Question Answering",
+      "pinned_arxiv_id": "2404.17723v1",
+      "pages": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "source_sha256": "a6e01003ee38ca3d0ab4e912808ea46ebdedf2f72c925256cc0195b5b21aceb3",
+      "screening_basis": "Cached pinned v1 PDF and arXiv landing page; no retrieval/generation scores."
+    },
+    {
+      "discovery_index": 14,
+      "base_id": "2404.19744",
+      "first_submitted": "2024-04-30T17:44:44Z",
+      "discovery_title": "PrivComp-KG : Leveraging Knowledge Graph and Large Language Models for Privacy Policy Compliance Verification",
+      "url": "https://arxiv.org/abs/2404.19744",
+      "status": "excluded",
+      "reason": "RAG extracts policy alignments into a KG, followed by rule-based compliance verification rather than graph-guided QA/synthesis."
+    },
+    {
+      "discovery_index": 15,
+      "base_id": "2405.00449",
+      "first_submitted": "2024-05-01T11:06:31Z",
+      "discovery_title": "RAG-based Explainable Prediction of Road Users Behaviors for Automated Driving using Knowledge Graphs and Large Language Models",
+      "url": "https://arxiv.org/abs/2405.00449",
+      "status": "excluded",
+      "reason": "Driving behavior/sensor modality, not document QA."
+    },
+    {
+      "discovery_index": 16,
+      "base_id": "2405.06545",
+      "first_submitted": "2024-05-10T15:40:50Z",
+      "discovery_title": "Mitigating Hallucinations in Large Language Models via Self-Refinement-Enhanced Knowledge Retrieval",
+      "url": "https://arxiv.org/abs/2405.06545",
+      "status": "excluded",
+      "reason": "External-KG medical answer refinement, not a document graph."
+    },
+    {
+      "discovery_index": 17,
+      "base_id": "2405.12035",
+      "first_submitted": "2024-05-20T14:03:05Z",
+      "discovery_title": "KG-RAG: Bridging the Gap Between Knowledge and Creativity",
+      "url": "https://arxiv.org/abs/2405.12035",
+      "status": "selected",
+      "reason": "Graph-guided retrieval/organization over text or document collections; eligible in recorded date order.",
+      "pinned_title": "KG-RAG: Bridging the Gap Between Knowledge and Creativity",
+      "pinned_arxiv_id": "2405.12035v1",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "source_sha256": "e04a0fe65cb78c1bc157d6d7c72de108193de812a4ef21157775d9711cddeddd",
+      "screening_basis": "Cached pinned v1 PDF and arXiv landing page; no retrieval/generation scores."
+    },
+    {
+      "discovery_index": 18,
+      "base_id": "2405.12656",
+      "first_submitted": "2024-05-21T10:10:56Z",
+      "discovery_title": "Retrieval-Augmented Language Model for Extreme Multi-Label Knowledge Graph Link Prediction",
+      "url": "https://arxiv.org/abs/2405.12656",
+      "status": "excluded",
+      "reason": "KG link prediction rather than document QA."
+    },
+    {
+      "discovery_index": 19,
+      "base_id": "2405.13401",
+      "first_submitted": "2024-05-22T07:21:32Z",
+      "discovery_title": "TrojanRAG: Retrieval-Augmented Generation Can Be Backdoor Driver in Large Language Models",
+      "url": "https://arxiv.org/abs/2405.13401",
+      "status": "excluded",
+      "reason": "Pinned method uses KG-enhanced contrastive training samples for a dense retriever; no graph traversal/evidence organization at retrieval."
+    },
+    {
+      "discovery_index": 20,
+      "base_id": "2405.14831",
+      "first_submitted": "2024-05-23T17:47:55Z",
+      "discovery_title": "HippoRAG: Neurobiologically Inspired Long-Term Memory for Large Language Models",
+      "url": "https://arxiv.org/abs/2405.14831",
+      "status": "excluded",
+      "reason": "Pilot base ID retained at its already pinned v1."
+    },
+    {
+      "discovery_index": 21,
+      "base_id": "2405.15436",
+      "first_submitted": "2024-05-24T11:05:45Z",
+      "discovery_title": "Hybrid Context Retrieval Augmented Generation Pipeline: LLM-Augmented Knowledge Graphs and Vector Database for Accreditation Reporting Assistance",
+      "url": "https://arxiv.org/abs/2405.15436",
+      "status": "selected",
+      "reason": "Graph-guided retrieval/organization over text or document collections; eligible in recorded date order.",
+      "pinned_title": "Hybrid Context Retrieval Augmented Generation Pipeline: LLM-Augmented Knowledge Graphs and Vector Database for Accreditation Reporting Assistance",
+      "pinned_arxiv_id": "2405.15436v1",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "source_sha256": "30e51af0bda2b8ea2605023abbb726cd077dbadc415bc46d0cfcbc57401adedf",
+      "screening_basis": "Cached pinned v1 PDF and arXiv landing page; no retrieval/generation scores."
+    },
+    {
+      "discovery_index": 22,
+      "base_id": "2405.16506",
+      "first_submitted": "2024-05-26T10:11:40Z",
+      "discovery_title": "GRAG: Graph Retrieval-Augmented Generation",
+      "url": "https://arxiv.org/abs/2405.16506",
+      "status": "excluded",
+      "reason": "Pinned evaluation uses WebQSP/ExplaGraphs graph QA; no document-collection retrieval demonstrated in screened scope."
+    },
+    {
+      "discovery_index": 23,
+      "base_id": "2405.16933",
+      "first_submitted": "2024-05-27T08:26:45Z",
+      "discovery_title": "Empowering Large Language Models to Set up a Knowledge Retrieval Indexer via Self-Learning",
+      "url": "https://arxiv.org/abs/2405.16933",
+      "status": "selected",
+      "reason": "Graph-guided retrieval/organization over text or document collections; eligible in recorded date order.",
+      "pinned_title": "Empowering Large Language Models to Set up a Knowledge Retrieval Indexer via Self-Learning",
+      "pinned_arxiv_id": "2405.16933v1",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "source_sha256": "1f51235565c4676226bb87b253dbe12be0775b60ffd3e4017a21424e98f216a9",
+      "screening_basis": "Cached pinned v1 PDF and arXiv landing page; no retrieval/generation scores."
+    },
+    {
+      "discovery_index": 24,
+      "base_id": "2406.00036",
+      "first_submitted": "2024-05-27T10:53:15Z",
+      "discovery_title": "EMERGE: Enhancing Multimodal Electronic Health Records Predictive Modeling with Retrieval-Augmented Generation",
+      "url": "https://arxiv.org/abs/2406.00036",
+      "status": "excluded",
+      "reason": "Multimodal EHR prediction with external PrimeKG."
+    },
+    {
+      "discovery_index": 25,
+      "base_id": "2405.20139",
+      "first_submitted": "2024-05-30T15:14:24Z",
+      "discovery_title": "GNN-RAG: Graph Neural Retrieval for Large Language Model Reasoning",
+      "url": "https://arxiv.org/abs/2405.20139",
+      "status": "excluded",
+      "reason": "External-KG-only QA (WebQSP/CWQ)."
+    },
+    {
+      "discovery_index": 26,
+      "base_id": "2405.20455",
+      "first_submitted": "2024-05-30T20:05:44Z",
+      "discovery_title": "DepsRAG: Towards Agentic Reasoning and Planning for Software Dependency Management",
+      "url": "https://arxiv.org/abs/2405.20455",
+      "status": "excluded",
+      "reason": "Software dependency graph, not a text/document collection."
+    },
+    {
+      "discovery_index": 27,
+      "base_id": "2406.06566",
+      "first_submitted": "2024-06-03T07:44:32Z",
+      "discovery_title": "Natural Language Interaction with a Household Electricity Knowledge-based Digital Twin",
+      "url": "https://arxiv.org/abs/2406.06566",
+      "status": "excluded",
+      "reason": "Energy digital-twin measurements, not document retrieval."
+    },
+    {
+      "discovery_index": 28,
+      "base_id": "2406.02110",
+      "first_submitted": "2024-06-04T08:36:39Z",
+      "discovery_title": "UniOQA: A Unified Framework for Knowledge Graph Question Answering with Large Language Models",
+      "url": "https://arxiv.org/abs/2406.02110",
+      "status": "excluded",
+      "reason": "External OwnThink KG-only QA."
+    },
+    {
+      "discovery_index": 29,
+      "base_id": "2406.04744",
+      "first_submitted": "2024-06-07T08:43:07Z",
+      "discovery_title": "CRAG -- Comprehensive RAG Benchmark",
+      "url": "https://arxiv.org/abs/2406.04744",
+      "status": "excluded",
+      "reason": "Benchmark without an eligible document graph retrieval method."
+    },
+    {
+      "discovery_index": 30,
+      "base_id": "2406.10393",
+      "first_submitted": "2024-06-14T19:40:38Z",
+      "discovery_title": "EWEK-QA: Enhanced Web and Efficient Knowledge Graph Retrieval for Citation-based Question Answering Systems",
+      "url": "https://arxiv.org/abs/2406.10393",
+      "status": "excluded",
+      "reason": "Web passage retrieval plus external KG triples; no document graph retrieval."
+    },
+    {
+      "discovery_index": 31,
+      "base_id": "2406.11460",
+      "first_submitted": "2024-06-17T12:23:32Z",
+      "discovery_title": "TRACE the Evidence: Constructing Knowledge-Grounded Reasoning Chains for Retrieval-Augmented Generation",
+      "url": "https://arxiv.org/abs/2406.11460",
+      "status": "selected",
+      "reason": "Graph-guided retrieval/organization over text or document collections; eligible in recorded date order.",
+      "pinned_title": "TRACE the Evidence: Constructing Knowledge-Grounded Reasoning Chains for Retrieval-Augmented Generation",
+      "pinned_arxiv_id": "2406.11460v1",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "source_sha256": "fe9af32a8602f0c82e58048516873dfbbebfcdef9213e6f1976f8e15b1dc15cd",
+      "screening_basis": "Cached pinned v1 PDF and arXiv landing page; no retrieval/generation scores."
+    },
+    {
+      "discovery_index": 32,
+      "base_id": "2406.13578",
+      "first_submitted": "2024-06-19T14:12:05Z",
+      "discovery_title": "Enhancing Distractor Generation for Multiple-Choice Questions with Retrieval Augmented Pretraining and Knowledge Graph Integration",
+      "url": "https://arxiv.org/abs/2406.13578",
+      "status": "excluded",
+      "reason": "Distractor generation/pretraining, not document graph QA."
+    },
+    {
+      "discovery_index": 33,
+      "base_id": "2406.14282",
+      "first_submitted": "2024-06-20T13:07:38Z",
+      "discovery_title": "Learning to Plan for Retrieval-Augmented Large Language Models from Knowledge Graphs",
+      "url": "https://arxiv.org/abs/2406.14282",
+      "status": "excluded",
+      "reason": "KG-derived planning supervision, not a document graph retrieval method."
+    },
+    {
+      "discovery_index": 34,
+      "base_id": "2406.14745",
+      "first_submitted": "2024-06-20T21:27:57Z",
+      "discovery_title": "Relation Extraction with Fine-Tuned Large Language Models in Retrieval Augmented Generation Frameworks",
+      "url": "https://arxiv.org/abs/2406.14745",
+      "status": "excluded",
+      "reason": "Relation extraction rather than graph-guided document QA."
+    },
+    {
+      "discovery_index": 35,
+      "base_id": "2406.18114",
+      "first_submitted": "2024-06-26T07:02:49Z",
+      "discovery_title": "Knowledge graph enhanced retrieval-augmented generation for failure mode and effects analysis",
+      "url": "https://arxiv.org/abs/2406.18114",
+      "status": "excluded",
+      "reason": "Structured FMEA/tabular graph, not a document collection."
+    },
+    {
+      "discovery_index": 36,
+      "base_id": "2407.00466",
+      "first_submitted": "2024-06-29T15:23:28Z",
+      "discovery_title": "BioKGBench: A Knowledge Graph Checking Benchmark of AI Agent for Biomedical Science",
+      "url": "https://arxiv.org/abs/2407.00466",
+      "status": "excluded",
+      "reason": "KG error checking benchmark, not document graph QA/synthesis."
+    },
+    {
+      "discovery_index": 37,
+      "base_id": "2407.02994",
+      "first_submitted": "2024-07-03T10:49:21Z",
+      "discovery_title": "MedPix 2.0: A Comprehensive Multimodal Biomedical Data set for Advanced AI Applications with Retrieval Augmented Generation and Knowledge Graphs",
+      "url": "https://arxiv.org/abs/2407.02994",
+      "status": "excluded",
+      "reason": "Multimodal medical image/data workflow outside the text scope."
+    },
+    {
+      "discovery_index": 38,
+      "base_id": "2407.04363",
+      "first_submitted": "2024-07-05T09:06:47Z",
+      "discovery_title": "AriGraph: Learning Knowledge Graph World Models with Episodic Memory for LLM Agents",
+      "url": "https://arxiv.org/abs/2407.04363",
+      "status": "excluded",
+      "reason": "Interactive game-world memory, not document-collection QA."
+    },
+    {
+      "discovery_index": 39,
+      "base_id": "2407.06447",
+      "first_submitted": "2024-07-08T23:11:47Z",
+      "discovery_title": "Geospatial Trajectory Generation via Efficient Abduction: Deployment for Independent Testing",
+      "url": "https://arxiv.org/abs/2407.06447",
+      "status": "excluded",
+      "reason": "Geospatial trajectory modality."
+    },
+    {
+      "discovery_index": 40,
+      "base_id": "2407.10805",
+      "first_submitted": "2024-07-15T15:20:40Z",
+      "discovery_title": "Think-on-Graph 2.0: Deep and Faithful Large Language Model Reasoning with Knowledge-guided Retrieval Augmented Generation",
+      "url": "https://arxiv.org/abs/2407.10805",
+      "status": "selected",
+      "reason": "Graph-guided retrieval/organization over text or document collections; eligible in recorded date order.",
+      "pinned_title": "Think-on-Graph 2.0: Deep and Interpretable Large Language Model Reasoning with Knowledge Graph-guided Retrieval",
+      "pinned_arxiv_id": "2407.10805v1",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "source_sha256": "92115118cd6457d13b2343f17f1c91a65ed8e233f37f7f5087d121e4206a8b66",
+      "screening_basis": "Cached pinned v1 PDF and arXiv landing page; no retrieval/generation scores."
+    },
+    {
+      "discovery_index": 41,
+      "base_id": "2407.12216",
+      "first_submitted": "2024-07-16T23:50:07Z",
+      "discovery_title": "Mindful-RAG: A Study of Points of Failure in Retrieval Augmented Generation",
+      "url": "https://arxiv.org/abs/2407.12216",
+      "status": "excluded",
+      "reason": "External-KG answer reasoning/error study, not a document graph."
+    },
+    {
+      "discovery_index": 42,
+      "base_id": "2407.13909",
+      "first_submitted": "2024-07-18T21:49:32Z",
+      "discovery_title": "PRAGyan -- Connecting the Dots in Tweets",
+      "url": "https://arxiv.org/abs/2407.13909",
+      "status": "selected",
+      "reason": "Graph-guided retrieval/organization over text or document collections; eligible in recorded date order.",
+      "pinned_title": "PRAGyan -- Connecting the Dots in Tweets",
+      "pinned_arxiv_id": "2407.13909v1",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "source_sha256": "f71e55fd5ec2bdadd08200dde4dfb4e6e29c380e14c80ea8451aba6de73aec30",
+      "screening_basis": "Cached pinned v1 PDF and arXiv landing page; no retrieval/generation scores."
+    },
+    {
+      "discovery_index": 43,
+      "base_id": "2407.21276",
+      "first_submitted": "2024-07-31T01:51:24Z",
+      "discovery_title": "Knowledge Pyramid Construction for Multi-Level Retrieval-Augmented Generation",
+      "url": "https://arxiv.org/abs/2407.21276",
+      "status": "selected",
+      "reason": "Graph-guided retrieval/organization over text or document collections; eligible in recorded date order.",
+      "pinned_title": "Multi-Level Querying using A Knowledge Pyramid",
+      "pinned_arxiv_id": "2407.21276v1",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "source_sha256": "06b1634ecb08e230622b376eb8a3975e013e8d4cebf5f145c21d98fe4aebc95a",
+      "screening_basis": "Cached pinned v1 PDF and arXiv landing page; no retrieval/generation scores."
+    },
+    {
+      "discovery_index": 44,
+      "base_id": "2408.04187",
+      "first_submitted": "2024-08-08T03:11:12Z",
+      "discovery_title": "Medical Graph RAG: Towards Safe Medical Large Language Model via Graph Retrieval-Augmented Generation",
+      "url": "https://arxiv.org/abs/2408.04187",
+      "status": "selected",
+      "reason": "Graph-guided retrieval/organization over text or document collections; eligible in recorded date order.",
+      "pinned_title": "Medical Graph RAG: Towards Safe Medical Large Language Model via Graph Retrieval-Augmented Generation",
+      "pinned_arxiv_id": "2408.04187v1",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "source_sha256": "4ab41b5a9f41bacb1f5ed1f7567ae8489520e22b206910eedd50b3b6169a1734",
+      "screening_basis": "Cached pinned v1 PDF and arXiv landing page; no retrieval/generation scores."
+    },
+    {
+      "discovery_index": 45,
+      "base_id": "2408.04948",
+      "first_submitted": "2024-08-09T09:07:48Z",
+      "discovery_title": "HybridRAG: Integrating Knowledge Graphs and Vector Retrieval Augmented Generation for Efficient Information Extraction",
+      "url": "https://arxiv.org/abs/2408.04948",
+      "status": "selected",
+      "reason": "Graph-guided retrieval/organization over text or document collections; eligible in recorded date order.",
+      "pinned_title": "HybridRAG: Integrating Knowledge Graphs and Vector Retrieval Augmented Generation for Efficient Information Extraction",
+      "pinned_arxiv_id": "2408.04948v1",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "source_sha256": "ac529ab762fd1672e2a7fd16a0f7035b3dbaa1a1974e700ba0ce5f4c19a66f7d",
+      "screening_basis": "Cached pinned v1 PDF and arXiv landing page; no retrieval/generation scores."
+    },
+    {
+      "discovery_index": 46,
+      "base_id": "2408.05141",
+      "first_submitted": "2024-08-09T15:53:55Z",
+      "discovery_title": "A Hybrid RAG System with Comprehensive Enhancement on Complex Reasoning",
+      "url": "https://arxiv.org/abs/2408.05141",
+      "status": "excluded",
+      "reason": "Pinned KG module queries an external mock API; web passages are retrieved separately, without a document graph."
+    },
+    {
+      "discovery_index": 47,
+      "base_id": "2408.15264",
+      "first_submitted": "2024-08-11T18:04:56Z",
+      "discovery_title": "Validation Requirements for AI-based Intervention-Evaluation in Aging and Longevity Research and Practice",
+      "url": "https://arxiv.org/abs/2408.15264",
+      "status": "excluded",
+      "reason": "Validation requirements/perspective, not a retrieval method."
+    },
+    {
+      "discovery_index": 48,
+      "base_id": "2408.07611",
+      "first_submitted": "2024-08-14T15:19:16Z",
+      "discovery_title": "WeKnow-RAG: An Adaptive Approach for Retrieval-Augmented Generation Integrating Web Search and Knowledge Graphs",
+      "url": "https://arxiv.org/abs/2408.07611",
+      "status": "excluded",
+      "reason": "Pinned framework combines independent external KG and web retrieval, not a document graph."
+    },
+    {
+      "discovery_index": 49,
+      "base_id": "2408.08921",
+      "first_submitted": "2024-08-15T12:20:24Z",
+      "discovery_title": "Graph Retrieval-Augmented Generation: A Survey",
+      "url": "https://arxiv.org/abs/2408.08921",
+      "status": "excluded",
+      "reason": "Survey; additions require original retrieval methods."
+    },
+    {
+      "discovery_index": 50,
+      "base_id": "2408.08927",
+      "first_submitted": "2024-08-15T20:06:06Z",
+      "discovery_title": "VerilogCoder: Autonomous Verilog Coding Agents with Graph-based Planning and Abstract Syntax Tree (AST)-based Waveform Tracing Tool",
+      "url": "https://arxiv.org/abs/2408.08927",
+      "status": "excluded",
+      "reason": "Hardware design/task graph and waveform tracing, outside document QA."
+    },
+    {
+      "discovery_index": 51,
+      "base_id": "2408.08535",
+      "first_submitted": "2024-08-16T05:15:12Z",
+      "discovery_title": "CommunityKG-RAG: Leveraging Community Structures in Knowledge Graphs for Advanced Retrieval-Augmented Generation in Fact-Checking",
+      "url": "https://arxiv.org/abs/2408.08535",
+      "status": "selected",
+      "reason": "Graph-guided retrieval/organization over text or document collections; eligible in recorded date order.",
+      "pinned_title": "CommunityKG-RAG: Leveraging Community Structures in Knowledge Graphs for Advanced Retrieval-Augmented Generation in Fact-Checking",
+      "pinned_arxiv_id": "2408.08535v1",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "source_sha256": "873d882437481107659a106a1e72c82019b24e47c7b1770675f42f165cf6f7bf",
+      "screening_basis": "Cached pinned v1 PDF and arXiv landing page; no retrieval/generation scores."
+    },
+    {
+      "discovery_index": 52,
+      "base_id": "2408.09420",
+      "first_submitted": "2024-08-18T09:31:13Z",
+      "discovery_title": "Enhancing Startup Success Predictions in Venture Capital: A GraphRAG Augmented Multivariate Time Series Method",
+      "url": "https://arxiv.org/abs/2408.09420",
+      "status": "excluded",
+      "reason": "Startup/time-series prediction, not document QA."
+    },
+    {
+      "discovery_index": 53,
+      "base_id": "2408.13273",
+      "first_submitted": "2024-08-18T11:52:24Z",
+      "discovery_title": "Retrieval-Augmented Generation Meets Data-Driven Tabula Rasa Approach for Temporal Knowledge Graph Forecasting",
+      "url": "https://arxiv.org/abs/2408.13273",
+      "status": "excluded",
+      "reason": "Temporal KG forecasting, not document QA."
+    },
+    {
+      "discovery_index": 54,
+      "base_id": "2408.12333",
+      "first_submitted": "2024-08-22T12:21:22Z",
+      "discovery_title": "GRATR: Zero-Shot Evidence Graph Retrieval-Augmented Trustworthiness Reasoning",
+      "url": "https://arxiv.org/abs/2408.12333",
+      "status": "excluded",
+      "reason": "Pinned method targets game trust reasoning, not document-collection QA."
+    },
+    {
+      "discovery_index": 55,
+      "base_id": "2408.13366",
+      "first_submitted": "2024-08-23T20:51:04Z",
+      "discovery_title": "CodeRefine: A Pipeline for Enhancing LLM-Generated Code Implementations of Research Papers",
+      "url": "https://arxiv.org/abs/2408.13366",
+      "status": "excluded",
+      "reason": "Code synthesis from papers; retrospective retrieval is vector-based, not eligible document graph QA."
+    },
+    {
+      "discovery_index": 56,
+      "base_id": "2408.13378",
+      "first_submitted": "2024-08-23T21:24:59Z",
+      "discovery_title": "DrugAgent: Reliable Multi-Agent Integration of Conflicting Biomedical Evidence for Drug-Target Interaction Assessment",
+      "url": "https://arxiv.org/abs/2408.13378",
+      "status": "excluded",
+      "reason": "Drug-target prediction/evidence integration, outside the document graph QA method scope."
+    },
+    {
+      "discovery_index": 57,
+      "base_id": "2409.09046",
+      "first_submitted": "2024-08-29T16:11:20Z",
+      "discovery_title": "HyPA-RAG: A Hybrid Parameter Adaptive Retrieval-Augmented Generation System for AI Legal and Policy Applications",
+      "url": "https://arxiv.org/abs/2409.09046",
+      "status": "selected",
+      "reason": "Graph-guided retrieval/organization over text or document collections; eligible in recorded date order.",
+      "pinned_title": "HyPA-RAG: A Hybrid Parameter Adaptive Retrieval-Augmented Generation System for AI Legal and Policy Applications",
+      "pinned_arxiv_id": "2409.09046v1",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "source_sha256": "4f264a45c744c3d04ca08edcb89a8c0bc098963d2543dfd9612463d1a9c0e913",
+      "screening_basis": "Cached pinned v1 PDF and arXiv landing page; no retrieval/generation scores."
+    },
+    {
+      "discovery_index": 58,
+      "base_id": "2409.12177",
+      "first_submitted": "2024-09-05T22:26:21Z",
+      "discovery_title": "LitFM: A Retrieval Augmented Structure-aware Foundation Model For Citation Graphs",
+      "url": "https://arxiv.org/abs/2409.12177",
+      "status": "selected",
+      "reason": "Graph-guided retrieval/organization over text or document collections; eligible in recorded date order.",
+      "pinned_title": "LitFM: A Retrieval Augmented Structure-aware Foundation Model For Citation Graphs",
+      "pinned_arxiv_id": "2409.12177v1",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "source_sha256": "7b3849d0e5ce18a2ffe6b0e6290925e720bab8c102b7571b0ba1473317548c01",
+      "screening_basis": "Cached pinned v1 PDF and arXiv landing page; no retrieval/generation scores."
+    },
+    {
+      "discovery_index": 59,
+      "base_id": "2409.13731",
+      "first_submitted": "2024-09-10T02:00:28Z",
+      "discovery_title": "KAG: Boosting LLMs in Professional Domains via Knowledge Augmented Generation",
+      "url": "https://arxiv.org/abs/2409.13731",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 60,
+      "base_id": "2409.07507",
+      "first_submitted": "2024-09-11T12:27:41Z",
+      "discovery_title": "Traceable LLM-based validation of statements in knowledge graphs",
+      "url": "https://arxiv.org/abs/2409.07507",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 61,
+      "base_id": "2409.08820",
+      "first_submitted": "2024-09-13T13:34:32Z",
+      "discovery_title": "A RAG Approach for Generating Competency Questions in Ontology Engineering",
+      "url": "https://arxiv.org/abs/2409.08820",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 62,
+      "base_id": "2409.13537",
+      "first_submitted": "2024-09-20T14:30:45Z",
+      "discovery_title": "ShizishanGPT: An Agricultural Large Language Model Integrating Tools and Resources",
+      "url": "https://arxiv.org/abs/2409.13537",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 63,
+      "base_id": "2409.19006",
+      "first_submitted": "2024-09-21T13:44:34Z",
+      "discovery_title": "Towards Automated Patent Workflows: AI-Orchestrated Multi-Agent Framework for Intellectual Property Management and Analysis",
+      "url": "https://arxiv.org/abs/2409.19006",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 64,
+      "base_id": "2409.14206",
+      "first_submitted": "2024-09-21T17:41:46Z",
+      "discovery_title": "AI Assistants for Spaceflight Procedures: Combining Generative Pre-Trained Transformer and Retrieval-Augmented Generation on Knowledge Graphs With Augmented Reality Cues",
+      "url": "https://arxiv.org/abs/2409.14206",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 65,
+      "base_id": "2409.14556",
+      "first_submitted": "2024-09-22T18:39:27Z",
+      "discovery_title": "RACOON: An LLM-based Framework for Retrieval-Augmented Column Type Annotation with a Knowledge Graph",
+      "url": "https://arxiv.org/abs/2409.14556",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 66,
+      "base_id": "2409.16176",
+      "first_submitted": "2024-09-24T15:20:39Z",
+      "discovery_title": "Cyber Knowledge Completion Using Large Language Models",
+      "url": "https://arxiv.org/abs/2409.16176",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 67,
+      "base_id": "2409.17580",
+      "first_submitted": "2024-09-26T06:53:29Z",
+      "discovery_title": "Enhancing Structured-Data Retrieval with GraphRAG: Soccer Data Case Study",
+      "url": "https://arxiv.org/abs/2409.17580",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 68,
+      "base_id": "2409.18924",
+      "first_submitted": "2024-09-27T17:17:15Z",
+      "discovery_title": "Simulated patient systems powered by large language model-based AI agents offer potential for transforming medical education",
+      "url": "https://arxiv.org/abs/2409.18924",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 69,
+      "base_id": "2409.19753",
+      "first_submitted": "2024-09-29T16:08:45Z",
+      "discovery_title": "CoTKR: Chain-of-Thought Enhanced Knowledge Rewriting for Complex Knowledge Graph Question Answering",
+      "url": "https://arxiv.org/abs/2409.19753",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 70,
+      "base_id": "2410.02721",
+      "first_submitted": "2024-10-03T17:40:55Z",
+      "discovery_title": "Domain-Specific Retrieval-Augmented Generation Using Vector Stores, Knowledge Graphs, and Tensor Factorization",
+      "url": "https://arxiv.org/abs/2410.02721",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 71,
+      "base_id": "2410.04585",
+      "first_submitted": "2024-10-06T18:46:28Z",
+      "discovery_title": "Reasoning-Enhanced Healthcare Predictions with Knowledge Graph Community Retrieval",
+      "url": "https://arxiv.org/abs/2410.04585",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 72,
+      "base_id": "2410.04660",
+      "first_submitted": "2024-10-07T00:17:37Z",
+      "discovery_title": "KGARevion: An AI Agent for Knowledge-Intensive Biomedical QA",
+      "url": "https://arxiv.org/abs/2410.04660",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 73,
+      "base_id": "2410.04749",
+      "first_submitted": "2024-10-07T04:59:08Z",
+      "discovery_title": "LLaVA Needs More Knowledge: Retrieval Augmented Natural Language Generation with Knowledge Graph for Explaining Thoracic Pathologies",
+      "url": "https://arxiv.org/abs/2410.04749",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 74,
+      "base_id": "2410.06062",
+      "first_submitted": "2024-10-08T14:09:12Z",
+      "discovery_title": "LLM-based SPARQL Query Generation from Natural Language over Federated Knowledge Graphs",
+      "url": "https://arxiv.org/abs/2410.06062",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 75,
+      "base_id": "2410.06121",
+      "first_submitted": "2024-10-08T15:22:36Z",
+      "discovery_title": "Less is More: Making Smaller Language Models Competent Subgraph Retrievers for Multi-hop KGQA",
+      "url": "https://arxiv.org/abs/2410.06121",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 76,
+      "base_id": "2410.18251",
+      "first_submitted": "2024-10-09T16:35:41Z",
+      "discovery_title": "Context-Augmented Code Generation Using Programming Knowledge Graphs",
+      "url": "https://arxiv.org/abs/2410.18251",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 77,
+      "base_id": "2410.08985",
+      "first_submitted": "2024-10-11T16:57:30Z",
+      "discovery_title": "Towards Trustworthy Knowledge Graph Reasoning: An Uncertainty Aware Perspective",
+      "url": "https://arxiv.org/abs/2410.08985",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 78,
+      "base_id": "2410.09252",
+      "first_submitted": "2024-10-11T20:58:51Z",
+      "discovery_title": "DAVIS: Planning Agent with Knowledge Graph-Powered Inner Monologue",
+      "url": "https://arxiv.org/abs/2410.09252",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 79,
+      "base_id": "2410.09699",
+      "first_submitted": "2024-10-13T02:34:47Z",
+      "discovery_title": "Honest AI: Fine-Tuning \"Small\" Language Models to Say \"I Don't Know\", and Reducing Hallucination in RAG",
+      "url": "https://arxiv.org/abs/2410.09699",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 80,
+      "base_id": "2410.22353",
+      "first_submitted": "2024-10-15T14:51:45Z",
+      "discovery_title": "RuleRAG: Rule-Guided Retrieval-Augmented Generation with Language Models for Question Answering",
+      "url": "https://arxiv.org/abs/2410.22353",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 81,
+      "base_id": "2410.12229",
+      "first_submitted": "2024-10-16T04:44:34Z",
+      "discovery_title": "Comprehending Knowledge Graphs with Large Language Models for Recommender Systems",
+      "url": "https://arxiv.org/abs/2410.12229",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 82,
+      "base_id": "2410.12375",
+      "first_submitted": "2024-10-16T08:46:26Z",
+      "discovery_title": "PRefLexOR: Preference-based Recursive Language Modeling for Exploratory Optimization of Reasoning and Agentic Thinking",
+      "url": "https://arxiv.org/abs/2410.12375",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 83,
+      "base_id": "2410.14057",
+      "first_submitted": "2024-10-17T21:56:22Z",
+      "discovery_title": "Towards Cross-Cultural Machine Translation with Retrieval-Augmented Generation from Multilingual Knowledge Graphs",
+      "url": "https://arxiv.org/abs/2410.14057",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 84,
+      "base_id": "2410.15116",
+      "first_submitted": "2024-10-19T13:59:48Z",
+      "discovery_title": "Coarse-to-Fine Highlighting: Reducing Knowledge Hallucination in Large Language Models",
+      "url": "https://arxiv.org/abs/2410.15116",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 85,
+      "base_id": "2410.16397",
+      "first_submitted": "2024-10-21T18:08:42Z",
+      "discovery_title": "Towards a Reliable Offline Personal AI Assistant for Long Duration Spaceflight",
+      "url": "https://arxiv.org/abs/2410.16397",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 86,
+      "base_id": "2410.16597",
+      "first_submitted": "2024-10-22T00:47:54Z",
+      "discovery_title": "Scaling Knowledge Graph Construction through Synthetic Data Generation and Distillation",
+      "url": "https://arxiv.org/abs/2410.16597",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 87,
+      "base_id": "2410.20299",
+      "first_submitted": "2024-10-27T00:42:21Z",
+      "discovery_title": "EACO-RAG: Towards Distributed Tiered LLM Deployment using Edge-Assisted and Collaborative RAG with Adaptive Knowledge Update",
+      "url": "https://arxiv.org/abs/2410.20299",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 88,
+      "base_id": "2410.20724",
+      "first_submitted": "2024-10-28T04:39:32Z",
+      "discovery_title": "Simple Is Effective: The Roles of Graphs and Large Language Models in Knowledge-Graph-Based Retrieval-Augmented Generation",
+      "url": "https://arxiv.org/abs/2410.20724",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 89,
+      "base_id": "2410.21067",
+      "first_submitted": "2024-10-28T14:29:11Z",
+      "discovery_title": "CRAT: A Multi-Agent Framework for Causality-Enhanced Reflective and Retrieval-Augmented Translation with Large Language Models",
+      "url": "https://arxiv.org/abs/2410.21067",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 90,
+      "base_id": "2411.08041",
+      "first_submitted": "2024-10-29T07:25:30Z",
+      "discovery_title": "GraphAide: Advanced Graph-Assisted Query and Reasoning System",
+      "url": "https://arxiv.org/abs/2411.08041",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 91,
+      "base_id": "2410.22996",
+      "first_submitted": "2024-10-30T13:22:22Z",
+      "discovery_title": "Semantic Enrichment of the Quantum Cascade Laser Properties in Text- A Knowledge Graph Generation Approach",
+      "url": "https://arxiv.org/abs/2410.22996",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 92,
+      "base_id": "2410.23968",
+      "first_submitted": "2024-10-31T14:22:20Z",
+      "discovery_title": "EmbodiedRAG: Dynamic 3D Scene Graph Retrieval for Efficient and Scalable Robot Task Planning",
+      "url": "https://arxiv.org/abs/2410.23968",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 93,
+      "base_id": "2411.03572",
+      "first_submitted": "2024-11-06T00:23:55Z",
+      "discovery_title": "Advanced RAG Models with Graph Structures: Optimizing Complex Knowledge Reasoning and Text Generation",
+      "url": "https://arxiv.org/abs/2411.03572",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 94,
+      "base_id": "2411.05844",
+      "first_submitted": "2024-11-06T15:32:28Z",
+      "discovery_title": "LEGO-GraphRAG: Modularizing Graph-based Retrieval-Augmented Generation for Design Space Exploration",
+      "url": "https://arxiv.org/abs/2411.05844",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 95,
+      "base_id": "2411.06256",
+      "first_submitted": "2024-11-09T19:07:58Z",
+      "discovery_title": "Annotative Indexing",
+      "url": "https://arxiv.org/abs/2411.06256",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 96,
+      "base_id": "2411.08449",
+      "first_submitted": "2024-11-13T09:11:56Z",
+      "discovery_title": "Towards Evaluating Large Language Models for Graph Query Generation",
+      "url": "https://arxiv.org/abs/2411.08449",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 97,
+      "base_id": "2411.11090",
+      "first_submitted": "2024-11-17T14:45:52Z",
+      "discovery_title": "ForPKG: A Framework for Constructing Forestry Policy Knowledge Graph and Application Analysis",
+      "url": "https://arxiv.org/abs/2411.11090",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 98,
+      "base_id": "2411.12449",
+      "first_submitted": "2024-11-19T12:17:43Z",
+      "discovery_title": "Neon: News Entity-Interaction Extraction for Enhanced Question Answering",
+      "url": "https://arxiv.org/abs/2411.12449",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 99,
+      "base_id": "2411.13773",
+      "first_submitted": "2024-11-21T01:00:25Z",
+      "discovery_title": "FastRAG: Retrieval Augmented Generation for Semi-structured Data",
+      "url": "https://arxiv.org/abs/2411.13773",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 100,
+      "base_id": "2411.16495",
+      "first_submitted": "2024-11-25T15:35:51Z",
+      "discovery_title": "AtomR: Atomic Operator-Empowered Large Language Models for Heterogeneous Knowledge Reasoning",
+      "url": "https://arxiv.org/abs/2411.16495",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 101,
+      "base_id": "2411.19064",
+      "first_submitted": "2024-11-28T11:24:43Z",
+      "discovery_title": "Way to Specialist: Closing Loop Between Specialized LLM and Evolving Domain Knowledge Graph",
+      "url": "https://arxiv.org/abs/2411.19064",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 102,
+      "base_id": "2411.19539",
+      "first_submitted": "2024-11-29T08:34:07Z",
+      "discovery_title": "Knowledge Management for Automobile Failure Analysis Using Graph RAG",
+      "url": "https://arxiv.org/abs/2411.19539",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 103,
+      "base_id": "2412.00608",
+      "first_submitted": "2024-11-30T23:11:44Z",
+      "discovery_title": "Leveraging LLM for Automated Ontology Extraction and Knowledge Graph Generation",
+      "url": "https://arxiv.org/abs/2412.00608",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 104,
+      "base_id": "2412.04119",
+      "first_submitted": "2024-12-05T12:37:27Z",
+      "discovery_title": "GRAF: Graph Retrieval Augmented by Facts for Romanian Legal Multi-Choice Question Answering",
+      "url": "https://arxiv.org/abs/2412.04119",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 105,
+      "base_id": "2412.04342",
+      "first_submitted": "2024-12-05T17:00:32Z",
+      "discovery_title": "Retrieval-Augmented Machine Translation with Unstructured Knowledge",
+      "url": "https://arxiv.org/abs/2412.04342",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 106,
+      "base_id": "2412.05447",
+      "first_submitted": "2024-12-06T22:05:39Z",
+      "discovery_title": "TOBUGraph: Knowledge Graph-Based Retrieval for Enhanced LLM Performance Beyond RAG",
+      "url": "https://arxiv.org/abs/2412.05447",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 107,
+      "base_id": "2412.05547",
+      "first_submitted": "2024-12-07T05:49:14Z",
+      "discovery_title": "KG-Retriever: Efficient Knowledge Indexing for Retrieval-Augmented Large Language Models",
+      "url": "https://arxiv.org/abs/2412.05547",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 108,
+      "base_id": "2412.05937",
+      "first_submitted": "2024-12-08T13:36:42Z",
+      "discovery_title": "Accelerating Manufacturing Scale-Up from Material Discovery Using Agentic Web Navigation and Retrieval-Augmented AI for Process Engineering Schematics Design",
+      "url": "https://arxiv.org/abs/2412.05937",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 109,
+      "base_id": "2412.06078",
+      "first_submitted": "2024-12-08T21:55:12Z",
+      "discovery_title": "Mixture-of-PageRanks: Replacing Long-Context with Real-Time, Sparse GraphRAG",
+      "url": "https://arxiv.org/abs/2412.06078",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 110,
+      "base_id": "2412.07189",
+      "first_submitted": "2024-12-10T04:55:57Z",
+      "discovery_title": "When Graph Meets Retrieval Augmented Generation for Wireless Networks: A Tutorial and Case Study",
+      "url": "https://arxiv.org/abs/2412.07189",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 111,
+      "base_id": "2412.07412",
+      "first_submitted": "2024-12-10T11:05:26Z",
+      "discovery_title": "Generating Knowledge Graphs from Large Language Models: A Comparative Study of GPT-4, LLaMA 2, and BERT",
+      "url": "https://arxiv.org/abs/2412.07412",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 112,
+      "base_id": "2412.07618",
+      "first_submitted": "2024-12-10T15:56:03Z",
+      "discovery_title": "Adapting to Non-Stationary Environments: Multi-Armed Bandit Enhanced Retrieval-Augmented Generation on Knowledge Graphs",
+      "url": "https://arxiv.org/abs/2412.07618",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 113,
+      "base_id": "2412.14191",
+      "first_submitted": "2024-12-10T21:52:35Z",
+      "discovery_title": "Ontology-Aware RAG for Improved Question-Answering in Cybersecurity Education",
+      "url": "https://arxiv.org/abs/2412.14191",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 114,
+      "base_id": "2412.09614",
+      "first_submitted": "2024-12-12T18:59:41Z",
+      "discovery_title": "RAVEL: Rare Concept Generation and Editing via Graph-driven Relational Guidance",
+      "url": "https://arxiv.org/abs/2412.09614",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 115,
+      "base_id": "2412.12185",
+      "first_submitted": "2024-12-13T10:23:27Z",
+      "discovery_title": "Graph Similarity Computation via Interpretable Neural Node Alignment",
+      "url": "https://arxiv.org/abs/2412.12185",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 116,
+      "base_id": "2412.15272",
+      "first_submitted": "2024-12-17T15:40:08Z",
+      "discovery_title": "SimGRAG: Leveraging Similar Subgraphs for Knowledge Graphs Driven Retrieval-Augmented Generation",
+      "url": "https://arxiv.org/abs/2412.15272",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 117,
+      "base_id": "2412.13782",
+      "first_submitted": "2024-12-18T12:21:46Z",
+      "discovery_title": "Knowledge Editing with Dynamic Knowledge Graphs for Multi-Hop Question Answering",
+      "url": "https://arxiv.org/abs/2412.13782",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 118,
+      "base_id": "2412.15443",
+      "first_submitted": "2024-12-19T22:51:56Z",
+      "discovery_title": "SKETCH: Structured Knowledge Enhanced Text Comprehension for Holistic Retrieval",
+      "url": "https://arxiv.org/abs/2412.15443",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 119,
+      "base_id": "2412.18627",
+      "first_submitted": "2024-12-20T06:21:34Z",
+      "discovery_title": "KRAIL: A Knowledge-Driven Framework for Base Human Reliability Analysis Integrating IDHEAS and Large Language Models",
+      "url": "https://arxiv.org/abs/2412.18627",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 120,
+      "base_id": "2412.16100",
+      "first_submitted": "2024-12-20T17:42:25Z",
+      "discovery_title": "Logical Consistency of Large Language Models in Fact-checking",
+      "url": "https://arxiv.org/abs/2412.16100",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 121,
+      "base_id": "2412.17690",
+      "first_submitted": "2024-12-23T16:16:30Z",
+      "discovery_title": "RAGONITE: Iterative Retrieval on Induced Databases and Verbalized RDF for Conversational QA over KGs with RAG",
+      "url": "https://arxiv.org/abs/2412.17690",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 122,
+      "base_id": "2412.18644",
+      "first_submitted": "2024-12-24T16:06:53Z",
+      "discovery_title": "DynaGRAG | Exploring the Topology of Information for Advancing Language Understanding and Generation in Graph Retrieval-Augmented Generation",
+      "url": "https://arxiv.org/abs/2412.18644",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 123,
+      "base_id": "2412.18537",
+      "first_submitted": "2024-12-24T16:38:04Z",
+      "discovery_title": "Harnessing Large Language Models for Knowledge Graph Question Answering via Adaptive Multi-Aspect Retrieval-Augmentation",
+      "url": "https://arxiv.org/abs/2412.18537",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 124,
+      "base_id": "2412.18702",
+      "first_submitted": "2024-12-24T23:22:04Z",
+      "discovery_title": "CypherBench: Towards Precise Retrieval over Full-scale Modern Knowledge Graphs in the LLM Era",
+      "url": "https://arxiv.org/abs/2412.18702",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 125,
+      "base_id": "2412.20468",
+      "first_submitted": "2024-12-29T14:00:11Z",
+      "discovery_title": "A Comprehensive Framework for Reliable Legal AI: Combining Specialized Expert Systems and Adaptive Refinement",
+      "url": "https://arxiv.org/abs/2412.20468",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 126,
+      "base_id": "2501.00223",
+      "first_submitted": "2024-12-31T02:19:16Z",
+      "discovery_title": "CancerKG.ORG A Web-scale, Interactive, Verifiable Knowledge Graph-LLM Hybrid for Assisting with Optimal Cancer Treatment and Care",
+      "url": "https://arxiv.org/abs/2501.00223",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 127,
+      "base_id": "2501.00309",
+      "first_submitted": "2024-12-31T06:59:35Z",
+      "discovery_title": "Retrieval-Augmented Generation with Graphs (GraphRAG)",
+      "url": "https://arxiv.org/abs/2501.00309",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 128,
+      "base_id": "2501.00571",
+      "first_submitted": "2024-12-31T17:58:36Z",
+      "discovery_title": "KnowRA: Knowledge Retrieval Augmented Method for Document-level Relation Extraction with Comprehensive Reasoning Abilities",
+      "url": "https://arxiv.org/abs/2501.00571",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 129,
+      "base_id": "2501.02157",
+      "first_submitted": "2025-01-04T01:46:49Z",
+      "discovery_title": "Personalized Graph-Based Retrieval for Large Language Models",
+      "url": "https://arxiv.org/abs/2501.02157",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 130,
+      "base_id": "2501.02226",
+      "first_submitted": "2025-01-04T08:16:23Z",
+      "discovery_title": "Knowledge Graph Retrieval-Augmented Generation for LLM-based Recommendation",
+      "url": "https://arxiv.org/abs/2501.02226",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 131,
+      "base_id": "2501.08575",
+      "first_submitted": "2025-01-15T04:51:10Z",
+      "discovery_title": "GOTPR: General Outdoor Text-based Place Recognition Using Scene Graph Retrieval with OpenStreetMap",
+      "url": "https://arxiv.org/abs/2501.08575",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 132,
+      "base_id": "2501.08686",
+      "first_submitted": "2025-01-15T09:32:37Z",
+      "discovery_title": "Knowledge Graph-based Retrieval-Augmented Generation for Schema Matching",
+      "url": "https://arxiv.org/abs/2501.08686",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 133,
+      "base_id": "2501.09928",
+      "first_submitted": "2025-01-17T02:48:29Z",
+      "discovery_title": "Dialogue Benchmark Generation from Knowledge Graphs with Cost-Effective Retrieval-Augmented LLMs",
+      "url": "https://arxiv.org/abs/2501.09928",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 134,
+      "base_id": "2501.09957",
+      "first_submitted": "2025-01-17T05:19:14Z",
+      "discovery_title": "FRAG: A Flexible Modular Framework for Retrieval-Augmented Generation based on Knowledge Graphs",
+      "url": "https://arxiv.org/abs/2501.09957",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 135,
+      "base_id": "2501.11560",
+      "first_submitted": "2025-01-20T16:02:26Z",
+      "discovery_title": "Explainable Lane Change Prediction for Near-Crash Scenarios Using Knowledge Graph Embeddings and Retrieval Augmented Generation",
+      "url": "https://arxiv.org/abs/2501.11560",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 136,
+      "base_id": "2501.13956",
+      "first_submitted": "2025-01-20T16:52:48Z",
+      "discovery_title": "Zep: A Temporal Knowledge Graph Architecture for Agent Memory",
+      "url": "https://arxiv.org/abs/2501.13956",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 137,
+      "base_id": "2501.13958",
+      "first_submitted": "2025-01-21T06:25:21Z",
+      "discovery_title": "A Survey of Graph Retrieval-Augmented Generation for Customized Large Language Models",
+      "url": "https://arxiv.org/abs/2501.13958",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 138,
+      "base_id": "2501.13993",
+      "first_submitted": "2025-01-23T10:38:20Z",
+      "discovery_title": "CAPRAG: A Large Language Model Solution for Customer Service and Automatic Reporting using Vector and Graph Retrieval-Augmented Generation",
+      "url": "https://arxiv.org/abs/2501.13993",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 139,
+      "base_id": "2501.14050",
+      "first_submitted": "2025-01-23T19:33:16Z",
+      "discovery_title": "GraphRAG under Fire",
+      "url": "https://arxiv.org/abs/2501.14050",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 140,
+      "base_id": "2501.14101",
+      "first_submitted": "2025-01-23T21:20:10Z",
+      "discovery_title": "StreamingRAG: Real-time Contextual Retrieval and Generation Framework",
+      "url": "https://arxiv.org/abs/2501.14101",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 141,
+      "base_id": "2501.14300",
+      "first_submitted": "2025-01-24T07:47:40Z",
+      "discovery_title": "Fast Think-on-Graph: Wider, Deeper and Faster Reasoning of Large Language Model on Knowledge Graph",
+      "url": "https://arxiv.org/abs/2501.14300",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 142,
+      "base_id": "2501.16382",
+      "first_submitted": "2025-01-24T18:16:53Z",
+      "discovery_title": "GraPPI: A Retrieve-Divide-Solve GraphRAG Framework for Large-scale Protein-protein Interaction Exploration",
+      "url": "https://arxiv.org/abs/2501.16382",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 143,
+      "base_id": "2501.14892",
+      "first_submitted": "2025-01-24T19:31:06Z",
+      "discovery_title": "Causal Graphs Meet Thoughts: Enhancing Complex Reasoning in Graph-Augmented LLMs",
+      "url": "https://arxiv.org/abs/2501.14892",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 144,
+      "base_id": "2501.15067",
+      "first_submitted": "2025-01-25T04:18:08Z",
+      "discovery_title": "CG-RAG: Research Question Answering by Citation Graph Retrieval-Augmented LLMs",
+      "url": "https://arxiv.org/abs/2501.15067",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 145,
+      "base_id": "2501.15378",
+      "first_submitted": "2025-01-26T03:27:11Z",
+      "discovery_title": "How to Mitigate Information Loss in Knowledge Graphs for GraphRAG: Leveraging Triple Context Restoration and Query-Driven Feedback",
+      "url": "https://arxiv.org/abs/2501.15378",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 146,
+      "base_id": "2501.16191",
+      "first_submitted": "2025-01-27T16:45:34Z",
+      "discovery_title": "The Last Dependency Crusade: Solving Python Dependency Conflicts with LLMs",
+      "url": "https://arxiv.org/abs/2501.16191",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 147,
+      "base_id": "2502.01059",
+      "first_submitted": "2025-02-03T05:10:19Z",
+      "discovery_title": "Knowledge Synthesis of Photosynthesis Research Using a Large Language Model",
+      "url": "https://arxiv.org/abs/2502.01059",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 148,
+      "base_id": "2502.01113",
+      "first_submitted": "2025-02-03T07:04:29Z",
+      "discovery_title": "GFM-RAG: Graph Foundation Model for Retrieval Augmented Generation",
+      "url": "https://arxiv.org/abs/2502.01113",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    },
+    {
+      "discovery_index": 149,
+      "base_id": "2502.01298",
+      "first_submitted": "2025-02-03T12:18:39Z",
+      "discovery_title": "Augmented Knowledge Graph Querying leveraging LLMs",
+      "url": "https://arxiv.org/abs/2502.01298",
+      "status": "not_reached",
+      "reason": "Fifteen eligible additions already selected in chronological order."
+    }
+  ],
+  "retained_pilot_papers": 5,
+  "selected_additions": 15,
+  "caveat": "Bounded date-ordered purposive sample; latest API abstracts used for triage, pinned v1 source is authoritative."
+}

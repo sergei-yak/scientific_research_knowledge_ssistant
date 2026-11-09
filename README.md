@@ -396,6 +396,48 @@ Restoring never re-enables paid access. Reconcile any newer live budget reservat
 paid operations from recovered files. Native offline dump/load is optional and was not exercised here;
 it requires a separate downtime plan and fresh target. M4 still owns final corpus selection/freeze/evaluation.
 
+## M4.1 expansion and review checkpoint
+
+See [M4.1 outcomes](docs/M4_1_REPORT.md), [pre-recorded selection](manifests/CORPUS_SELECTION.md)
+and [evaluator handoff](docs/EVALUATOR_HANDOFF.md). The 20-paper corpus has 1,427 chunks;
+claim review, expanded development validation and final evaluator readiness are still pending.
+No final run or further paid calls are authorized. The UI keeps the five-paper pilot default.
+
+Use an explicit scope for expanded retrieval; synthesis is not requested by this command:
+
+```powershell
+$tag = Get-Date -Format 'yyyyMMdd-HHmmss-fff'
+uv run --locked --offline python -m research_assistant retrieve --corpus 298e3cafbda1ffdf95c8ee66fa2b9ba3a81dc8d5e26bfb94816655ca41de3fbf --review-dir data/reviews/expansion-v1 --mode hybrid_facts --question "How do the reviewed methods retrieve evidence?" --output "runs/m4-1/retrieve-$tag.json"
+uv run --locked --offline python -m research_assistant dev-check --dataset-dir data/evaluation/development/expansion-v1-draft --output "runs/m4-1/dev-check-$tag.json"
+```
+
+Reconstruction entry points (cached PDFs and their declared source hashes are prerequisites):
+
+```powershell
+uv run --locked --offline python -m research_assistant corpus-metadata --manifest manifests/expanded-twenty-papers.json --cache-dir data/metadata/expansion-v1/openalex --output <new-metadata.json>
+uv run --locked --offline python -m research_assistant corpus-ingest --manifest manifests/expanded-twenty-papers.json --metadata <metadata.json> --output <new-ingestion-report.json>
+uv run --locked --offline python -m research_assistant review-extend --source-dir data/reviews/pilot --review-dir <new-review-store> --corpus <expanded-id> --output <new-scope-report.json>
+```
+
+Metadata commands make bounded live lookups only for missing cache entries; uv's `--offline`
+controls package resolution, not service networking. Existing snapshots, volumes and review stores
+are preserved. Corpus ingestion checks the recorded selection protocol hash. The extraction run
+is already saved under `runs/m4-1/claim-packets/`; do not rerun merely to review it.
+If an explicitly amended extraction is needed, `extract --selected-papers` accepts the plan's
+nonempty subset without resetting the global per-PDF ledger.
+
+`review-check` audits packets; `review-prepare` registers candidates into the matching review
+scope; neither grants approval. Use the existing review-import/chat-receipt workflow for actual
+human decisions, then `review-sync --review-dir data/reviews/expansion-v1 --output <new-report.json>`.
+The original review queue is `runs/m4-1/review-batches/queue.json`; `mapping-proposals.json` records current packet replacements. `scripts/update_m4_review_progress.py` derives a head-addressed checkpoint under `runs/m4-1/review-progress/`; immutable packets and prior checkpoints remain historical.
+Current eligibility comes from journal replay, not an old queue label or packet.
+
+The development-only scoring API is `evaluation.blinding`: `build_development_bundle`,
+`seal_development_scores`, then `reveal_development_scores`. It refuses private/external paths,
+incomplete matrices, missing generation responses and inconsistent comparison settings. Only
+humans fill real scoring forms. `pytest tests/test_m4_readiness.py` exercises synthetic fixtures;
+those fixture scores do not enter project results. There is no authorized held-out runner yet.
+
 Actual task outcomes, limitations and evidence paths are maintained in `IMPLEMENTATION_PLAN.md`.
 Dependency, Docker and model downloads may need network access; service checks need local
 Docker/Ollama access. A sandbox permission failure is not proof that a service itself is broken.

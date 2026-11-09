@@ -1,0 +1,22 @@
+# M4.1 corpus selection protocol — expansion-v1
+
+Recorded on 2026-11-08 before expansion searches, downloads or inference. Target: **20 papers**, retaining the five pinned pilot sources without changing their coverage. This is a bounded purposive teaching corpus, not a systematic review. The user-selected survey and the pilot's method-family selection introduce disclosed selection bias.
+
+## Discovery and selection
+
+1. Search primary arXiv sources for original papers first submitted in **2024–2025**, using these fixed queries: `GraphRAG graph retrieval augmented generation`, `knowledge graph text retrieval augmented generation`, `graph multi hop retrieval augmented generation`, `graph document retrieval augmented generation`. Record the queries, dates, returned candidates and source URLs. Do not use development recall gains, generation scores or held-out questions to choose papers.
+2. Use the arXiv API if available: the corresponding OR query, submitted-date interval, ascending submission date, at most 150 records in one bounded result set. If unavailable, use the four web queries restricted to arxiv.org; retain at most the first ten distinct paper results per query. Search results are discovery, not evidence. No recursive citation crawling or additional adaptive queries to find favorable results.
+3. Deduplicate arXiv base IDs and pilot versions. Screen the title/abstract and, when necessary, the method description. Eligible additions describe **graph-structured retrieval over document/text collections** for RAG, QA or query-focused synthesis, with an identifiable retrieval method and accessible PDF. The graph must participate in retrieval or evidence organization. External-KG-only question answering, graph databases without document retrieval, tree-only/pure-vector retrieval, surveys, benchmarks without a retrieval method, unrelated graph modalities and inaccessible sources are excluded. Record exclusions and uncertainties explicitly.
+4. Sort eligible additions by first arXiv submission date, then base ID; choose the first 15. Do not rank by reported effectiveness, citations, benchmarks shared with pilot methods, or expected graph gains. If the bounded search yields fewer than 15 eligible papers, report the shortfall; amend this protocol visibly before further discovery.
+5. Pin **v1** for each addition, verify title/identity/license, cache the exact PDF and SHA-256, and record all selection decisions before extraction. Retain the existing pilot versions, including the survey's v2. Cache for local academic analysis only; do not commit or redistribute PDFs. Keep exact source attribution and metadata uncertainty.
+
+## Coverage and review
+
+- Freeze selected page coverage before ingestion: main text through conclusion/limitations, stopping before references/appendices when separable; include a mixed boundary page only with an explicit note. Record omitted coverage. Never treat omitted pages as searched evidence. Qualitative prose is usable; numerical table/equation results need separate inspection and verification.
+- Reuse unchanged pilot sources and their human review history. Keep both historical corpora and snapshots intact. Expansion is a separate immutable corpus and review scope; a new corpus ID never grants approval or resets per-PDF extraction budgets.
+- Apply the specification's cumulative eight-request/eight-passage/twelve-candidate caps and initial twenty-minute review allowance per paper. Start additions with two method/limitation passages and at most four candidates; fewer is acceptable. Empty/failed attempts count. Use local Qwen, concurrency one, zero automatic retries; no paid calls are authorized.
+- Human review approves exact claims, quotes and entity mappings in small batches. Unreviewed candidates remain ineligible. Stop dependent fact publication at that checkpoint while completing independent ingestion/scoring work.
+
+## Evaluation boundary
+
+Preserve `pilot-v1` development data and original scores. Expanded-corpus annotations require a new version and human validation, especially corpus-scoped unanswerable questions. Independent source support must not be constructed from approved graph claims alone. The evaluator owns the final stratified 24-question manifest (8 development, 16 held-out). Development agents neither author nor inspect private held-out questions, gold or reveal mappings. M4.1 does not authorize M4.2's freeze or M4.3's final run.

@@ -1,0 +1,102 @@
+{
+  "additionalProperties": false,
+  "description": "An evaluator's statement and commitments; validation is not independent gold verification.",
+  "properties": {
+    "task_id": {
+      "const": "M4.1",
+      "default": "M4.1",
+      "title": "Task Id",
+      "type": "string"
+    },
+    "evaluator": {
+      "minLength": 1,
+      "title": "Evaluator",
+      "type": "string"
+    },
+    "validated_at": {
+      "format": "date-time",
+      "title": "Validated At",
+      "type": "string"
+    },
+    "corpus_id": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Corpus Id",
+      "type": "string"
+    },
+    "review_head": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Review Head",
+      "type": "string"
+    },
+    "development_dataset_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Development Dataset Sha256",
+      "type": "string"
+    },
+    "heldout_questions_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Heldout Questions Sha256",
+      "type": "string"
+    },
+    "heldout_annotations_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Heldout Annotations Sha256",
+      "type": "string"
+    },
+    "development_counts": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Development Counts",
+      "type": "object"
+    },
+    "heldout_counts": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Heldout Counts",
+      "type": "object"
+    },
+    "independent_source_support_validated": {
+      "const": true,
+      "title": "Independent Source Support Validated",
+      "type": "boolean"
+    },
+    "corpus_scoped_unanswerability_validated": {
+      "const": true,
+      "title": "Corpus Scoped Unanswerability Validated",
+      "type": "boolean"
+    },
+    "private_inputs_external_to_development": {
+      "const": true,
+      "title": "Private Inputs External To Development",
+      "type": "boolean"
+    },
+    "private_content_exposed_to_development": {
+      "title": "Private Content Exposed To Development",
+      "type": "boolean"
+    },
+    "exposure_notes": {
+      "title": "Exposure Notes",
+      "type": "string"
+    }
+  },
+  "required": [
+    "evaluator",
+    "validated_at",
+    "corpus_id",
+    "review_head",
+    "development_dataset_sha256",
+    "heldout_questions_sha256",
+    "heldout_annotations_sha256",
+    "development_counts",
+    "heldout_counts",
+    "independent_source_support_validated",
+    "corpus_scoped_unanswerability_validated",
+    "private_inputs_external_to_development",
+    "private_content_exposed_to_development",
+    "exposure_notes"
+  ],
+  "title": "EvaluatorAttestation",
+  "type": "object"
+}

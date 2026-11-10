@@ -5,7 +5,8 @@ Four retrieval conditions, Streamlit workflows and checked evidence export opera
 pilot. Both provider adapters and budget controls are implemented; local probes and an isolated logical
 restore passed. Both OpenAI live probes passed after the user replaced an expired key. The configured
 generator remains local Qwen. See `docs/M3_2_REPORT.md` and `docs/M3_3_REPORT.md` for actual outcomes;
-M4.1 must record selection/readiness before expansion, and final evaluation remains separately gated.
+M4.1 selection, 20-paper ingestion and expansion-claim review are complete; expanded development
+gold and evaluator readiness remain pending. Final evaluation is separately gated.
 All eight M2.3 development annotations are human-validated and final readiness is true; see `docs/M2_3_REPORT.md`.
 Read `project_spec.md` and `AGENTS.md` before making changes.
 
@@ -400,7 +401,8 @@ it requires a separate downtime plan and fresh target. M4 still owns final corpu
 
 See [M4.1 outcomes](docs/M4_1_REPORT.md), [pre-recorded selection](manifests/CORPUS_SELECTION.md)
 and [evaluator handoff](docs/EVALUATOR_HANDOFF.md). The 20-paper corpus has 1,427 chunks;
-claim review, expanded development validation and final evaluator readiness are still pending.
+all 28 expansion claims are human-approved (51 active claims including the pilot). Expanded
+development validation and final evaluator readiness are still pending.
 No final run or further paid calls are authorized. The UI keeps the five-paper pilot default.
 
 Use an explicit scope for expanded retrieval; synthesis is not requested by this command:
@@ -408,7 +410,7 @@ Use an explicit scope for expanded retrieval; synthesis is not requested by this
 ```powershell
 $tag = Get-Date -Format 'yyyyMMdd-HHmmss-fff'
 uv run --locked --offline python -m research_assistant retrieve --corpus 298e3cafbda1ffdf95c8ee66fa2b9ba3a81dc8d5e26bfb94816655ca41de3fbf --review-dir data/reviews/expansion-v1 --mode hybrid_facts --question "How do the reviewed methods retrieve evidence?" --output "runs/m4-1/retrieve-$tag.json"
-uv run --locked --offline python -m research_assistant dev-check --dataset-dir data/evaluation/development/expansion-v1-draft --output "runs/m4-1/dev-check-$tag.json"
+uv run --locked --offline python -m research_assistant dev-check --dataset-dir data/evaluation/development/expansion-v1 --output "runs/m4-1/dev-check-$tag.json"
 ```
 
 Reconstruction entry points (cached PDFs and their declared source hashes are prerequisites):
@@ -431,6 +433,11 @@ scope; neither grants approval. Use the existing review-import/chat-receipt work
 human decisions, then `review-sync --review-dir data/reviews/expansion-v1 --output <new-report.json>`.
 The original review queue is `runs/m4-1/review-batches/queue.json`; `mapping-proposals.json` records packet replacements; hash-bound `packet-amendments/` records supersede them when a pending claim is narrowed again. `scripts/update_m4_review_progress.py` derives a head-addressed checkpoint under `runs/m4-1/review-progress/`; immutable packets and prior checkpoints remain historical.
 Current eligibility comes from journal replay, not an old queue label or packet.
+The current development annotation candidates are in `data/evaluation/development/expansion-v1/`.
+The earlier `expansion-v1-draft` and `pilot-v1` directories remain preserved; their decisions do not
+grant validation to the new dataset. Claim review and evaluation-gold review times stay separate.
+Repeat engineering verification with `uv run --locked --offline python scripts/check_expansion.py
+--output-dir <new-report-directory>`; it preserves prior reports and makes no generation calls.
 
 The development-only scoring API is `evaluation.blinding`: `build_development_bundle`,
 `seal_development_scores`, then `reveal_development_scores`. It refuses private/external paths,

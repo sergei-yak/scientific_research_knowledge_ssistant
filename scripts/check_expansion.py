@@ -1,5 +1,6 @@
 """Source-preservation and retrieval/export checks; never load held-out or changed gold."""
 
+import argparse
 import json
 from pathlib import Path
 
@@ -19,6 +20,12 @@ def main() -> None:
     configure_caches()
     settings = Settings.from_env()
     root = Path('runs/m4-1')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--output-dir', type=Path, required=True, help='New directory for immutable verification artifacts')
+    args = parser.parse_args()
+    output = args.output_dir
+    if output.exists():
+        raise ValueError('Verification output directory already exists')
     ingestion = json.loads((root / 'ingestion.json').read_text(encoding='utf-8'))
     directory = Path('data/reviews/expansion-v1')
     sync = synchronize_review(directory, settings)
@@ -31,7 +38,7 @@ def main() -> None:
             run = run_query(QueryRequest(question=question, mode=mode, corpus_id=ingestion['corpus_id']),
                 settings, review_directory=directory, generate=False, workflow=workflow, encoder=encoder)
             view, csv_text = prepare_output(run, settings, directory)
-            prefix = root / 'retrieval-checks-final' / (workflow + '-' + mode)
+            prefix = output / 'retrieval-checks' / (workflow + '-' + mode)
             write_immutable(prefix.with_suffix('.json'), run.model_dump_json(indent=2) + '\n')
             write_immutable(prefix.with_suffix('.csv'), csv_text)
             checks.append({'workflow': workflow, 'requested_mode': mode, 'effective_mode': run.retrieval.effective_mode,
@@ -59,8 +66,8 @@ def main() -> None:
                 and all(x in after['constraints'] for x in before['constraints']),
             'current_nodes': len(after['nodes']), 'current_relationships': len(after['relationships']),
             'pilot_approved_claims': len(pilot['facts']), 'pilot_review_head': pilot['review_head']},
-        'caveat': 'Expanded raw sources plus carried pilot approvals; new extraction candidates remain ineligible until human decisions.'}
-    write_immutable(root / 'engineering-checks.json', json.dumps(report, ensure_ascii=False, indent=2) + '\n')
+        'caveat': 'Only current exact-bound human approvals are eligible. These are source/context/export checks, not answer-quality or gold-scoring results.'}
+    write_immutable(output / 'engineering-checks.json', json.dumps(report, ensure_ascii=False, indent=2) + '\n')
     print(json.dumps(report, ensure_ascii=False))
 
 

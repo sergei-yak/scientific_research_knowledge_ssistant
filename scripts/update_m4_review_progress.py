@@ -5,7 +5,7 @@ from collections import Counter
 from pathlib import Path
 
 from research_assistant.contracts import fingerprint
-from research_assistant.evaluation.development import review_status
+from research_assistant.evaluation.development import read_receipt, review_status
 from research_assistant.pipeline import write_immutable
 from research_assistant.review.facts import projection
 from research_assistant.review.store import load_chunks, state
@@ -44,7 +44,13 @@ def main() -> None:
     receipts = [json.loads(path.read_text(encoding='utf-8')) for path in
                 sorted((directory / 'human-inputs').glob('m4-1-batch-*-sergei.json'))]
     known_times = [row['actual_batch_review_seconds_approx'] for row in receipts if row['actual_batch_review_seconds_approx'] is not None]
-    gold = review_status(Path('data/evaluation/development/expansion-v1-draft'))
+    gold = review_status(Path('data/evaluation/development/expansion-v1'))
+    gold_receipts = [read_receipt(path) for path in sorted(
+        Path('data/evaluation/development/expansion-v1/human-inputs').glob('m4-1-gold-batch-*-sergei.json'))]
+    if any(receipt['dataset_sha256'] != gold['dataset_sha256'] for receipt in gold_receipts):
+        raise ValueError('Gold-review time belongs to a different annotation version')
+    known_gold_times = [receipt['actual_batch_review_seconds_approx'] for receipt in gold_receipts
+                        if receipt['actual_batch_review_seconds_approx'] is not None]
     report = {'task_id': 'M4.1', 'status': 'waiting_for_human', 'review_head': review['review_head'],
         'active_claims_total': len(review['facts']), 'expansion_claims': sum(counts.values()),
         'expansion_approved': counts['approved'], 'expansion_rejected': counts['rejected'],
@@ -52,6 +58,10 @@ def main() -> None:
         'approx_known_human_review_seconds': sum(known_times), 'batches_with_unknown_time': len(receipts) - len(known_times),
         'per_claim_review_time': None, 'batches': batches,
         'development_annotations_validated': gold['human_validated'], 'development_ready': gold['ready'],
+        'development_dataset_directory': 'data/evaluation/development/expansion-v1',
+        'approx_known_gold_review_seconds': sum(known_gold_times),
+        'gold_batches_with_unknown_time': len(gold_receipts) - len(known_gold_times),
+        'per_question_review_time': None,
         'evaluator_final_24_question_attestation': 'pending', 'heldout_content_accesses': 0,
         'final_run_authorized': False}
     path = Path('runs/m4-1/review-progress') / (review['review_head'] + '-' + fingerprint(report)[:12] + '.json')

@@ -6,7 +6,7 @@ pilot. Both provider adapters and budget controls are implemented; local probes 
 restore passed. Both OpenAI live probes passed after the user replaced an expired key. The configured
 generator remains local Qwen. See `docs/M3_2_REPORT.md` and `docs/M3_3_REPORT.md` for actual outcomes;
 M4.1 selection, 20-paper ingestion, expansion-claim review and all eight expanded development-gold
-validations are complete; all 16 private annotations have human approval and public 24-question readiness is attested. M4.2 freeze preparation is next; final evaluation is separately gated.
+validations are complete; all 16 private annotations have human approval and public 24-question readiness is attested. M4.2 engineering, recovery and V2 freeze verification pass; its explicit final-run approval is pending. M4.3 has not started.
 All eight M2.3 pilot development annotations also remain human-validated; see `docs/M2_3_REPORT.md`.
 Read `project_spec.md` and `AGENTS.md` before making changes.
 
@@ -452,9 +452,15 @@ The development-only scoring API is `evaluation.blinding`: `build_development_bu
 `seal_development_scores`, then `reveal_development_scores`. It refuses private/external paths,
 incomplete matrices, missing generation responses and inconsistent comparison settings. Only
 humans fill real scoring forms. `pytest tests/test_m4_readiness.py` exercises synthetic fixtures;
-those fixture scores do not enter project results. There is no authorized held-out runner yet.
+those fixture scores do not enter project results. The dedicated frozen runner below is implemented;
+held-out execution is still unauthorized.
 
 ## M4.2 separate encoder and frozen evaluator
+
+Current verified proposal: [run plan](docs/M4_2_RUN_PLAN.md), [actual checks/limits](docs/M4_2_REPORT.md),
+`runs/m4-2/freeze-v2.json` (SHA-256 `62feb4b684efda52fa3b85e4e9b1283ead51aa944a31dae87f2b7ccc00770942`).
+V1 is historical/superseded before execution. The restored V2 target is stopped with its read-only
+configuration and volumes retained. No extra setup/recovery is needed before the approval checkpoint.
 
 The working application keeps its existing MiniLM modes. MPNet is a separate retrieval-only experiment:
 
@@ -492,7 +498,10 @@ started study is preserved and requires a disclosed amendment; there is no autom
 
 Frozen executable/model bytes and runtime versions govern code identity. A later documentation-only Git
 commit is allowed when all frozen executable/model/configuration hashes still match; both frozen and
-actual execution revisions are recorded. See `docs/M4_2_REPORT.md` for actual checks and pending items.
+actual execution revisions are recorded. Current checks: 190 offline passes; three separately enabled
+native cases; 40 exact saved-score replays and 40 fresh restored-target reads. Five fresh contexts/two
+recalls differ after index rebuild. Two local development-generation smoke checks and a restarted UI
+query pass. These checks are not the final study; human answer scoring remains pending.
 
 Actual task outcomes, limitations and evidence paths are maintained in `IMPLEMENTATION_PLAN.md`.
 Dependency, Docker and model downloads may need network access; service checks need local

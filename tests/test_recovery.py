@@ -37,6 +37,49 @@ def test_stable_ids_are_scoped_by_base_label_not_global():
     assert recovery.node_key(['Paper'], 'shared') != recovery.node_key(['Dataset'], 'shared')
 
 
+def test_frozen_export_changes_only_target_flag_without_mutating_source():
+    value = {'nodes': [{'labels': ['Corpus'], 'properties': {'id': 'a' * 64, 'ready': True, 'frozen': False}},
+                       {'labels': ['Corpus'], 'properties': {'id': 'b' * 64, 'ready': True, 'frozen': False}}],
+             'relationships': [{'synthetic': 'unchanged'}]}
+    before = fingerprint(value)
+    frozen = recovery.frozen_projection(value, 'a' * 64)
+    assert fingerprint(value) == before
+    assert frozen['nodes'][0]['properties']['frozen'] is True
+    assert frozen['nodes'][1]['properties']['frozen'] is False
+    assert frozen['relationships'] == value['relationships']
+    with pytest.raises(ValueError):
+        recovery.frozen_projection(value, 'c' * 64)
+
+
+@pytest.mark.parametrize('code', [None, 'Neo.ClientError.General.DatabaseUnavailable', 'Neo.ClientError.General.ForbiddenOnReadOnlyDatabase'])
+def test_read_only_probe_always_rolls_back_and_accepts_only_server_write_refusal(monkeypatch, code):
+    from contextlib import contextmanager
+    from types import SimpleNamespace
+    from neo4j.exceptions import Neo4jError
+
+    state = {'rolled_back': False, 'closed': False}
+    class SyntheticError(Neo4jError):
+        @property
+        def code(self):
+            return code
+    def run(*args, **kwargs):
+        if code:
+            raise SyntheticError('Synthetic probe error')
+        return SimpleNamespace(consume=lambda: None)
+    tx = SimpleNamespace(run=run, rollback=lambda: state.update(rolled_back=True))
+    @contextmanager
+    def session(**kwargs):
+        yield SimpleNamespace(begin_transaction=lambda: tx)
+    repo = SimpleNamespace(database='neo4j', driver=SimpleNamespace(session=session), close=lambda: state.update(closed=True))
+    monkeypatch.setattr(recovery, 'GraphRepository', lambda settings: repo)
+    if code == 'Neo.ClientError.General.ForbiddenOnReadOnlyDatabase':
+        assert recovery.require_read_only(Settings())['write_refused']
+    else:
+        with pytest.raises(ValueError if code is None else Neo4jError):
+            recovery.require_read_only(Settings())
+    assert state == {'rolled_back': True, 'closed': True}
+
+
 @pytest.mark.parametrize('change', ['owner', 'label', 'duplicate', 'endpoint', 'schema'])
 def test_invalid_snapshot_cannot_construct_writes(change):
     value = graph()

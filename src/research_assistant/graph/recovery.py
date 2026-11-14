@@ -14,6 +14,7 @@ from urllib.parse import urlsplit
 
 import numpy as np
 from neo4j import Query, READ_ACCESS
+from neo4j.exceptions import Neo4jError
 
 from research_assistant.contracts import Chunk, fingerprint
 from research_assistant.graph.repository import GraphRepository, PROJECT
@@ -25,6 +26,39 @@ BASE_LABELS = {'Paper', 'Chunk', 'Corpus', 'ReviewedClaim', 'FactText', 'Method'
 RELATIONSHIPS = {'HAS_PAPER', 'HAS_CHUNK', 'CITES', 'REPORTS_EVALUATION', 'REPORTS_FINDING',
                  'OF_METHOD', 'ON_DATASET', 'ABOUT_METHOD', 'ABOUT_EVALUATION', 'SUPPORTED_BY', 'REPRESENTS'}
 PROPERTIES = {'id', 'text', 'search_text', 'canonical_name', 'aliases', 'embedding_384', 'embedding_768'}
+
+
+def require_read_only(settings: Settings) -> dict:
+    """Prove server write refusal in a transaction that is always rolled back, even on failure."""
+    repo = GraphRepository(settings)
+    refused = None
+    try:
+        with repo.driver.session(database=repo.database) as session:
+            tx = session.begin_transaction()
+            try:
+                tx.run('CREATE (:RAWriteProbe {probe:$probe})', probe='rollback-only-readiness-probe').consume()
+            except Neo4jError as exc:
+                if exc.code not in {'Neo.ClientError.General.ForbiddenOnReadOnlyDatabase',
+                                    'Neo.ClientError.General.WriteOnReadOnlyAccessDatabase'}:
+                    raise
+                refused = exc.code
+            finally:
+                tx.rollback()
+        if refused is None:
+            raise ValueError('Frozen evaluator database still allows writes')
+        return {'write_refused': True, 'code': refused, 'probe_rolled_back': True}
+    finally:
+        repo.close()
+
+
+def frozen_projection(graph: dict, corpus_id: str) -> dict:
+    """Freeze only one exported Corpus flag, without mutating the working capture or facts."""
+    matches = [node for node in graph['nodes'] if 'Corpus' in node['labels'] and node['properties']['id'] == corpus_id]
+    if len(matches) != 1 or not matches[0]['properties'].get('ready'):
+        raise ValueError('Only an existing ready corpus can be frozen in an export')
+    return {**graph, 'nodes': [
+        {**node, 'properties': {**node['properties'], 'frozen': True}} if node is matches[0] else node
+        for node in graph['nodes']]}
 
 
 def identifier(value: str) -> str:
@@ -144,7 +178,7 @@ def safe_asset(root: Path, relative: str) -> Path:
     return path
 
 
-def export_snapshot(settings: Settings, output: Path, review_directory: Path) -> dict:
+def export_snapshot(settings: Settings, output: Path, review_directory: Path, *, freeze_corpus: bool = False) -> dict:
     """Export graph twice around allowlisted asset copying; reject intervening writes/inconsistency."""
     if output.exists():
         raise ValueError('Snapshot directory already exists; never overwrite a backup')
@@ -173,8 +207,10 @@ def export_snapshot(settings: Settings, output: Path, review_directory: Path) ->
             if not directory.is_dir():
                 raise ValueError('Snapshot references a missing source cache')
             relative_files.update(str(path.relative_to(root)) for path in (root / directory).rglob('*') if path.is_file())
-        for directory in (review_directory, Path('manifests'), Path('src/research_assistant'), Path('scripts'), Path('tests'),
+        for directory in (review_directory, Path('data/reviews/pilot'), Path('manifests'), Path('src/research_assistant'), Path('scripts'), Path('tests'),
                           Path('data/evaluation/development/pilot-v1'), Path('data/metadata/pilot-v1'),
+                          Path('data/evaluation/development/expansion-v1'), Path('data/metadata/expansion-v1'),
+                          Path('data/embeddings'), Path('runs/m4-2/development-encoders'),
                           Path('data/extraction'), Path('data/accounting'), Path('runs/m3/pilot-verified'),
                           Path('runs/m3-2/local-product-v2'), Path('runs/m3-2/abstention-final')):
             relative_files.update(str(path.relative_to(root)) for path in (root / directory).rglob('*')
@@ -203,11 +239,17 @@ def export_snapshot(settings: Settings, output: Path, review_directory: Path) ->
         # Verify copied bytes still match the quiesced sources.
         if any(hashlib.sha256(safe_asset(root, name).read_bytes()).hexdigest() != digest for name, digest in assets.items()):
             raise ValueError('Source/review assets changed during export')
+        source_graph_sha256 = fingerprint(graph)
+        if freeze_corpus:
+            # Freeze only the exported target's readiness flag; working data stays writable/unchanged.
+            graph = frozen_projection(graph, catalog.corpus_id)
         write_immutable(output / 'graph.json', json.dumps(graph, ensure_ascii=False, sort_keys=True) + '\n')
         manifest = {'format': 'logical-recovery-v1', 'created_at': datetime.now(timezone.utc).isoformat(),
                     **code_identity(), 'project': PROJECT, 'source_uri': settings.neo4j_uri,
                     'source_database': settings.neo4j_database, 'graph_sha256': fingerprint(graph),
                     'review_head': catalog.head, 'review_corpus_id': catalog.corpus_id,
+                    'source_graph_sha256': source_graph_sha256,
+                    'freeze_projection': {'corpus_id': catalog.corpus_id, 'field': 'frozen', 'value': True} if freeze_corpus else None,
                     'graph_file_sha256': hashlib.sha256((output / 'graph.json').read_bytes()).hexdigest(),
                     'assets': assets, 'nodes': len(graph['nodes']), 'relationships': len(graph['relationships']),
                     'configuration': settings.model_dump(mode='json', exclude={'neo4j_password', 'openai_api_key', 'openalex_api_key'}),
@@ -236,7 +278,7 @@ def verify_snapshot(directory: Path) -> tuple[dict, dict]:
 
 def attest_target(settings: Settings, manifest: dict, target_project: str) -> dict:
     """Bind the local endpoint to a separately named disposable Compose container and volumes."""
-    if not re.fullmatch(r'dbu-m3-recovery-[a-z0-9-]+', target_project):
+    if not re.fullmatch(r'dbu-m[34]-recovery-[a-z0-9-]+', target_project):
         raise ValueError('Restore requires an explicitly named disposable recovery project')
     target_port = urlsplit(settings.neo4j_uri).port or 7687
     if target_port == (urlsplit(manifest['source_uri']).port or 7687):

@@ -1,4 +1,4 @@
-"""Development-only anonymous scoring rehearsal; no held-out reader or final-run entry point."""
+"""Development-only public API and shared scoring primitives; no held-out reader or run entry point."""
 
 from __future__ import annotations
 
@@ -40,7 +40,11 @@ def _json(path: Path, value: object) -> None:
 
 def build_development_bundle(samples: list[ScoringInput], chunks: dict[str, Chunk], directory: Path) -> dict:
     """Validate complete four-condition pairs and whitelist only scoring content in public files."""
-    directory = development_directory(directory)
+    return _build_bundle(samples, chunks, development_directory(directory), development_only=True)
+
+
+def _build_bundle(samples: list[ScoringInput], chunks: dict[str, Chunk], directory: Path, *, development_only: bool) -> dict:
+    """Shared export rules; callers establish development or authorized evaluator boundaries first."""
     if directory.exists() or not samples:
         raise ValueError('Choose a new development bundle directory and nonempty samples')
     grouped: dict[str, list[ScoringInput]] = {}
@@ -106,14 +110,17 @@ def build_development_bundle(samples: list[ScoringInput], chunks: dict[str, Chun
     writer.writeheader()
     writer.writerows({'answer_id': item['answer_id']} for item in public)
     write_immutable(directory / 'public/scores.csv', stream.getvalue())
-    return {'development_only': True, 'answers': len(public), 'questions': len(grouped),
+    return {'development_only': development_only, 'answers': len(public), 'questions': len(grouped),
             'packet_sha256': packet_sha, 'directory': str(directory), 'human_scores_supplied': 0}
 
 
 def seal_development_scores(directory: Path, completed_csv: Path) -> dict:
     """Validate a complete human form before reading any reveal mapping; never fill scores."""
-    directory = development_directory(directory)
-    completed_csv = development_directory(completed_csv)
+    return _seal_scores(development_directory(directory), development_directory(completed_csv))
+
+
+def _seal_scores(directory: Path, completed_csv: Path) -> dict:
+    """Shared complete-form/hash checks; never manufacture reviewer decisions."""
     public = json.loads((directory / 'public/answers.json').read_text(encoding='utf-8'))
     with completed_csv.open(encoding='utf-8-sig', newline='') as handle:
         reader = csv.DictReader(handle)
@@ -145,7 +152,11 @@ def seal_development_scores(directory: Path, completed_csv: Path) -> dict:
 
 def reveal_development_scores(directory: Path) -> dict:
     """Join identities only after a complete, hash-bound scoring form has been sealed."""
-    directory = development_directory(directory)
+    return _reveal_scores(development_directory(directory), development_only=True)
+
+
+def _reveal_scores(directory: Path, *, development_only: bool) -> dict:
+    """Shared sealed-score reveal; evaluator access guards belong to its authorized entry point."""
     sealed = json.loads((directory / 'scores-sealed.json').read_text(encoding='utf-8'))
     digest = sealed.pop('sha256')
     public = json.loads((directory / 'public/answers.json').read_text(encoding='utf-8'))
@@ -167,7 +178,7 @@ def reveal_development_scores(directory: Path) -> dict:
             difference = group[mode]['correctness'] - group['vector']['correctness']
             outcomes['wins' if difference > 0 else 'losses' if difference < 0 else 'ties'] += 1
         pairs[mode + '_vs_vector'] = {key: outcomes[key] for key in ('wins', 'ties', 'losses')}
-    report = {'development_only': True, 'packet_sha256': sealed['packet_sha256'], 'rows': rows,
+    report = {'development_only': development_only, 'packet_sha256': sealed['packet_sha256'], 'rows': rows,
               'paired_correctness': pairs, 'caveat': 'Descriptive paired counts; no population superiority claim.'}
     _json(directory / 'revealed-scores.json', report)
     return report

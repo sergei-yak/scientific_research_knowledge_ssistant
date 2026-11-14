@@ -47,6 +47,23 @@ def main(argv: list[str] | None = None) -> int:
     setup = subparsers.add_parser('search-setup',help='Explicitly create missing chunk/alias search indexes without resetting data')
     setup.add_argument('--corpus',required=True)
     setup.add_argument('--output',type=Path,required=True)
+    embedding_setup = subparsers.add_parser('embedding-setup', help='Add the separate MPNet 768-D index without changing baseline vectors')
+    embedding_setup.add_argument('--corpus', required=True)
+    embedding_setup.add_argument('--output', type=Path, required=True)
+    embedding_query = subparsers.add_parser('retrieve-embedding', help='Vector-only encoder experiment; no generation or gold inputs')
+    embedding_query.add_argument('--corpus', required=True)
+    embedding_query.add_argument('--question', required=True)
+    embedding_query.add_argument('--encoder', choices=['minilm', 'mpnet'], required=True)
+    embedding_query.add_argument('--output', type=Path, required=True)
+    freeze_prepare = subparsers.add_parser('freeze-prepare', help='Prepare a public freeze proposal after isolated recovery; grants no execution')
+    freeze_prepare.add_argument('--snapshot-dir', type=Path, required=True)
+    freeze_prepare.add_argument('--recovery-report', type=Path, required=True)
+    freeze_prepare.add_argument('--private-root', required=True, help='Evaluator root path metadata only; never read during preparation')
+    freeze_prepare.add_argument('--freeze-output', type=Path, required=True)
+    freeze_prepare.add_argument('--output', type=Path, required=True)
+    freeze_verify = subparsers.add_parser('freeze-verify', help='Verify public code/model/snapshot commitments without private evaluation access')
+    freeze_verify.add_argument('--freeze', type=Path, required=True)
+    freeze_verify.add_argument('--output', type=Path, required=True)
     providers = subparsers.add_parser('provider-check', help='Explicit live adapters/resource checks; paid access requires approved limits')
     providers.add_argument('--providers', nargs='+', choices=['ollama', 'openai'], default=['ollama', 'openai'])
     providers.add_argument('--output', type=Path, required=True)
@@ -54,6 +71,7 @@ def main(argv: list[str] | None = None) -> int:
     backup = subparsers.add_parser('snapshot-export', help='Export a new checksummed logical graph/source/review snapshot')
     backup.add_argument('--snapshot-dir', type=Path, required=True)
     backup.add_argument('--review-dir', type=Path, default=Path('data/reviews/pilot'))
+    backup.add_argument('--freeze-corpus', action='store_true', help='Freeze the exported target corpus only; preserve working graph flags')
     backup.add_argument('--output', type=Path, required=True)
     restore = subparsers.add_parser('snapshot-restore', help='Restore only into an attested empty disposable Compose target')
     restore.add_argument('--snapshot-dir', type=Path, required=True)
@@ -140,7 +158,7 @@ def main(argv: list[str] | None = None) -> int:
                 result = provider_checks(selected_settings, args.providers)
             elif args.command == 'snapshot-export':
                 from research_assistant.graph.recovery import export_snapshot
-                result = export_snapshot(settings, args.snapshot_dir, args.review_dir)
+                result = export_snapshot(settings, args.snapshot_dir, args.review_dir, freeze_corpus=args.freeze_corpus)
             elif args.command == 'snapshot-restore':
                 from research_assistant.graph.recovery import restore_snapshot
                 result = restore_snapshot(args.snapshot_dir,
@@ -189,6 +207,20 @@ def main(argv: list[str] | None = None) -> int:
             elif args.command == "dev-check":
                 from research_assistant.evaluation.development import check_dataset
                 result = check_dataset(args.dataset_dir)
+            elif args.command == 'freeze-prepare':
+                from research_assistant.evaluation.freeze import prepare_freeze
+                result = prepare_freeze(args.snapshot_dir, args.recovery_report, settings, args.private_root, args.freeze_output)
+            elif args.command == 'freeze-verify':
+                from research_assistant.evaluation.freeze import load_freeze
+                frozen = load_freeze(args.freeze)
+                result = {'task_id': 'M4.2.4', 'status': 'public_freeze_commitments_verified',
+                          'files': len(frozen.files), 'private_evaluation_inputs_read': 0, 'final_evaluation_authorized': False}
+            elif args.command == 'embedding-setup':
+                from research_assistant.retrieval.embedding_experiment import setup_mpnet
+                result = setup_mpnet(args.corpus, settings)
+            elif args.command == 'retrieve-embedding':
+                from research_assistant.retrieval.embedding_experiment import retrieve_embedding
+                result = retrieve_embedding(args.corpus, args.question, args.encoder, settings)
             elif args.command == 'search-setup':
                 from research_assistant.graph.search import SearchRepository
                 repository = SearchRepository(settings)
@@ -221,6 +253,9 @@ def main(argv: list[str] | None = None) -> int:
                 summary = {'output':str(args.output),'requested_mode':retrieval.requested_mode,
                            'effective_mode':retrieval.effective_mode,'fallback_reason':retrieval.fallback_reason,
                            'evidence_units':len(retrieval.evidence),'estimated_tokens':retrieval.estimated_tokens,'new_llm_calls':0}
+            if args.command == 'retrieve-embedding':
+                summary = {'output': str(args.output), 'encoder': result['embedding_experiment']['encoder'],
+                           'evidence_units': len(result['retrieval']['evidence']), 'new_llm_calls': 0}
             print(json.dumps(summary, ensure_ascii=True, indent=2))
             if args.command == 'provider-check' and any(row['status'] == 'failed' for row in result['checks']):
                 return 1

@@ -454,6 +454,46 @@ incomplete matrices, missing generation responses and inconsistent comparison se
 humans fill real scoring forms. `pytest tests/test_m4_readiness.py` exercises synthetic fixtures;
 those fixture scores do not enter project results. There is no authorized held-out runner yet.
 
+## M4.2 separate encoder and frozen evaluator
+
+The working application keeps its existing MiniLM modes. MPNet is a separate retrieval-only experiment:
+
+```powershell
+uv run --locked --offline python -m research_assistant embedding-setup --corpus <corpus-id> --output <new-report.json>
+uv run --locked --offline python -m research_assistant retrieve-embedding --corpus <corpus-id> --encoder mpnet --question <question> --output <new-report.json>
+```
+
+`embedding-setup` never deletes/replaces baseline vectors or source chunks. It refuses frozen or conflicting
+targets. The cached 768-D vectors bind the same normalized source snapshot and pinned encoder revision.
+MiniLM and MPNet use the same vector ranking, threshold, source validation and packing functions.
+
+Logical frozen export/recovery (fresh report directories and cached source/model prerequisites):
+
+```powershell
+uv run --locked --offline python -m research_assistant snapshot-export --review-dir data/reviews/expansion-v1 --freeze-corpus --snapshot-dir <new-snapshot-dir> --output <new-report.json>
+uv run --locked --offline python scripts/recover_corpus.py --snapshot-dir <snapshot-dir> --output-dir <new-recovery-dir>
+uv run --locked --offline python -m research_assistant freeze-prepare --snapshot-dir <snapshot-dir> --recovery-report <recovery-report.json> --private-root <external-evaluator-root> --freeze-output <new-freeze.json> --output <new-report.json>
+uv run --locked --offline python -m research_assistant freeze-verify --freeze <freeze.json> --output <new-report.json>
+```
+
+These preparation commands never read held-out content. The export changes only the target copy's
+`Corpus.frozen` flag; recovery uses UUID-owned volumes on ports 9765/9475, tests both encoders and copied
+development scores, enables server-enforced read-only access, then stops/retains that target. It never
+resets working data or existing volumes. `NEO4J_READ_ONLY` defaults false for the working service.
+
+The evaluator-only runner is `uv run --locked --offline python -m research_assistant.evaluation.runner --help`.
+Its `run`, `seal` and `reveal` operations require the exact public freeze and a real numerical human
+authorization receipt. It refuses private-path access before authorization; new output directories or
+receipts do not reset a started freeze's durable execution ledger. No final run is currently authorized.
+All runs, failure diagnostics, scoring packets (including their `public/` subdirectory), gold and reveal
+maps stay in the external evaluator root. Only aggregate status/hashes return to development.
+Complete human scores must be sealed before revealing any condition results. An interrupted/failed
+started study is preserved and requires a disclosed amendment; there is no automatic retry/resume.
+
+Frozen executable/model bytes and runtime versions govern code identity. A later documentation-only Git
+commit is allowed when all frozen executable/model/configuration hashes still match; both frozen and
+actual execution revisions are recorded. See `docs/M4_2_REPORT.md` for actual checks and pending items.
+
 Actual task outcomes, limitations and evidence paths are maintained in `IMPLEMENTATION_PLAN.md`.
 Dependency, Docker and model downloads may need network access; service checks need local
 Docker/Ollama access. A sandbox permission failure is not proof that a service itself is broken.

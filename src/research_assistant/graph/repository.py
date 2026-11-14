@@ -167,22 +167,31 @@ class GraphRepository:
         """Retrieve a bounded ANN pool, then order by actual cosine and stable ID."""
         _, index = corpus_names(corpus_id)
         snapshot = self.snapshot(corpus_id)
+        return self._vector_candidates(corpus_id, query, index, 384, 'embedding_384',
+                                       'encoder_revision', snapshot['encoder_revision'])
+
+    def _vector_candidates(self, corpus_id: str, query: list[float], index: str, dimension: int,
+                           property_name: str, revision_property: str, revision: str) -> list[tuple[Chunk, float]]:
+        """Share ANN/cosine/tie/source rules across dimensions; field names are fixed constants."""
+        if (dimension, property_name, revision_property) not in {
+                (384, 'embedding_384', 'encoder_revision'), (768, 'embedding_768', 'mpnet_encoder_revision')}:
+            raise ValueError('Unsupported vector experiment fields')
         from research_assistant.ingestion.sources import load_corpus_chunks, verified_chunk
         sources = load_corpus_chunks(corpus_id)
         q = np.asarray(query, dtype=float)
-        if q.shape != (384,) or not np.isfinite(q).all() or np.linalg.norm(q) == 0:
+        if q.shape != (dimension,) or not np.isfinite(q).all() or np.linalg.norm(q) == 0:
             raise ValueError("Query vector is invalid")
         with self.driver.session(database=self.database) as session:
             records = session.run(Query(
                 "CALL db.index.vector.queryNodes($index,24,$vector) YIELD node,score "
-                "WHERE node.project=$project RETURN node.source_json AS source,node.embedding_384 AS embedding, "
-                "node.encoder_revision AS revision",
+                f"WHERE node.project=$project RETURN node.source_json AS source,node.{property_name} AS embedding, "
+                f"node.{revision_property} AS revision",
                 timeout=30), index=index, vector=query, project=PROJECT).data()
         candidates = []
         for row in records:
             vector = np.asarray(row["embedding"], dtype=float)
-            if (vector.shape != (384,) or not np.isfinite(vector).all()
-                    or np.linalg.norm(vector) == 0 or row["revision"] != snapshot["encoder_revision"]):
+            if (vector.shape != (dimension,) or not np.isfinite(vector).all()
+                    or np.linalg.norm(vector) == 0 or row["revision"] != revision):
                 raise ValueError("Indexed vector is invalid or uses a different encoder")
             score = float(np.dot(q, vector) / (np.linalg.norm(q) * np.linalg.norm(vector)))
             candidates.append((verified_chunk(row['source'],sources), max(-1.0, min(1.0, score))))

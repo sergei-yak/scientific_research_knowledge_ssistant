@@ -7,6 +7,11 @@ from research_assistant.contracts import Chunk, fingerprint
 from research_assistant.graph.repository import corpus_names
 
 
+def source_identity(chunks: dict[str, Chunk]) -> str:
+    """Bind a source snapshot independently of retrieval, approval or evaluation identities."""
+    return fingerprint([chunks[key].model_dump() for key in sorted(chunks)])
+
+
 def load_corpus_chunks(corpus_id: str) -> dict[str, Chunk]:
     """Read only one explicit corpus's hash-verified member files; never discover evaluation files."""
     corpus_names(corpus_id)

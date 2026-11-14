@@ -13,7 +13,7 @@ from research_assistant.contracts import (
     Chunk, EvidenceItem, PaperManifestEntry, QueryRequest, RetrievalResult,
     RunArtifact, SourceExcerpt, fingerprint,
 )
-from research_assistant.embeddings import Encoder
+from research_assistant.embeddings import Encoder, TextEncoder
 from research_assistant.generation import answer_question
 from research_assistant.graph.repository import GraphRepository
 from research_assistant.ingestion.pdf import CHUNKER_VERSION, PARSER_VERSION, make_chunks, parse_pages
@@ -92,14 +92,17 @@ def ingest_paper(manifest_path: Path, settings: Settings) -> dict:
 
 
 def retrieve_vector(request: QueryRequest, repository: GraphRepository,
-                    encoder: Encoder, minimum_similarity: float = 0.30) -> RetrievalResult:
+                    encoder: TextEncoder, minimum_similarity: float = 0.30) -> RetrievalResult:
     """Retrieve only the declared snapshot, audit rejected candidates and pack context."""
     if request.mode != "vector":
         raise ValueError("M1 implements vector retrieval only")
     if not 0 <= minimum_similarity <= 1:
         raise ValueError("Similarity threshold must be finite and between zero and one")
     start = time.perf_counter()
-    pairs = repository.vector_candidates(request.corpus_id, encoder.encode([request.question])[0])
+    query = encoder.encode([request.question])[0]
+    encoded_at = time.perf_counter()
+    pairs = repository.vector_candidates(request.corpus_id, query)
+    fetched_at = time.perf_counter()
     evidence, audit = [], []
     for rank, (chunk, score) in enumerate(pairs, 1):
         audit.append({"id": chunk.chunk_id, "similarity": score, "rank": rank,
@@ -122,6 +125,8 @@ def retrieve_vector(request: QueryRequest, repository: GraphRepository,
         requested_mode=request.mode, effective_mode="vector", evidence=chosen,
         context=context, context_sha256=context_hash(context), estimated_tokens=tokens,
         aliases=aliases, candidates=audit, retrieval_ms=(time.perf_counter() - start) * 1000,
+        audit={'query_encoding_ms': (encoded_at-start)*1000, 'candidate_fetch_ms': (fetched_at-encoded_at)*1000,
+               'ann_pool': 24, 'candidate_limit': 12, 'minimum_similarity': minimum_similarity},
     )
 
 

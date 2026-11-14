@@ -20,7 +20,7 @@ from research_assistant.contracts import (
     SourceSpanRef, fingerprint, text_sha,
 )
 from research_assistant.evaluation.scoring import score_evidence
-from research_assistant.ingestion.sources import load_corpus_chunks
+from research_assistant.ingestion.sources import load_corpus_chunks, source_identity
 from research_assistant.pipeline import write_immutable
 from research_assistant.retrieval.evidence import assemble_evidence
 
@@ -106,11 +106,6 @@ def development_directory(directory: Path) -> Path:
     if not allowed.is_relative_to(Path.cwd().resolve()) or target == allowed or not target.is_relative_to(allowed):
         raise ValueError("Choose a versioned directory inside data/evaluation/development")
     return target
-
-
-def source_identity(chunks: dict[str, Chunk]) -> str:
-    """Bind gold to immutable source content, independently of graph or approval IDs."""
-    return fingerprint([chunks[key].model_dump() for key in sorted(chunks)])
 
 
 def source_excerpt(span: SourceSpanRef, chunks: dict[str, Chunk]) -> SourceExcerpt:

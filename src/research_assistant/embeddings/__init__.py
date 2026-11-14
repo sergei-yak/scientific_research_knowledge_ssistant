@@ -3,8 +3,31 @@
 from __future__ import annotations
 
 import numpy as np
+from typing import Protocol
 
 from research_assistant.smoke import encoder_artifact
+
+
+class TextEncoder(Protocol):
+    """Only a pinned revision and checked text encoding cross the retrieval boundary."""
+
+    revision: str
+
+    def encode(self, texts: list[str]) -> list[list[float]]:
+        """Return finite, normalized embeddings without truncation."""
+        ...
+
+
+def encode_checked(model, texts: list[str], dimension: int, token_limit: int) -> list[list[float]]:
+    """Apply the same no-truncation, finite/unit-vector contract to either frozen encoder."""
+    for text in texts:
+        if len(model.tokenizer.encode(text, add_special_tokens=True)) > token_limit:
+            raise ValueError('Encoder input would be truncated')
+    vectors = model.encode(texts, normalize_embeddings=True, batch_size=32)
+    if (vectors.shape != (len(texts), dimension) or not np.isfinite(vectors).all()
+            or not np.allclose(np.linalg.norm(vectors, axis=1), 1, atol=1e-5)):
+        raise ValueError('Invalid encoder output')
+    return vectors.tolist()
 
 
 class Encoder:
@@ -22,10 +45,20 @@ class Encoder:
 
     def encode(self, texts: list[str]) -> list[list[float]]:
         """Reject truncation and return finite normalized vectors with known dimensions."""
-        for text in texts:
-            if len(self.mini_tokenizer.encode(text, add_special_tokens=True)) > 256:
-                raise ValueError("MiniLM input would be truncated")
-        vectors = self.model.encode(texts, normalize_embeddings=True, batch_size=32)
-        if vectors.shape != (len(texts), 384) or not np.isfinite(vectors).all():
-            raise ValueError("Invalid encoder output")
-        return vectors.tolist()
+        return encode_checked(self.model, texts, 384, 256)
+
+
+class MPNetEncoder:
+    """Pinned CPU MPNet for the separate vector-only retrieval experiment."""
+
+    def __init__(self) -> None:
+        from sentence_transformers import SentenceTransformer
+
+        path, self.revision = encoder_artifact('all-mpnet-base-v2')
+        self.model = SentenceTransformer(str(path), device='cpu', local_files_only=True)
+        if self.model.max_seq_length != 384:
+            raise ValueError('MPNet tokenizer limit differs from the pinned experiment')
+
+    def encode(self, texts: list[str]) -> list[list[float]]:
+        """Encode the unchanged query/chunk text without silently truncating it."""
+        return encode_checked(self.model, texts, 768, 384)

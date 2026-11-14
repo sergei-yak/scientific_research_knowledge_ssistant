@@ -23,6 +23,8 @@ Current public bindings, verified in `runs/m4-1/development-gold-acceptance.json
 
 The evaluator still needs to prepare and validate the 16 private questions/annotations (four per category) outside the development workspace, hash those files locally, and return only the public attestation defined by `manifests/evaluator-attestation.schema.json`. No private-file hashes or validation claims have been supplied yet. Development readiness does not grant final-run authorization.
 
+An AI-assisted drafting option is prepared in `docs/EVALUATOR_AGENT_TASK.md`. It requires a separately authorized evaluator agent with no development-chat history and external private outputs. It does not replace human validation, provide OS-level isolation, or authorize final execution. No evaluator agent has been dispatched and no private questions have been created by this development chat.
+
 ## Scoring rehearsal and rubric
 
 `evaluation/blinding.py` currently supports **development-only rehearsals**, not private final execution. It requires a complete four-condition matrix and valid saved answers/contexts, assigns random anonymous IDs, shuffles answers and exports `public/answers.json` plus a blank `public/scores.csv`. Identity mapping stays in `private/reveal.json`; its hash is committed before scoring. Do not open the mapping until the completed form is sealed. Do not copy this development directory layout into the workspace for held-out data. M4.2 must supply a separately authorized evaluator-controlled final runner.

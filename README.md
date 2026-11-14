@@ -5,9 +5,9 @@ Four retrieval conditions, Streamlit workflows and checked evidence export opera
 pilot. Both provider adapters and budget controls are implemented; local probes and an isolated logical
 restore passed. Both OpenAI live probes passed after the user replaced an expired key. The configured
 generator remains local Qwen. See `docs/M3_2_REPORT.md` and `docs/M3_3_REPORT.md` for actual outcomes;
-M4.1 selection, 20-paper ingestion and expansion-claim review are complete; expanded development
-gold and evaluator readiness remain pending. Final evaluation is separately gated.
-All eight M2.3 development annotations are human-validated and final readiness is true; see `docs/M2_3_REPORT.md`.
+M4.1 selection, 20-paper ingestion, expansion-claim review and all eight expanded development-gold
+validations are complete; evaluator-owned final 24-question commitments remain pending. Final evaluation is separately gated.
+All eight M2.3 pilot development annotations also remain human-validated; see `docs/M2_3_REPORT.md`.
 Read `project_spec.md` and `AGENTS.md` before making changes.
 
 ## M1 baseline
@@ -401,8 +401,8 @@ it requires a separate downtime plan and fresh target. M4 still owns final corpu
 
 See [M4.1 outcomes](docs/M4_1_REPORT.md), [pre-recorded selection](manifests/CORPUS_SELECTION.md)
 and [evaluator handoff](docs/EVALUATOR_HANDOFF.md). The 20-paper corpus has 1,427 chunks;
-all 28 expansion claims are human-approved (51 active claims including the pilot). Expanded
-development validation and final evaluator readiness are still pending.
+all 28 expansion claims are human-approved (51 active claims including the pilot). All eight expanded
+development annotations are human-validated; final evaluator readiness is still pending.
 No final run or further paid calls are authorized. The UI keeps the five-paper pilot default.
 
 Use an explicit scope for expanded retrieval; synthesis is not requested by this command:
@@ -433,9 +433,11 @@ scope; neither grants approval. Use the existing review-import/chat-receipt work
 human decisions, then `review-sync --review-dir data/reviews/expansion-v1 --output <new-report.json>`.
 The original review queue is `runs/m4-1/review-batches/queue.json`; `mapping-proposals.json` records packet replacements; hash-bound `packet-amendments/` records supersede them when a pending claim is narrowed again. `scripts/update_m4_review_progress.py` derives a head-addressed checkpoint under `runs/m4-1/review-progress/`; immutable packets and prior checkpoints remain historical.
 Current eligibility comes from journal replay, not an old queue label or packet.
-The current development annotation candidates are in `data/evaluation/development/expansion-v1/`.
+The current human-validated development annotations are in `data/evaluation/development/expansion-v1/`.
 The earlier `expansion-v1-draft` and `pilot-v1` directories remain preserved; their decisions do not
-grant validation to the new dataset. Claim review and evaluation-gold review times stay separate.
+grant validation to the new dataset. Four fresh review batches total approximately 65 minutes of
+gold review, separate from approximately 133 minutes of expansion claim review. Current source/receipt
+replay reports 8/8 validated and ready; see `runs/m4-1/development-gold-acceptance.json`.
 Repeat engineering verification with `uv run --locked --offline python scripts/check_expansion.py
 --output-dir <new-report-directory>`; it preserves prior reports and makes no generation calls.
 

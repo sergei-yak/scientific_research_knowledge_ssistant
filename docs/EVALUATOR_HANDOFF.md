@@ -4,12 +4,24 @@
 
 ## Inputs and deliverables
 
-The expanded corpus's claim review is complete (28 new approvals, 51 active claims). Record its exact corpus ID, normalized-source snapshot hashes and review head. Current development candidates are in `data/evaluation/development/expansion-v1/`; fresh human validation is in progress. Use the specification's evaluation and source-span contracts; reference answers must be supported independently of the approved graph. Shared Python models: `EvaluationQuestion`, `GoldFact`, `SourceSpanRef`; annotation scoring: `evaluation/scoring.py`. Source offsets are half-open offsets in the frozen normalized chunk, not the PDF bytes. Alternative support sets are OR; all spans within one set are AND. Include facts missing from the graph where warranted. Do not require an observed graph advantage.
+The expanded corpus's claim review is complete (28 new approvals, 51 active claims). All eight development annotations in `data/evaluation/development/expansion-v1/` have fresh exact-bound human validations; source/receipt replay reports ready. Use the specification's evaluation and source-span contracts; reference answers must be supported independently of the approved graph. Shared Python models: `EvaluationQuestion`, `GoldFact`, `SourceSpanRef`; annotation scoring: `evaluation/scoring.py`. Source offsets are half-open offsets in the frozen normalized chunk, not the PDF bytes. Alternative support sets are OR; all spans within one set are AND. Include facts missing from the graph where warranted. Do not require an observed graph advantage.
 
 - Final manifest: **24 questions**, six per primary category (direct, cross-paper, multi-hop, unanswerable); **8 development** (two/category) and **16 held-out** (four/category). Apply category precedence from the specification. Store stripped questions separately from answers/support annotations. No mode, graph claim ID or gold text enters retrieval/generation inputs.
-- The current eight human-validated development annotations are scoped to the five-paper pilot. Preserve them. Create a new expanded-corpus version, recheck answer/span coverage and scoped unanswerability against all indexed pages, and obtain fresh human validation of the complete annotation bindings. A source hash check alone does not establish unanswerability. Freeze that version before authoring/finalizing the private partition.
+- Preserve both the eight original five-paper validations and the eight fresh expanded-corpus validations. The expanded version rechecks answer/span coverage and scoped unanswerability across the 1,427 indexed chunks; it inherits no pilot approval. The two absence rationales are revision 3. A source hash check alone does not establish unanswerability. Any annotation edit requires a versioned amendment and fresh validation. Commit the reviewed version before authoring/finalizing the private partition; the M4.2 experiment freeze is still pending.
 - Prepare 16 held-out questions and annotations privately. Record the corpus scope and rationale for every unanswerable question, distinguish a missing measurement from an author's suggested benefit, and do not silently use omitted appendices or later PDF versions. This agent has not accessed private inputs.
 - Return only public commitments: evaluator identity, timezone-aware validation date, exact corpus/review/development hashes, private question/annotation file SHA-256 values and category counts. `evaluation/readiness.py::EvaluatorAttestation` defines this receipt. Never return private content or a reveal map here. A validated receipt is an **attestation**, not independent inspection by the development agent; disclose any exposure and corrections.
+
+Current public bindings, verified in `runs/m4-1/development-gold-acceptance.json`:
+
+| Binding | Value |
+|---|---|
+| `corpus_id` | `298e3cafbda1ffdf95c8ee66fa2b9ba3a81dc8d5e26bfb94816655ca41de3fbf` |
+| `review_head` | `03724d5d24329b73ff53ca69bebc2df4b7e3707576ea15c8b7ccd12687019c64` |
+| `development_dataset_sha256` (canonical manifest fingerprint) | `656cb3b5d41463e3eaa110cd6634d6d16d4452a995077de853f56d64f8fc95a3` |
+| Normalized source-chunk snapshot SHA-256 | `157be4963f7a8afac6e5e3c3f174a4e5843cfc8ba09c3f949f75ebafa18b706d` |
+| Development counts | Two each: direct, cross-paper, multi-hop, unanswerable |
+
+The evaluator still needs to prepare and validate the 16 private questions/annotations (four per category) outside the development workspace, hash those files locally, and return only the public attestation defined by `manifests/evaluator-attestation.schema.json`. No private-file hashes or validation claims have been supplied yet. Development readiness does not grant final-run authorization.
 
 ## Scoring rehearsal and rubric
 

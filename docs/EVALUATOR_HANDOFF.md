@@ -23,7 +23,7 @@ Current public bindings, verified in `runs/m4-1/development-gold-acceptance.json
 
 The evaluator still needs to prepare and validate the 16 private questions/annotations (four per category) outside the development workspace, hash those files locally, and return only the public attestation defined by `manifests/evaluator-attestation.schema.json`. No private-file hashes or validation claims have been supplied yet. Development readiness does not grant final-run authorization.
 
-An AI-assisted drafting option is prepared in `docs/EVALUATOR_AGENT_TASK.md`. It requires a separately authorized evaluator agent with no development-chat history and external private outputs. It does not replace human validation, provide OS-level isolation, or authorize final execution. No evaluator agent has been dispatched and no private questions have been created by this development chat.
+The user authorized the AI-assisted drafting task in `docs/EVALUATOR_AGENT_TASK.md`; `runs/m4-1/evaluator-authorization.json` preserves the explicit response. A separate evaluator agent with no development-chat history is preparing external private drafts and checks. Its limited authorization permits that evaluator to create/read the private set; the development agent remains prohibited from doing so. This does not replace human validation, provide OS-level isolation, or authorize final execution. Only aggregate status/hashes and local review-file links may return here.
 
 ## Scoring rehearsal and rubric
 

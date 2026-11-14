@@ -2,6 +2,8 @@
 
 The user explicitly authorized and dispatched a fresh evaluator agent with no development-chat history; the receipt is `runs/m4-1/evaluator-authorization.json`. This authorizes drafting and mechanical checks only; human gold validation and final-run authorization remain separate. The development agent must not author or inspect the private questions.
 
+**Drafting outcome:** All 16 AI-authored drafts, eight private two-item packets and blank bound decision/time forms are prepared. Human validations: zero. Aggregate checks and commitments are in `runs/m4-1/evaluator-draft-status.json`; the developer's public-only binding check is `runs/m4-1/evaluator-public-handoff-check.json`. The instructions below describe the completed drafting scope and remaining human checkpoint, not permission to rerun or overwrite it.
+
 ## Scope and public inputs
 
 Work as the evaluation author, not the application developer. Read `docs/EVALUATOR_HANDOFF.md`, the evaluation/source-span requirements in `project_spec.md`, `docs/M2_PDF_INSPECTION.md`, and `manifests/expanded-twenty-papers.json`. Use these exact bindings:

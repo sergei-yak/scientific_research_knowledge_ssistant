@@ -403,6 +403,9 @@ See [M4.1 outcomes](docs/M4_1_REPORT.md), [pre-recorded selection](manifests/COR
 and [evaluator handoff](docs/EVALUATOR_HANDOFF.md). The 20-paper corpus has 1,427 chunks;
 all 28 expansion claims are human-approved (51 active claims including the pilot). All eight expanded
 development annotations are human-validated; final evaluator readiness is still pending.
+The separately authorized evaluator prepared 16 private AI-authored drafts and eight local review
+batches; human approvals remain 0/16. Follow the evaluator handoff for local review without exposing
+private content to the development chat. Public aggregate checks are in `runs/m4-1/evaluator-draft-status.json`.
 No final run or further paid calls are authorized. The UI keeps the five-paper pilot default.
 
 Use an explicit scope for expanded retrieval; synthesis is not requested by this command:

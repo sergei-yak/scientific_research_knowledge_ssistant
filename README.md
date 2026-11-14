@@ -1,12 +1,12 @@
 # Scientific Research Knowledge Assistant
 
-Current implementation: **M0–M3.3 complete; full five-paper acceptance gate passed**.
+Current implementation: **M0–M3.3 and M4.1 complete; full five-paper acceptance gate passed**.
 Four retrieval conditions, Streamlit workflows and checked evidence export operate on the five-paper
 pilot. Both provider adapters and budget controls are implemented; local probes and an isolated logical
 restore passed. Both OpenAI live probes passed after the user replaced an expired key. The configured
 generator remains local Qwen. See `docs/M3_2_REPORT.md` and `docs/M3_3_REPORT.md` for actual outcomes;
 M4.1 selection, 20-paper ingestion, expansion-claim review and all eight expanded development-gold
-validations are complete; evaluator-owned final 24-question commitments remain pending. Final evaluation is separately gated.
+validations are complete; all 16 private annotations have human approval and public 24-question readiness is attested. M4.2 freeze preparation is next; final evaluation is separately gated.
 All eight M2.3 pilot development annotations also remain human-validated; see `docs/M2_3_REPORT.md`.
 Read `project_spec.md` and `AGENTS.md` before making changes.
 
@@ -397,15 +397,16 @@ Restoring never re-enables paid access. Reconcile any newer live budget reservat
 paid operations from recovered files. Native offline dump/load is optional and was not exercised here;
 it requires a separate downtime plan and fresh target. M4 still owns final corpus selection/freeze/evaluation.
 
-## M4.1 expansion and review checkpoint
+## M4.1 expansion and evaluation readiness
 
 See [M4.1 outcomes](docs/M4_1_REPORT.md), [pre-recorded selection](manifests/CORPUS_SELECTION.md)
 and [evaluator handoff](docs/EVALUATOR_HANDOFF.md). The 20-paper corpus has 1,427 chunks;
 all 28 expansion claims are human-approved (51 active claims including the pilot). All eight expanded
-development annotations are human-validated; final evaluator readiness is still pending.
-The separately authorized evaluator prepared 16 private AI-authored drafts and eight local review
-batches; human approvals remain 0/16. Follow the evaluator handoff for local review without exposing
-private content to the development chat. Public aggregate checks are in `runs/m4-1/evaluator-draft-status.json`.
+development annotations and all 16 isolated AI-authored private annotations are human-validated.
+The evaluator imported an explicit exact-bound statement by Sergei Iakovlev and recorded approximately
+30 minutes total private review; blank forms/pending reports remain historical. Public bindings/schema
+checks pass; `runs/m4-1/evaluation-readiness-manifest.json` commits 24 questions, six per category.
+See the evaluator handoff and `runs/m4-1/final-acceptance.json` for checks and limits. Private inputs stay external.
 No final run or further paid calls are authorized. The UI keeps the five-paper pilot default.
 
 Use an explicit scope for expanded retrieval; synthesis is not requested by this command:
@@ -441,6 +442,9 @@ The earlier `expansion-v1-draft` and `pilot-v1` directories remain preserved; th
 grant validation to the new dataset. Four fresh review batches total approximately 65 minutes of
 gold review, separate from approximately 133 minutes of expansion claim review. Current source/receipt
 replay reports 8/8 validated and ready; see `runs/m4-1/development-gold-acceptance.json`.
+The additional private review total is approximately 30 minutes, with per-question/per-batch time unknown.
+The progress helper validates the named public attestation's hash/current bindings and reports M4.1 done;
+it never reads private evaluation inputs.
 Repeat engineering verification with `uv run --locked --offline python scripts/check_expansion.py
 --output-dir <new-report-directory>`; it preserves prior reports and makes no generation calls.
 

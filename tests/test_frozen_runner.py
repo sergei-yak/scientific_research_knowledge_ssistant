@@ -118,7 +118,7 @@ def synthetic_execution(tmp_path, monkeypatch):
         heldout_questions_sha256=file_sha(private / 'questions.jsonl'), heldout_annotations_sha256=file_sha(private / 'annotations.jsonl'),
         private_root=str(private), snapshot_directory=snapshot.as_posix(), snapshot_manifest_sha256='e' * 64,
         graph_sha256=fingerprint({'synthetic': 'graph'}), recovery_report='runs/m4-2/recovery.json', recovery_report_sha256='f' * 64,
-        target_uri='bolt://127.0.0.1:9765', target_project='dbu-m4-recovery-synthetic', docker_image_id='synthetic',
+        target_uri='bolt://127.0.0.1:9765', target_project='dbu-m4-recovery-synthetic', docker_image_id='sha256:' + '1' * 64,
         code_revision='synthetic', source_tree_sha256='a' * 64, files={},
         encoder_revisions={'all-MiniLM-L6-v2': 'mini', 'all-mpnet-base-v2': 'mpnet'},
         runtime_versions=guards.runtime_versions(),
@@ -224,3 +224,14 @@ def test_frozen_executable_hash_changes_fail_before_any_private_input_read(tmp_p
     tracked.write_text('# changed after freeze\n')
     with pytest.raises(ValueError, match='asset changed'):
         guards.load_freeze(freeze_path)
+
+
+@pytest.mark.parametrize('field,value', [('target_uri', 'bolt://remote.example:9765'),
+    ('ollama_base_url', 'https://remote.example'), ('target_uri', 'neo4j://127.0.0.1:9765'),
+    ('docker_image_id', 'neo4j:latest')])
+def test_frozen_services_cannot_expand_to_remote_or_mutable_targets(tmp_path, monkeypatch, field, value):
+    path, _, _, _ = synthetic_execution(tmp_path, monkeypatch)
+    raw = json.loads(path.read_text())
+    raw[field] = value
+    with pytest.raises(ValueError):
+        FreezeManifest.model_validate(raw)

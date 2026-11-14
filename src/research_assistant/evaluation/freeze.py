@@ -10,6 +10,7 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Literal
+from urllib.parse import urlsplit
 
 import ollama
 from pydantic import Field, model_validator
@@ -70,7 +71,7 @@ class FreezeManifest(Contract):
     recovery_report_sha256: str = Field(pattern=HEX)
     target_uri: str
     target_project: str = Field(pattern=r'^dbu-m4-recovery-[a-z0-9-]+$')
-    docker_image_id: str
+    docker_image_id: str = Field(pattern=r'^sha256:[a-f0-9]{64}$')
     code_revision: str
     source_tree_sha256: str = Field(pattern=HEX)
     files: dict[str, str]
@@ -85,6 +86,14 @@ class FreezeManifest(Contract):
     plan: RunPlan = Field(default_factory=RunPlan)
     prior_private_exposure: Literal[False] = False
     amends_freeze_sha256: str | None = None
+
+    @model_validator(mode='after')
+    def local_frozen_services(self) -> FreezeManifest:
+        """Reuse the shared local-endpoint rule; frozen data must never route to a remote DB."""
+        Settings(neo4j_uri=self.target_uri, ollama_base_url=self.ollama_base_url)
+        if urlsplit(self.target_uri).scheme != 'bolt':
+            raise ValueError('Frozen evaluation requires a direct local Bolt endpoint')
+        return self
 
 
 class FinalRunAuthorization(Contract):

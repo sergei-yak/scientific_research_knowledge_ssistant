@@ -1,6 +1,6 @@
 # Scientific Research Knowledge Assistant — Project Specification
 
-**Version 6.2 — submission edition, 2026-11-15.** `project_spec.md` is authoritative. The completed `controlled-retrieval-v1` study is preserved in the [6.1 archive](docs/baselines/project_spec_submission_v6_1.md). Planned `retrieval-v2` is a new retrieval profile, distinct from the completed study's `freeze-v2.json`; it has not been implemented.
+**Version 6.3 — submission edition, 2026-11-15.** `project_spec.md` is authoritative. The completed baseline remains in the [6.1 archive](docs/baselines/project_spec_submission_v6_1.md); the exact planning amendment remains in the [6.2 archive](docs/baselines/project_spec_submission_v6_2.md). V2 is implemented in gated increments with a pinned shared reranker; no new final study is authorized. The old `freeze-v2.json` is consumed, not the new profile.
 
 ## 1. Project Overview & Context
 
@@ -18,7 +18,7 @@
 
 Deploy locally on Windows, 32 GB RAM/RTX 4070 Ti 12 GB. Pin actual database/model revisions and measure combined memory/latency. Use locked installs, persistent volumes and ONLINE indexes. No Google ADK, CopilotKit, LangChain/LangGraph, FastAPI or additional application storage technology. Paid calls require numerical operation-scoped authorization and durable reservations counting failed/unknown attempts; credentials alone grant no spend. Secrets stay outside Git.
 
-The planned cross-encoder arm uses the existing stack; its exact model/revision, input/score/resource policy and compatibility must be recorded before use. No new model/dependency is adopted here. Python migration and fine-tuning require separate decisions.
+The V2 cross-encoder is `cross-encoder/ms-marco-MiniLM-L6-v2` at revision `233902d25c440f23af6f7d6e94d2946bac0bee0a`, using existing Transformers 4.57.6/PyTorch: CPU float32, raw logits, 512-token native pairs, concurrency one. Its versioned manifest pins assets/runtime; preflight precedes inference, and failures stop the arm. No dependencies change. Python migration/fine-tuning remain separate decisions.
 
 ## 3. Core Features & MVP (Minimum Viable Product)
 

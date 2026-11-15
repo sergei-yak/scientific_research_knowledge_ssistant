@@ -43,6 +43,7 @@ def main(argv: list[str] | None = None) -> int:
     for query_parser in (ask,retrieve):
         query_parser.add_argument('--profile',choices=['baseline','retrieval-v2'],default='baseline')
         query_parser.add_argument('--scope-file',help='Explicit local data/scopes declaration required for retrieval-v2')
+        query_parser.add_argument('--selector',choices=['reference','cross_encoder'],default='reference')
     export = subparsers.add_parser('export-evidence', help='Validate a saved run and export its exact evidence as CSV')
     export.add_argument('--run', type=Path, required=True)
     export.add_argument('--review-dir', type=Path, default=Path('data/reviews/pilot'))
@@ -234,14 +235,14 @@ def main(argv: list[str] | None = None) -> int:
             elif args.command == 'retrieve':
                 from research_assistant.pipeline import run_query
                 request = QueryRequest(question=args.question,corpus_id=args.corpus,mode=args.mode,
-                    profile_id=args.profile,scope_file=args.scope_file)
+                    profile_id=args.profile,scope_file=args.scope_file,selector_id=args.selector)
                 run = run_query(request, settings, minimum_similarity=args.minimum_similarity,
                                 review_directory=args.review_dir, generate=False)
                 retrieval = run.retrieval
                 result = run.model_dump(mode='json')
             else:
                 request = QueryRequest(question=args.question, corpus_id=args.corpus, mode=args.mode,
-                    profile_id=args.profile,scope_file=args.scope_file)
+                    profile_id=args.profile,scope_file=args.scope_file,selector_id=args.selector)
                 result = ask_question(request, settings, args.context_tokens,
                                       args.max_output_tokens, args.minimum_similarity,args.review_dir).model_dump(mode="json")
             if args.output:
@@ -256,6 +257,8 @@ def main(argv: list[str] | None = None) -> int:
                            "papers": len(result["papers"]), "citation_edges": len(result["citation_edges"])}
             if args.command == 'retrieve':
                 summary = {'output':str(args.output),'requested_mode':retrieval.requested_mode,
+                           'requested_profile':request.profile_id,'effective_profile':retrieval.audit.get('effective_profile','baseline'),
+                           'selector':request.selector_id,
                            'effective_mode':retrieval.effective_mode,'fallback_reason':retrieval.fallback_reason,
                            'evidence_units':len(retrieval.evidence),'estimated_tokens':retrieval.estimated_tokens,'new_llm_calls':0}
             if args.command == 'retrieve-embedding':
@@ -272,6 +275,8 @@ def main(argv: list[str] | None = None) -> int:
                        "message": settings.redact(str(exc))}
             if isinstance(exc, QueryExecutionError):
                 failure['failed_run'] = exc.artifact.model_dump(mode='json')
+            if hasattr(exc,'selection_diagnostics'):
+                failure['selection_diagnostics']=exc.selection_diagnostics
             if args.command != 'export-evidence' and args.output and not args.output.exists():
                 try:
                     write_immutable(args.output, json.dumps(failure, indent=2) + "\n")

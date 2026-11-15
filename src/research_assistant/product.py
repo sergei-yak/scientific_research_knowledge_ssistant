@@ -13,7 +13,7 @@ from research_assistant.contracts import Contract, DraftAnswer, EvidenceItem, Ru
 from research_assistant.generation import validate_answer
 from research_assistant.graph.search import SearchRepository
 from research_assistant.ingestion.sources import load_corpus_chunks
-from research_assistant.retrieval.catalog import ReviewCatalog, alias_matches, load_catalog
+from research_assistant.retrieval.catalog import ReviewCatalog, alias_matches, checked_fact, load_catalog
 from research_assistant.retrieval.evidence import validate_context
 from research_assistant.review.store import review_lock
 from research_assistant.settings import Settings
@@ -39,19 +39,6 @@ class ProductView(Contract):
     method_count: int = 0
 
 
-def checked_fact(item: EvidenceItem, catalog: ReviewCatalog | None) -> dict:
-    """Bind displayed claim content to the existing shared current-approval projection."""
-    fact = catalog.facts.get(item.id) if catalog else None
-    if fact is None:
-        raise ValueError('Evidence is no longer in the current approved projection; rerun the query')
-    expected = EvidenceItem.model_validate(fact['evidence'])
-    for field in ('kind', 'paper_ids', 'source_chunk_ids', 'excerpts', 'approved_claim_ids',
-                  'claim_revision', 'claim_text', 'conditions'):
-        if getattr(item, field) != getattr(expected, field):
-            raise ValueError('Displayed fact differs from the current approved revision')
-    return fact
-
-
 def validate_run(run: RunArtifact, settings: Settings,
                  review_directory: Path = Path('data/reviews/pilot')) -> ReviewCatalog | None:
     """Recheck stored results before display/export; stale approvals and service errors fail closed."""
@@ -60,8 +47,10 @@ def validate_run(run: RunArtifact, settings: Settings,
     if run.request.mode != run.retrieval.requested_mode:
         raise ValueError('Requested mode differs from the saved retrieval')
     result = run.retrieval
+    if run.request.profile_id=='baseline' and run.request.selector_id!='reference':
+        raise ValueError('Saved baseline profile cannot claim a reranker selector')
     if run.request.profile_id=='retrieval-v2':
-        from research_assistant.retrieval.profiles import reference_profile, validate_scope
+        from research_assistant.retrieval.profiles import retrieval_profile, validate_scope
         with review_lock(review_directory):
             scoped_catalog=load_catalog(review_directory,run.request.corpus_id,chunks)
             scoped_repo=SearchRepository(settings)
@@ -69,7 +58,7 @@ def validate_run(run: RunArtifact, settings: Settings,
                 scope=validate_scope(run.request,settings,review_directory,chunks,scoped_catalog,scoped_repo)
             finally:
                 scoped_repo.close()
-        if (result.audit.get('profile')!=reference_profile('retrieval-v2').model_dump()
+        if (result.audit.get('profile')!=retrieval_profile('retrieval-v2',run.request.selector_id).model_dump()
                 or result.audit.get('experiment_scope')!=scope.model_dump()
                 or run.configuration.get('profile')!=result.audit['profile']
                 or run.configuration.get('experiment_scope')!=scope.model_dump()

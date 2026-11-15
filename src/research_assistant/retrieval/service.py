@@ -14,7 +14,8 @@ from research_assistant.retrieval.catalog import ReviewCatalog, alias_matches, c
 from research_assistant.retrieval.evidence import assemble_evidence
 from research_assistant.retrieval.evidence import estimate_tokens, render_context
 from research_assistant.retrieval.anchors import graph_anchors
-from research_assistant.retrieval.profiles import reference_profile, validate_scope
+from research_assistant.retrieval.profiles import reference_profile, retrieval_profile, validate_scope
+from research_assistant.retrieval.selection import SelectorSession
 from research_assistant.retrieval.ranking import reciprocal_rank_fusion
 from research_assistant.review.store import review_lock
 from research_assistant.settings import Settings
@@ -33,12 +34,14 @@ def packed(mode: str, items: list[EvidenceItem], started: float, audit: dict,
 
 def retrieve_modes(request: QueryRequest, repo: SearchRepository, encoder, chunks: dict[str, Chunk],
                    catalog: ReviewCatalog | None, encoder_revision: str, timeout: float = 30,
-                   *, profile_id: str = 'baseline', scope_id: str | None = None) -> RetrievalResult:
+                   *, profile_id: str = 'baseline', scope_id: str | None = None,
+                   selector: SelectorSession | None = None) -> RetrievalResult:
     """Fuse fixed channel rankings, then optionally traverse and select under identical context limits."""
     if request.mode not in {'hybrid','hybrid_facts','graph'}:
         raise ValueError('Use the preserved M1 service for vector mode')
     if profile_id not in {'baseline','retrieval-v2'} or (profile_id=='retrieval-v2' and not scope_id):
         raise ValueError('Unknown or unscoped retrieval profile')
+    if selector is not None and profile_id!='retrieval-v2':raise ValueError('Reranking requires the explicit V2 profile')
     if request.mode != 'hybrid' and (catalog is None or catalog.corpus_id != request.corpus_id):
         raise ValueError('Fact modes require a matching current review catalog')
     started = time.perf_counter()
@@ -80,7 +83,12 @@ def retrieve_modes(request: QueryRequest, repo: SearchRepository, encoder, chunk
             item = items[identity].model_copy(deep=True,update={'rank':rank})
             baseline.append(item)
         audit['fusion'] = [{'id':identity,'rrf_score':score} for identity,score in fusion]
+        baseline_ranks={item.id:item.rank for item in baseline}
+        if selector is not None:baseline=selector.order(baseline,baseline_ranks,'baseline')
         baseline_result = packed(request.mode,baseline,started,audit)
+        if selector is not None:
+            audit['selection']=selector.audit(baseline,baseline_ranks,'baseline',baseline_result.candidates)
+            baseline_result=baseline_result.model_copy(update={'audit':dict(audit)})
         if request.mode != 'graph':
             return baseline_result
         pool = {item.id:item for item in baseline}
@@ -168,7 +176,13 @@ def retrieve_modes(request: QueryRequest, repo: SearchRepository, encoder, chunk
         audit['merged_ranking'] = [{'id':identity,'question_entity_overlap':-keys[identity][0],
                                     'cosine':-keys[identity][1],'path_length':keys[identity][2],
                                     'baseline_rank':pool[identity].rank} for identity in merged]
-        result = packed('graph',[pool[identity] for identity in merged],started,audit)
+        ordered=[pool[identity] for identity in merged]
+        if selector is not None:
+            ordered=selector.order(ordered,baseline_ranks,'graph')
+            merged=[item.id for item in ordered]
+            audit['merged_ranking_stage']='before_shared_selector'
+        result = packed('graph',ordered,started,audit)
+        if selector is not None:audit['selection']=selector.audit(ordered,baseline_ranks,'graph',result.candidates)
         if profile_id=='retrieval-v2':
             decisions={d['id']:d for d in result.candidates}
             ranks={identity:rank for rank,identity in enumerate(merged,1)}
@@ -176,7 +190,8 @@ def retrieve_modes(request: QueryRequest, repo: SearchRepository, encoder, chunk
             audit['pre_fallback_candidate_trace']=[CandidateTrace(
                 candidate_id=identity,origins=(['baseline'] if identity in baseline_ids else [])+(['graph'] if identity in graph else []),
                 baseline_member=identity in baseline_ids,approval_source_checks={'source':True,**({'current_approval':True} if identity in catalog.facts else {})},
-                route=[graph[identity]] if identity in graph else [],score=-keys[identity][1],rank_before=pool[identity].rank,
+                route=[graph[identity]] if identity in graph else [],
+                score=selector.scores.get(identity) if selector is not None else -keys[identity][1],rank_before=pool[identity].rank,
                 rank_after=ranks.get(identity),selected=decisions.get(identity,{}).get('selected',False),
                 exclusion_reason=decisions.get(identity,{}).get('reason','graph_candidate_limit'),
                 units=int(decisions.get(identity,{}).get('selected',False)),
@@ -202,7 +217,8 @@ def retrieve_request(request: QueryRequest, settings: Settings, review_directory
                      minimum_similarity: float = 0.30, encoder: Encoder | None = None) -> tuple[dict, RetrievalResult]:
     """Entry-point service; no gold loading or generator calls, and no automatic index setup."""
     reference_profile(request.profile_id)
-    if request.selector_id!='reference':raise ValueError('Unsupported selector; the model gate has not been completed')
+    if request.profile_id=='baseline' and request.selector_id!='reference':
+        raise ValueError('Reranking requires the explicit V2 profile')
     if request.profile_id=='retrieval-v2':
         return retrieve_scoped(request,settings,review_directory,minimum_similarity,encoder)
     if request.scope_file:
@@ -237,13 +253,20 @@ def retrieve_request(request: QueryRequest, settings: Settings, review_directory
 def retrieve_scoped(request: QueryRequest, settings: Settings, review_directory: Path,
                     minimum_similarity: float, encoder: Encoder | None) -> tuple[dict,RetrievalResult]:
     """Validate physical/current scope before any V2 search, retaining shared retrieval services."""
-    profile=reference_profile(request.profile_id)
+    request_started=time.perf_counter()
+    profile=retrieval_profile(request.profile_id,request.selector_id)
     chunks=load_corpus_chunks(request.corpus_id)
     with review_lock(review_directory):
         catalog=load_catalog(review_directory,request.corpus_id,chunks)
         repo=SearchRepository(settings)
         try:
             scope=validate_scope(request,settings,review_directory,chunks,catalog,repo)
+            selector=None
+            model_readiness=None
+            if request.selector_id=='cross_encoder':
+                from research_assistant.retrieval.reranker import scorer_with_readiness
+                scorer,model_readiness=scorer_with_readiness()
+                selector=SelectorSession(request.question,chunks,catalog,scorer)
             snapshot=repo.snapshot(request.corpus_id)
             encoder=encoder if encoder is not None else Encoder()
             if snapshot['encoder_revision']!=encoder.revision:
@@ -251,14 +274,17 @@ def retrieve_scoped(request: QueryRequest, settings: Settings, review_directory:
             if request.mode=='vector':
                 from research_assistant.pipeline import retrieve_vector
                 with repo.reading(request.corpus_id,catalog.head,settings.graph_query_timeout_seconds):
-                    result=retrieve_vector(request,repo,encoder,minimum_similarity)
+                    result=retrieve_vector(request,repo,encoder,minimum_similarity,selector=selector)
             else:
                 result=retrieve_modes(request,repo,encoder,chunks,None if request.mode=='hybrid' else catalog,
-                    encoder.revision,settings.graph_query_timeout_seconds,profile_id='retrieval-v2',scope_id=scope.scope_id)
+                    encoder.revision,settings.graph_query_timeout_seconds,profile_id='retrieval-v2',scope_id=scope.scope_id,selector=selector)
             validate_scope(request,settings,review_directory,chunks,catalog,repo)
             result.audit.update(profile=profile.model_dump(),experiment_scope=scope.model_dump(),
                                 requested_profile=request.profile_id,effective_profile=request.profile_id,
                                 final_selected_ids=[item.id for item in result.evidence])
+            result.audit['request_elapsed_ms']=(time.perf_counter()-request_started)*1000
+            result.audit['request_timing_policy']='Includes profile/assets/scope guards and retrieval; retrieval_ms keeps the existing inner-service boundary'
+            if model_readiness is not None:result.audit['reranker_readiness']=model_readiness
             return snapshot,result
         finally:
             repo.close()

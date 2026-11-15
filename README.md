@@ -2,15 +2,15 @@
 
 Current implementation: **M0–M4.3 complete; frozen evaluation scored and reported**.
 
-**Current iteration:** Specification 6.2 defines `retrieval-v2`; M5.0–M5.2 are complete.
-[M5.2](docs/M5_2_REPORT.md) implements isolated Finding/entity-start traversal with the reference selector.
+**Current iteration:** Specification 6.3 pins `retrieval-v2`; M5.0–M5.3 are complete.
+[M5.3](docs/M5_3_REPORT.md) adds one shared pinned cross-encoder selector to the isolated Finding/entity routes.
 Development checkout: `C:/Users/serge/DBU-GraphRAG-Worktrees/retrieval-v2-m52-54d8b329`;
 the original OneDrive checkout preserves baseline code/data. Use the development checkout for V2.
 The [plan](IMPLEMENTATION_PLAN.md#m5--planned-retrieval-v2-iteration) stages the shared reranker and
-fresh evaluation next; M5.3–M5.6 have not started. The development UI is on port 8502.
+fresh evaluation next; M5.4–M5.6 have not started. The development UI is on port 8502.
 The [archived 6.1 specification](docs/baselines/project_spec_v6_1.md) governs the completed baseline;
-existing `freeze-v2.json` is consumed and unrelated to the new profile name. No reranker model or
-new generation/final study is authorized. Existing default commands remain baseline behavior.
+existing `freeze-v2.json` is consumed and unrelated to the new profile name. No new generation/final
+study is authorized. Existing defaults retain baseline/reference behavior.
 
 From the development checkout, retrieve V2 evidence with a fresh output path:
 
@@ -24,6 +24,14 @@ uv run --locked --offline python -m research_assistant retrieve --profile retrie
 The scope file, data and credentials are local ignored assets. V2 rejects a different endpoint/head;
 UI corpus/profile selection is explicit, with the pilot default retained. V2 synthesis stays disabled
 until its later gates. The native fixture uses `RUN_V2_SMOKE=1` and cleans only UUID-owned test data.
+
+For the common reranker, add `--selector cross_encoder` to the V2 retrieve command in any of the
+four modes, or select **Shared reranker** under **Evidence ordering** in the UI. The local pinned
+model manifest records seven assets (~87.6 MiB), native 512-token pairs and CPU/runtime policy.
+Oversized inputs or missing/changed assets fail explicitly; queries never download or substitute a
+model. `reference` remains available independently. Reranking preserves the same evidence budgets,
+source/approval guards and exact same-selector Graph fallback. M5.4 will evaluate relevance;
+the engineering smoke does not establish a quality improvement.
 
 Four retrieval conditions, Streamlit workflows and checked evidence export operate on the five-paper
 pilot. Both provider adapters and budget controls are implemented; local probes and an isolated logical

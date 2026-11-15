@@ -53,6 +53,18 @@ def test_v2_is_explicit_preserves_pilot_default_and_disables_synthesis(monkeypat
     assert any('returns evidence only' in message.value for message in app.info)
 
 
+def test_shared_reranker_selection_is_explicit_and_widget_changes_do_not_query(monkeypatch):
+    app,calls=prepare_app(monkeypatch);app.run()
+    next(w for w in app.selectbox if w.label=='Retrieval profile').set_value('retrieval-v2').run()
+    next(w for w in app.selectbox if w.label=='Evidence ordering').set_value('cross_encoder').run()
+    assert not app.exception and not calls
+    app.button[0].click().run()
+    assert not app.exception and calls[0][0].selector_id=='cross_encoder'
+    assert calls[0][1]['generate'] is False
+    next(w for w in app.selectbox if w.label=='Retrieval mode').set_value('vector').run()
+    assert len(calls)==1
+
+
 def test_stale_result_disables_exports_and_failed_new_submit_clears_old_answer(monkeypatch):
     app, calls = prepare_app(monkeypatch)
     app.run().button[0].click().run()

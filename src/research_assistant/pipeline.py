@@ -8,6 +8,10 @@ import time
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from research_assistant.retrieval.selection import SelectorSession
 
 from research_assistant.contracts import (
     Chunk, EvidenceItem, PaperManifestEntry, QueryRequest, RetrievalResult,
@@ -92,7 +96,8 @@ def ingest_paper(manifest_path: Path, settings: Settings) -> dict:
 
 
 def retrieve_vector(request: QueryRequest, repository: GraphRepository,
-                    encoder: TextEncoder, minimum_similarity: float = 0.30) -> RetrievalResult:
+                    encoder: TextEncoder, minimum_similarity: float = 0.30,
+                    *, selector: SelectorSession | None = None) -> RetrievalResult:
     """Retrieve only the declared snapshot, audit rejected candidates and pack context."""
     if request.mode != "vector":
         raise ValueError("M1 implements vector retrieval only")
@@ -117,6 +122,8 @@ def retrieve_vector(request: QueryRequest, repository: GraphRepository,
                 chunk_page_start=chunk.page_start, start=0, end=len(chunk.text), text=chunk.text,
             )],
         ))
+    ranks={item.id:item.rank for item in evidence}
+    if selector is not None:evidence=selector.order(evidence,ranks,'vector')
     chosen, context, aliases, tokens, decisions = assemble_evidence(evidence)
     decision_map = {d["id"]: d for d in decisions}
     for row in audit:
@@ -126,7 +133,8 @@ def retrieve_vector(request: QueryRequest, repository: GraphRepository,
         context=context, context_sha256=context_hash(context), estimated_tokens=tokens,
         aliases=aliases, candidates=audit, retrieval_ms=(time.perf_counter() - start) * 1000,
         audit={'query_encoding_ms': (encoded_at-start)*1000, 'candidate_fetch_ms': (fetched_at-encoded_at)*1000,
-               'ann_pool': 24, 'candidate_limit': 12, 'minimum_similarity': minimum_similarity},
+               'ann_pool': 24, 'candidate_limit': 12, 'minimum_similarity': minimum_similarity,
+               **({'selection':selector.audit(evidence,ranks,'vector',decisions)} if selector is not None else {})},
     )
 
 

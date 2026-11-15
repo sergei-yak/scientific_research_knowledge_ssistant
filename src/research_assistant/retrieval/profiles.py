@@ -19,6 +19,19 @@ def reference_profile(profile_id: str) -> RetrievalProfile:
         'units':6, 'tokens':1800}))
 
 
+def retrieval_profile(profile_id: str,selector_id: str='reference') -> RetrievalProfile:
+    """Keep reference identity stable; explicit reranking requires its verified model identity."""
+    reference=reference_profile(profile_id)
+    if selector_id=='reference':return reference
+    if profile_id!='retrieval-v2' or selector_id!='cross_encoder':
+        raise ValueError('Unsupported profile/selector combination')
+    from research_assistant.retrieval.reranker import verified_manifest,model_identity
+    identity=model_identity(verified_manifest())
+    return RetrievalProfile(profile_id='retrieval-v2',selector_id='cross_encoder',model_identity=identity,
+        policy_sha256=fingerprint({'reference_policy':reference.policy_sha256,'selector':'cross_encoder',
+                                  'model':identity,'ties':'score-desc-baseline-rank-asc-id'}))
+
+
 def load_scope(request: QueryRequest) -> ExperimentScope:
     """Reject external/private paths before reading a scope declaration."""
     if request.profile_id != 'retrieval-v2' or not request.scope_file:

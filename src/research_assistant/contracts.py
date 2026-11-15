@@ -190,15 +190,15 @@ class QueryRequest(Contract):
     corpus_id: str
     mode: Literal["vector", "hybrid", "hybrid_facts", "graph"] = "vector"
     profile_id: Literal['baseline', 'retrieval-v2'] = 'baseline'
-    selector_id: Literal['reference'] = 'reference'
+    selector_id: Literal['reference', 'cross_encoder'] = 'reference'
     scope_file: str | None = None
 
 
 class RetrievalProfile(Contract):
-    """Explicit versioned policy identity; M5.2 implements the reference selector only."""
+    """Explicit versioned selector, canonical feature and verified model identity."""
 
     profile_id: Literal['baseline', 'retrieval-v2']
-    selector_id: Literal['reference'] = 'reference'
+    selector_id: Literal['reference', 'cross_encoder'] = 'reference'
     feature_policy_version: str = 'canonical-evidence-v1'
     model_identity: dict | None = None
     policy_sha256: str = Field(pattern=r'^[a-f0-9]{64}$')

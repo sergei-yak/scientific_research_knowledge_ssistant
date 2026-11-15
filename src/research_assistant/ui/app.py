@@ -1,6 +1,7 @@
 """Local research workflows using the same services as the CLI."""
 
 import logging
+import uuid
 from pathlib import Path
 
 import streamlit as st
@@ -110,11 +111,14 @@ def main() -> None:
     profile = st.selectbox('Retrieval profile', ['baseline','retrieval-v2'],
                            help='V2 requires the explicit isolated development scope; the pilot default stays baseline.')
     review_directory=Path('data/reviews/expansion-v1' if profile=='retrieval-v2' else 'data/reviews/pilot')
+    selector=(st.selectbox('Evidence ordering',['reference','cross_encoder'],
+        format_func=lambda value:'Shared reranker' if value=='cross_encoder' else 'Reference ordering')
+        if profile=='retrieval-v2' else 'reference')
     with st.form('query'):
         question = st.text_area('Research question', value=WORKFLOWS[workflow], key=f'question_{workflow}', max_chars=2000)
         mode = st.selectbox('Retrieval mode', ['vector', 'hybrid', 'hybrid_facts', 'graph'], index=3)
         generate = st.checkbox('Generate an answer with the configured model', value=False,disabled=profile=='retrieval-v2')
-        if profile=='retrieval-v2':st.caption('V2 reference selector · isolated scope required · retrieval only')
+        if profile=='retrieval-v2':st.caption(f'V2 · {"shared reranker" if selector=="cross_encoder" else "reference ordering"} · isolated scope required · retrieval only')
         st.caption(f'Configured generator: {settings.generation_provider} / {settings.generation_model}. Context 4096, output limit 512; one request, no automatic retry or provider switching.')
         with st.expander('Corpus snapshot'):
             corpus = st.text_input('Corpus ID', value=PILOT_CORPUS)
@@ -124,7 +128,7 @@ def main() -> None:
         st.session_state.pop('run', None)
         try:
             with st.spinner('Retrieving evidence' + (' and generating an answer…' if generate else '…')):
-                request = QueryRequest(question=question.strip(), corpus_id=corpus, mode=mode,profile_id=profile,scope_file=scope_file)
+                request = QueryRequest(question=question.strip(), corpus_id=corpus, mode=mode,profile_id=profile,scope_file=scope_file,selector_id=selector)
                 run = run_query(request, settings, generate=generate, workflow=workflow, encoder=cached_encoder(),review_directory=review_directory)
                 write_immutable(Path('runs/ui') / run.run_id / 'run.json', run.model_dump_json(indent=2) + '\n')
                 if profile=='retrieval-v2':prepare_output(run, settings,review_directory=review_directory)
@@ -133,6 +137,11 @@ def main() -> None:
         except Exception as exc:
             if isinstance(exc, QueryExecutionError):
                 write_immutable(Path('runs/ui') / exc.artifact.run_id / 'failed-run.json', exc.artifact.model_dump_json(indent=2) + '\n')
+            if hasattr(exc,'selection_diagnostics'):
+                import json
+                write_immutable(Path('runs/ui')/uuid.uuid4().hex/'failed-selection.json',
+                    json.dumps({'status':'failed','message':settings.redact(str(exc)),
+                                'selection_diagnostics':exc.selection_diagnostics},indent=2)+'\n')
             logger.error('UI query failed: %s', settings.redact(str(exc)))
             st.error('Query failed: ' + settings.redact(str(exc)))
             st.caption('Check service readiness. Submit with synthesis disabled to inspect evidence independently.')

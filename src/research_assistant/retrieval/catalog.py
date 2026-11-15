@@ -29,6 +29,19 @@ class ReviewCatalog:
         return cls(corpus_id, review['review_head'], {f['id']: f for f in review['facts']}, entities)
 
 
+def checked_fact(item: EvidenceItem, catalog: ReviewCatalog | None) -> dict:
+    """Bind scoring/display content to the same current source-approved representation."""
+    fact = catalog.facts.get(item.id) if catalog else None
+    if fact is None:
+        raise ValueError('Evidence is no longer in the current approved projection; rerun the query')
+    expected = EvidenceItem.model_validate(fact['evidence'])
+    for field in ('kind', 'paper_ids', 'source_chunk_ids', 'excerpts', 'approved_claim_ids',
+                  'claim_revision', 'claim_text', 'conditions'):
+        if getattr(item, field) != getattr(expected, field):
+            raise ValueError('Displayed fact differs from the current approved revision')
+    return fact
+
+
 def load_catalog(directory: Path, corpus_id: str, chunks: dict[str, Chunk]) -> ReviewCatalog:
     """Require the explicitly selected review store to belong to the requested corpus."""
     config = json.loads((directory / 'config.json').read_text(encoding='utf-8'))

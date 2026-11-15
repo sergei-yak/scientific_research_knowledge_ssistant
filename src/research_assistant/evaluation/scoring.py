@@ -2,13 +2,34 @@
 
 from __future__ import annotations
 
-from research_assistant.contracts import Chunk, EvaluationQuestion, RetrievalResult, text_sha
-from research_assistant.retrieval.evidence import validate_context
+from research_assistant.contracts import Chunk, EvaluationQuestion, EvidenceItem, RetrievalResult, text_sha
+from research_assistant.retrieval.evidence import source_intervals, validate_context
 
 
 def score_evidence(question: EvaluationQuestion, result: RetrievalResult, chunks: dict[str, Chunk]) -> dict:
     """Credit only valid source spans actually present in the assembled context."""
     shown = validate_context(result, chunks)
+    covered, recall = _coverage(question, shown, chunks)
+    return {"question_id": question.question_id, "covered_facts": covered,
+            "evidence_fact_recall_at_6": recall, "units": len(result.evidence),
+            "context_sha256": result.context_sha256}
+
+
+def score_candidates(question: EvaluationQuestion, items: list[EvidenceItem], chunks: dict[str, Chunk]) -> dict:
+    """Measure unbounded candidate-source coverage offline, never a generator Recall@6.
+
+    Callers validate saved candidate identities/current approvals first. No ranking,
+    selection, packer invocation or RetrievalResult budget relaxation occurs here.
+    """
+    if len({item.id for item in items}) != len(items):
+        raise ValueError('Duplicate candidate identity')
+    covered, recall = _coverage(question, source_intervals(items, chunks), chunks)
+    return {'question_id': question.question_id, 'covered_facts': covered,
+            'candidate_support_recall': recall, 'candidate_count': len(items)}
+
+
+def _coverage(question: EvaluationQuestion, shown: dict, chunks: dict[str, Chunk]) -> tuple[list[str], float | None]:
+    """One exact source-interval AND/OR rule for final contexts and candidate unions."""
     covered = set()
     for fact in question.facts:
         alternatives = []
@@ -36,6 +57,4 @@ def score_evidence(question: EvaluationQuestion, result: RetrievalResult, chunks
     recall = None if question.category == "unanswerable" else max(
         len(covered.intersection(facts)) / len(set(facts)) for facts in question.sufficient_fact_sets
     )
-    return {"question_id": question.question_id, "covered_facts": sorted(covered),
-            "evidence_fact_recall_at_6": recall, "units": len(result.evidence),
-            "context_sha256": result.context_sha256}
+    return sorted(covered), recall

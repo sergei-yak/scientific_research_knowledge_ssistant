@@ -2,12 +2,14 @@
 
 Current implementation: **M0–M4.3 complete; frozen evaluation scored and reported**.
 
-**Current iteration:** Specification 6.3 pins `retrieval-v2`; M5.0–M5.3 are complete.
-[M5.3](docs/M5_3_REPORT.md) adds one shared pinned cross-encoder selector to the isolated Finding/entity routes.
+**Current iteration:** Specification 6.3 pins `retrieval-v2`; M5.0–M5.4 are complete.
+[M5.4](docs/M5_4_REPORT.md) records the matched 96-request development comparison and a **no-go**
+for a larger fresh Graph answer study under the tested original-51/catalog route+selector hypothesis.
 Development checkout: `C:/Users/serge/DBU-GraphRAG-Worktrees/retrieval-v2-m52-54d8b329`;
 the original OneDrive checkout preserves baseline code/data. Use the development checkout for V2.
-The [plan](IMPLEMENTATION_PLAN.md#m5--planned-retrieval-v2-iteration) stages the shared reranker and
-fresh evaluation next; M5.4–M5.6 have not started. The development UI is on port 8502.
+The [plan](IMPLEMENTATION_PLAN.md#m5--planned-retrieval-v2-iteration) keeps M5.5/M5.6 unstarted under
+that hypothesis; report the limited/negative results. A changed objective needs a recorded amendment.
+The development UI is on port 8502.
 The [archived 6.1 specification](docs/baselines/project_spec_v6_1.md) governs the completed baseline;
 existing `freeze-v2.json` is consumed and unrelated to the new profile name. No new generation/final
 study is authorized. Existing defaults retain baseline/reference behavior.
@@ -30,8 +32,14 @@ four modes, or select **Shared reranker** under **Evidence ordering** in the UI.
 model manifest records seven assets (~87.6 MiB), native 512-token pairs and CPU/runtime policy.
 Oversized inputs or missing/changed assets fail explicitly; queries never download or substitute a
 model. `reference` remains available independently. Reranking preserves the same evidence budgets,
-source/approval guards and exact same-selector Graph fallback. M5.4 will evaluate relevance;
-the engineering smoke does not establish a quality improvement.
+source/approval guards and exact same-selector Graph fallback. The completed development comparison
+finds no incremental registered Graph support; the reranker lowers mean fact-mode evidence recall
+on the six answerable questions. Keep reference defaults; no answer-quality improvement is established.
+
+Completed M5.4 artifacts are under `runs/retrieval-v2/m5-4/`: 96 saved runs and once-only receipts,
+offline candidate/final source-span scores, 24 separate plan probes, tests, UI and acceptance/handoff.
+Do not rerun `scripts/run_m5_comparison.py` on the completed `comparison-v1` matrix or overwrite scores.
+Candidate recall measures an unbounded excerpt union; final Recall@6 measures actual shown evidence.
 
 Four retrieval conditions, Streamlit workflows and checked evidence export operate on the five-paper
 pilot. Both provider adapters and budget controls are implemented; local probes and an isolated logical

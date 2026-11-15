@@ -6,7 +6,7 @@ from research_assistant.contracts import (
     Chunk, DraftAnswer, EvaluationQuestion, EvidenceItem, GoldFact, RetrievalResult,
     SourceExcerpt, SourceSpanRef, text_sha,
 )
-from research_assistant.evaluation.scoring import score_evidence
+from research_assistant.evaluation.scoring import score_candidates, score_evidence
 from research_assistant.generation import answer_question, validate_answer
 from research_assistant.retrieval.evidence import assemble_evidence, estimate_tokens, render_context
 
@@ -93,6 +93,59 @@ def test_invalid_source_hash_and_fabricated_context_are_rejected():
 def test_unanswerable_recall_is_not_zero_or_one():
     result = score_evidence(question([], sets=[], category="unanswerable"), retrieval([]), {})
     assert result["evidence_fact_recall_at_6"] is None
+
+
+def test_candidate_coverage_unbounded_union_uses_same_and_or_rule():
+    chunks = {str(i): source(f'Premise {i}', str(i), i * 100) for i in range(8)}
+    facts = [GoldFact(fact_id='joint', statement='All eight premises',
+                     support_sets=[[span(c) for c in chunks.values()]])]
+    gold = question(facts)
+    items = [item(c) for c in chunks.values()]
+    assert score_candidates(gold, items, chunks)['candidate_support_recall'] == 1
+    assert score_candidates(gold, items[:-1], chunks)['candidate_support_recall'] == 0
+    assert score_evidence(gold, retrieval(items[:6]), chunks)['evidence_fact_recall_at_6'] == 0
+    with pytest.raises(ValueError, match='Duplicate'):
+        score_candidates(gold, items + items[:1], chunks)
+    damaged = items[0].model_copy(deep=True)
+    damaged.excerpts[0].text = 'fabricated'
+    with pytest.raises(ValueError, match='exact source'):
+        score_candidates(gold, [damaged], chunks)
+
+
+def test_candidate_overlap_and_unanswerable_are_not_invented_per_item_scores():
+    first, second = source('abcdefghij', 'a'), source('fghijklmno', 'b', 5)
+    chunks = {c.chunk_id: c for c in (first, second)}
+    gold = question([GoldFact(fact_id='joint', statement='Joined source', support_sets=[[span(second)]])])
+    assert score_candidates(gold, [item(first), item(second, 5)], chunks)['candidate_support_recall'] == 1
+    assert score_candidates(question([], sets=[], category='unanswerable'), [], {})['candidate_support_recall'] is None
+
+
+def test_graph_increment_requires_source_gain_outside_full_ablation_pool():
+    from research_assistant.evaluation.retrieval_diagnostics import incremental_graph_support
+    a, b, irrelevant = source('First premise', 'a'), source('Second premise', 'b', 100), source('Unrelated', 'c', 200)
+    chunks = {c.chunk_id: c for c in (a, b, irrelevant)}
+    gold = question([GoldFact(fact_id='joint', statement='Both', support_sets=[[span(a), span(b)]])])
+    graph, ablation = retrieval([item(a), item(b)]), retrieval([item(a)])
+    result = incremental_graph_support(gold, graph, ablation, {'a'}, chunks)
+    assert result['has_incremental_support'] and result['gains_requiring_novel_source'] == ['joint']
+    assert result['novel_source_witnesses'][0]['candidate_id'] == 'b'
+    # Merely moving an already available candidate into the final six is no graph novelty.
+    assert not incremental_graph_support(gold, graph, ablation, {'a', 'b'}, chunks)['has_incremental_support']
+    # A novel irrelevant item alongside reordered baseline support earns no novelty credit.
+    graph = retrieval([item(a), item(b), item(irrelevant)])
+    assert not incremental_graph_support(gold, graph, ablation, {'a', 'b'}, chunks)['has_incremental_support']
+
+
+def test_saved_candidates_require_complete_raw_and_current_fact_approval():
+    from research_assistant.evaluation.retrieval_diagnostics import validate_candidates
+    from research_assistant.retrieval.catalog import ReviewCatalog
+    chunk = source(); chunks = {chunk.chunk_id: chunk}
+    catalog = ReviewCatalog('corpus', 'head', {}, {})
+    validate_candidates([item(chunk)], chunks, catalog)
+    with pytest.raises(ValueError, match='complete canonical'):
+        validate_candidates([item(chunk, end=5)], chunks, catalog)
+    with pytest.raises(ValueError, match='current approved'):
+        validate_candidates([item(chunk, fact=True)], chunks, catalog)
 
 
 def test_assembler_caps_units_and_counts_graph_metadata_in_budget():

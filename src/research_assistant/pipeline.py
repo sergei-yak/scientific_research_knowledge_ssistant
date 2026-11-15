@@ -134,6 +134,7 @@ def retrieve_vector(request: QueryRequest, repository: GraphRepository,
         aliases=aliases, candidates=audit, retrieval_ms=(time.perf_counter() - start) * 1000,
         audit={'query_encoding_ms': (encoded_at-start)*1000, 'candidate_fetch_ms': (fetched_at-encoded_at)*1000,
                'ann_pool': 24, 'candidate_limit': 12, 'minimum_similarity': minimum_similarity,
+               'eligible_candidates': [item.model_dump() for item in evidence],
                **({'selection':selector.audit(evidence,ranks,'vector',decisions)} if selector is not None else {})},
     )
 

@@ -15,8 +15,17 @@ def validate_context(result: RetrievalResult, chunks: dict[str, Chunk]) -> dict[
         raise ValueError('Context/evidence integrity mismatch')
     if estimate_tokens(context) != result.estimated_tokens or result.estimated_tokens > 1800:
         raise ValueError('Context token estimate/budget mismatch')
+    return source_intervals(result.evidence, chunks)
+
+
+def source_intervals(items: list[EvidenceItem], chunks: dict[str, Chunk]) -> dict[tuple, list[tuple[int, int, str]]]:
+    """Validate exact excerpts and union inputs without pretending they fit a generator context.
+
+    This is also used by offline candidate diagnostics. Approval eligibility is checked
+    by their caller against the shared current catalog, independently of gold coverage.
+    """
     shown: dict[tuple, list[tuple[int, int, str]]] = {}
-    for item in result.evidence:
+    for item in items:
         for excerpt in item.excerpts:
             chunk = chunks.get(excerpt.chunk_id)
             if (chunk is None or excerpt.paper_id != chunk.paper_id or excerpt.source_sha256 != chunk.source_sha256

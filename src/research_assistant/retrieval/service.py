@@ -85,6 +85,7 @@ def retrieve_modes(request: QueryRequest, repo: SearchRepository, encoder, chunk
         audit['fusion'] = [{'id':identity,'rrf_score':score} for identity,score in fusion]
         baseline_ranks={item.id:item.rank for item in baseline}
         if selector is not None:baseline=selector.order(baseline,baseline_ranks,'baseline')
+        audit['eligible_candidates']=[item.model_dump() for item in baseline]
         baseline_result = packed(request.mode,baseline,started,audit)
         if selector is not None:
             audit['selection']=selector.audit(baseline,baseline_ranks,'baseline',baseline_result.candidates)
@@ -183,6 +184,13 @@ def retrieve_modes(request: QueryRequest, repo: SearchRepository, encoder, chunk
             audit['merged_ranking_stage']='before_shared_selector'
         result = packed('graph',ordered,started,audit)
         if selector is not None:audit['selection']=selector.audit(ordered,baseline_ranks,'graph',result.candidates)
+        # Persist actual pre-fallback evidence for every arm before its context can
+        # be replaced by fact ablation. Diagnostics do not alter either ordering.
+        audit['graph_eligible_candidates']=[item.model_dump() for item in ordered]
+        audit['pre_fallback_evidence']=[item.model_dump() for item in result.evidence]
+        audit['pre_fallback_decisions']=result.candidates
+        audit['pre_fallback_context_sha256']=result.context_sha256
+        audit['graph_row_outcomes']=row_outcomes
         if profile_id=='retrieval-v2':
             decisions={d['id']:d for d in result.candidates}
             ranks={identity:rank for rank,identity in enumerate(merged,1)}

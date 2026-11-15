@@ -21,9 +21,11 @@ def cached_encoder() -> Encoder:
     return Encoder()
 
 
-def display_run(run: RunArtifact, settings: Settings) -> None:
+def display_run(run: RunArtifact, settings: Settings,review_directory: Path = Path('data/reviews/pilot')) -> None:
     """Render checked saved request identity, structured views, excerpts and optional synthesis."""
-    view, csv_text = prepare_output(run, settings)
+    view, csv_text = (prepare_output(run, settings,review_directory=review_directory)
+                      if run.request.profile_id=='retrieval-v2' else prepare_output(run, settings))
+    st.caption(f'Retrieval profile: {run.request.profile_id} · selector: {run.request.selector_id}')
     retrieval = run.retrieval
     st.subheader('Query result')
     st.write(run.request.question)
@@ -51,7 +53,8 @@ def display_run(run: RunArtifact, settings: Settings) -> None:
         st.caption(notice)
     st.subheader('LLM synthesis')
     if run.result is None:
-        st.info('Answer not generated. Enable synthesis and submit to request an answer.')
+        st.info('This profile currently returns evidence only.' if run.request.profile_id=='retrieval-v2'
+                else 'Answer not generated. Enable synthesis and submit to request an answer.')
     else:
         if run.result.insufficient_evidence:
             st.warning('The generator reported insufficient evidence.')
@@ -104,22 +107,28 @@ def main() -> None:
         st.error('Configuration is invalid. Check local settings and the console log.')
         return
     workflow = st.selectbox('Workflow', list(WORKFLOWS), format_func=lambda value: value.title())
+    profile = st.selectbox('Retrieval profile', ['baseline','retrieval-v2'],
+                           help='V2 requires the explicit isolated development scope; the pilot default stays baseline.')
+    review_directory=Path('data/reviews/expansion-v1' if profile=='retrieval-v2' else 'data/reviews/pilot')
     with st.form('query'):
         question = st.text_area('Research question', value=WORKFLOWS[workflow], key=f'question_{workflow}', max_chars=2000)
         mode = st.selectbox('Retrieval mode', ['vector', 'hybrid', 'hybrid_facts', 'graph'], index=3)
-        generate = st.checkbox('Generate an answer with the configured model', value=False)
+        generate = st.checkbox('Generate an answer with the configured model', value=False,disabled=profile=='retrieval-v2')
+        if profile=='retrieval-v2':st.caption('V2 reference selector · isolated scope required · retrieval only')
         st.caption(f'Configured generator: {settings.generation_provider} / {settings.generation_model}. Context 4096, output limit 512; one request, no automatic retry or provider switching.')
         with st.expander('Corpus snapshot'):
             corpus = st.text_input('Corpus ID', value=PILOT_CORPUS)
+            scope_file=st.text_input('V2 scope file',value='data/scopes/retrieval-v2.json') if profile=='retrieval-v2' else None
         submitted = st.form_submit_button('Run research query', type='primary')
     if submitted:
         st.session_state.pop('run', None)
         try:
             with st.spinner('Retrieving evidence' + (' and generating an answer…' if generate else '…')):
-                request = QueryRequest(question=question.strip(), corpus_id=corpus, mode=mode)
-                run = run_query(request, settings, generate=generate, workflow=workflow, encoder=cached_encoder())
+                request = QueryRequest(question=question.strip(), corpus_id=corpus, mode=mode,profile_id=profile,scope_file=scope_file)
+                run = run_query(request, settings, generate=generate, workflow=workflow, encoder=cached_encoder(),review_directory=review_directory)
                 write_immutable(Path('runs/ui') / run.run_id / 'run.json', run.model_dump_json(indent=2) + '\n')
-                prepare_output(run, settings)
+                if profile=='retrieval-v2':prepare_output(run, settings,review_directory=review_directory)
+                else:prepare_output(run, settings)
                 st.session_state['run'] = run.model_dump(mode='json')
         except Exception as exc:
             if isinstance(exc, QueryExecutionError):
@@ -129,7 +138,7 @@ def main() -> None:
             st.caption('Check service readiness. Submit with synthesis disabled to inspect evidence independently.')
     if 'run' in st.session_state:
         try:
-            display_run(RunArtifact.model_validate(st.session_state['run']), settings)
+            display_run(RunArtifact.model_validate(st.session_state['run']), settings,review_directory=review_directory)
         except Exception as exc:
             logger.error('Stored result validation failed: %s', settings.redact(str(exc)))
             st.error('Saved evidence cannot be validated against current sources/approvals. Rerun the query; export is disabled.')

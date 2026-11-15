@@ -47,6 +47,7 @@ def fact_content(revision: ReviewRevision, decision_id: str, chunks: dict[str, C
             "entity_revision": revision.entity_revision, "source_sha256": revision.paper.source_sha256,
             "paper_id": revision.paper.paper_id, "kind": revision.draft.kind,
             "entities": [e.model_dump() for e in revision.entities],
+            **({'relation_roles':revision.relation_roles} if revision.relation_roles is not None else {}),
             "rendered_text": rendered, "embedding_text": embedding,
             "evidence": evidence.model_dump(), "claim_text": revision.draft.statement}
 

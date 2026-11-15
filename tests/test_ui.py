@@ -19,7 +19,7 @@ def prepare_app(monkeypatch):
     monkeypatch.setattr(pipeline, 'run_query', query)
     monkeypatch.setattr(pipeline, 'write_immutable', lambda *args: None)
     monkeypatch.setattr('research_assistant.embeddings.Encoder', lambda: object())
-    monkeypatch.setattr(product, 'prepare_output', lambda saved, settings: (product.build_view(saved, catalog), product.evidence_csv(saved)))
+    monkeypatch.setattr(product, 'prepare_output', lambda saved, settings, **kwargs: (product.build_view(saved, catalog), product.evidence_csv(saved)))
     return AppTest.from_file(str(APP), default_timeout=20), calls
 
 
@@ -33,9 +33,24 @@ def test_submit_and_widget_reruns_do_not_repeat_queries_or_relabel_saved_mode(mo
     assert any('Requested: graph' in caption.value and 'Effective: hybrid_facts' in caption.value for caption in app.caption)
     assert any('not generated' in info.value for info in app.info)
     assert len(app.get('download_button')) == 2
-    app.selectbox[1].set_value('vector').run()
+    next(widget for widget in app.selectbox if widget.label=='Retrieval mode').set_value('vector').run()
     assert len(calls) == 1
     assert any('Requested: graph' in caption.value for caption in app.caption)
+
+
+def test_v2_is_explicit_preserves_pilot_default_and_disables_synthesis(monkeypatch):
+    app,calls=prepare_app(monkeypatch)
+    app.run()
+    next(w for w in app.selectbox if w.label=='Retrieval profile').set_value('retrieval-v2').run()
+    assert not app.exception and not calls
+    assert app.checkbox[0].disabled and not app.checkbox[0].value
+    assert next(w for w in app.text_input if w.label=='Corpus ID').value==product.PILOT_CORPUS
+    assert next(w for w in app.text_input if w.label=='V2 scope file').value=='data/scopes/retrieval-v2.json'
+    app.button[0].click().run()
+    assert not app.exception and len(calls)==1
+    assert calls[0][0].profile_id=='retrieval-v2' and calls[0][1]['generate'] is False
+    assert calls[0][1]['review_directory']==Path('data/reviews/expansion-v1')
+    assert any('returns evidence only' in message.value for message in app.info)
 
 
 def test_stale_result_disables_exports_and_failed_new_submit_clears_old_answer(monkeypatch):

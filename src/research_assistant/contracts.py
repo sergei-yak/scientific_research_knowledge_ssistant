@@ -189,6 +189,55 @@ class QueryRequest(Contract):
     question: str = Field(min_length=1, max_length=2000)
     corpus_id: str
     mode: Literal["vector", "hybrid", "hybrid_facts", "graph"] = "vector"
+    profile_id: Literal['baseline', 'retrieval-v2'] = 'baseline'
+    selector_id: Literal['reference'] = 'reference'
+    scope_file: str | None = None
+
+
+class RetrievalProfile(Contract):
+    """Explicit versioned policy identity; M5.2 implements the reference selector only."""
+
+    profile_id: Literal['baseline', 'retrieval-v2']
+    selector_id: Literal['reference'] = 'reference'
+    feature_policy_version: str = 'canonical-evidence-v1'
+    model_identity: dict | None = None
+    policy_sha256: str = Field(pattern=r'^[a-f0-9]{64}$')
+
+
+class ExperimentScope(Contract):
+    """An exact local development copy, distinct from source corpus identity."""
+
+    profile_id: Literal['retrieval-v2']
+    scope_id: str = Field(pattern=r'^m5dev-[a-f0-9]{12}$')
+    corpus_id: str = Field(pattern=r'^[a-f0-9]{64}$')
+    source_chunks_sha256: str = Field(pattern=r'^[a-f0-9]{64}$')
+    review_head: str = Field(pattern=r'^[a-f0-9]{64}$')
+    review_directory: str
+    target_id: str = Field(pattern=r'^dbu-m4-recovery-m5dev-[a-f0-9]{12}$')
+    snapshot_sha256: str = Field(pattern=r'^[a-f0-9]{64}$')
+    target_uri: str
+    container_id: str = Field(pattern=r'^[a-f0-9]{64}$')
+    image_id: str = Field(pattern=r'^sha256:[a-f0-9]{64}$')
+    volumes: list[str] = Field(min_length=2, max_length=2)
+    baseline_root: str
+    baseline_graph_sha256: str = Field(pattern=r'^[a-f0-9]{64}$')
+
+
+class CandidateTrace(Contract):
+    """Actual selection-stage outcomes without evaluation gold; stage is explicit in its owner."""
+
+    candidate_id: str
+    origins: list[str]
+    baseline_member: bool
+    approval_source_checks: dict[str, bool]
+    route: list[dict] = Field(default_factory=list)
+    score: float | None = Field(default=None, allow_inf_nan=False)
+    rank_before: int | None = Field(default=None, ge=1)
+    rank_after: int | None = Field(default=None, ge=1)
+    selected: bool
+    exclusion_reason: str | None = None
+    units: int = Field(ge=0, le=6)
+    estimated_tokens: int = Field(ge=0)
 
 
 class RetrievalResult(Contract):

@@ -142,6 +142,8 @@ def run_query(request: QueryRequest, settings: Settings, context_tokens: int = 4
               review_directory: Path = Path('data/reviews/pilot'), *, generate: bool = True,
               workflow: str = 'ask', encoder: Encoder | None = None) -> RunArtifact:
     """Execute one query; retrieval-only runs never construct a provider or call a model."""
+    if request.profile_id=='retrieval-v2' and generate:
+        raise ValueError('retrieval-v2 is retrieval-only until its later generation/evaluation gates')
     from research_assistant.retrieval.service import retrieve_request
     identity = code_identity()
     if encoder is None:
@@ -162,6 +164,8 @@ def run_query(request: QueryRequest, settings: Settings, context_tokens: int = 4
         generation_requested=generate, workflow=workflow,
     )
     client = None
+    if request.profile_id=='retrieval-v2':
+        run.configuration.update(profile=retrieval.audit['profile'],experiment_scope=retrieval.audit['experiment_scope'])
     try:
         if generate:
             client = create_client(settings, context_tokens, output_tokens) if retrieval.evidence else None

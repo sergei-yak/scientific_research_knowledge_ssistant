@@ -40,6 +40,9 @@ def main(argv: list[str] | None = None) -> int:
     retrieve.add_argument('--review-dir',type=Path,default=Path('data/reviews/pilot'))
     retrieve.add_argument('--minimum-similarity',type=float,default=0.30,help='Vector-only threshold; hybrid channels use fixed top-12 rankings')
     retrieve.add_argument('--output',type=Path,required=True)
+    for query_parser in (ask,retrieve):
+        query_parser.add_argument('--profile',choices=['baseline','retrieval-v2'],default='baseline')
+        query_parser.add_argument('--scope-file',help='Explicit local data/scopes declaration required for retrieval-v2')
     export = subparsers.add_parser('export-evidence', help='Validate a saved run and export its exact evidence as CSV')
     export.add_argument('--run', type=Path, required=True)
     export.add_argument('--review-dir', type=Path, default=Path('data/reviews/pilot'))
@@ -230,13 +233,15 @@ def main(argv: list[str] | None = None) -> int:
                     repository.close()
             elif args.command == 'retrieve':
                 from research_assistant.pipeline import run_query
-                request = QueryRequest(question=args.question,corpus_id=args.corpus,mode=args.mode)
+                request = QueryRequest(question=args.question,corpus_id=args.corpus,mode=args.mode,
+                    profile_id=args.profile,scope_file=args.scope_file)
                 run = run_query(request, settings, minimum_similarity=args.minimum_similarity,
                                 review_directory=args.review_dir, generate=False)
                 retrieval = run.retrieval
                 result = run.model_dump(mode='json')
             else:
-                request = QueryRequest(question=args.question, corpus_id=args.corpus, mode=args.mode)
+                request = QueryRequest(question=args.question, corpus_id=args.corpus, mode=args.mode,
+                    profile_id=args.profile,scope_file=args.scope_file)
                 result = ask_question(request, settings, args.context_tokens,
                                       args.max_output_tokens, args.minimum_similarity,args.review_dir).model_dump(mode="json")
             if args.output:

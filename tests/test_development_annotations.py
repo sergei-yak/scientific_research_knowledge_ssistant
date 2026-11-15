@@ -148,22 +148,20 @@ def test_only_exact_displayed_human_decisions_validate_gold_and_replay_is_idempo
         dev.record_gold_decisions(*args,batch_seconds=121)
 
 
-def test_later_revocation_is_preserved_and_old_receipt_replay_cannot_resurrect_gold(dataset):
+def test_later_revocation_is_preserved_and_old_receipt_replay_cannot_resurrect_gold(dataset,monkeypatch):
     root, _, _ = dataset
     dev.export_review_batch(root,['DEV-D1'],'batch-01')
+    moments=iter([datetime(2026,1,1,tzinfo=timezone.utc),datetime(2026,1,1,tzinfo=timezone.utc)+timedelta(seconds=1)])
+    class SyntheticClock(datetime):
+        @classmethod
+        def now(cls,tz=None):return next(moments)
+    # Set distinct times before imports invoke review_status; Windows clocks may share a tick.
+    monkeypatch.setattr(dev,'datetime',SyntheticClock)
     args=(root,'batch-01','approved.json','SYNTHETIC TEST FIXTURE','Approve test',
           {'DEV-D1':{'decision':'approved','reason':'Synthetic'}})
     dev.record_gold_decisions(*args)
     dev.record_gold_decisions(root,'batch-01','revoked.json','SYNTHETIC TEST FIXTURE','Needs review test',
         {'DEV-D1':{'decision':'needs_review','reason':'Synthetic revocation'}})
-    # Fix distinct synthetic timestamps rather than depending on machine timer precision.
-    for name,at in [('approved.json',datetime(2026,1,1,tzinfo=timezone.utc)),
-                    ('revoked.json',datetime(2026,1,1,tzinfo=timezone.utc)+timedelta(seconds=1))]:
-        path=root/'human-inputs'/name
-        receipt=json.loads(path.read_text(encoding='utf-8'))
-        receipt.pop('receipt_sha256')
-        receipt['received_at']=at.isoformat()
-        path.write_text(json.dumps({**receipt,'receipt_sha256':fingerprint(receipt)},indent=2)+'\n',encoding='utf-8')
     assert dev.record_gold_decisions(*args)['questions']['DEV-D1']=='needs_review'
 
 

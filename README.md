@@ -2,13 +2,28 @@
 
 Current implementation: **M0–M4.3 complete; frozen evaluation scored and reported**.
 
-**Planned next iteration:** Specification 6.2 defines `retrieval-v2`; M5.0 documentation and
-[M5.1 read-only diagnostics](docs/M5_1_REPORT.md) are complete. The
-[implementation plan](IMPLEMENTATION_PLAN.md#m5--planned-retrieval-v2-iteration) stages isolated
-traversal, a gated shared reranker and fresh evaluation; M5.2–M5.6 have not started.
+**Current iteration:** Specification 6.2 defines `retrieval-v2`; M5.0–M5.2 are complete.
+[M5.2](docs/M5_2_REPORT.md) implements isolated Finding/entity-start traversal with the reference selector.
+Development checkout: `C:/Users/serge/DBU-GraphRAG-Worktrees/retrieval-v2-m52-54d8b329`;
+the original OneDrive checkout preserves baseline code/data. Use the development checkout for V2.
+The [plan](IMPLEMENTATION_PLAN.md#m5--planned-retrieval-v2-iteration) stages the shared reranker and
+fresh evaluation next; M5.3–M5.6 have not started. The development UI is on port 8502.
 The [archived 6.1 specification](docs/baselines/project_spec_v6_1.md) governs the completed baseline;
-existing `freeze-v2.json` is unrelated to the new profile name. No V2 commands or models are
-installed/implemented yet; the commands below remain baseline commands.
+existing `freeze-v2.json` is consumed and unrelated to the new profile name. No reranker model or
+new generation/final study is authorized. Existing default commands remain baseline behavior.
+
+From the development checkout, retrieve V2 evidence with a fresh output path:
+
+```powershell
+Set-Location 'C:/Users/serge/DBU-GraphRAG-Worktrees/retrieval-v2-m52-54d8b329'
+uv sync --locked --offline
+docker compose -p dbu-m4-recovery-m5dev-2d43d2b9a2fa up -d --pull never neo4j
+uv run --locked --offline python -m research_assistant retrieve --profile retrieval-v2 --scope-file data/scopes/retrieval-v2.json --corpus 298e3cafbda1ffdf95c8ee66fa2b9ba3a81dc8d5e26bfb94816655ca41de3fbf --review-dir data/reviews/expansion-v1 --mode graph --question 'Which methods were evaluated on MuSiQue?' --output runs/my-new-v2-query.json
+```
+
+The scope file, data and credentials are local ignored assets. V2 rejects a different endpoint/head;
+UI corpus/profile selection is explicit, with the pilot default retained. V2 synthesis stays disabled
+until its later gates. The native fixture uses `RUN_V2_SMOKE=1` and cleans only UUID-owned test data.
 
 Four retrieval conditions, Streamlit workflows and checked evidence export operate on the five-paper
 pilot. Both provider adapters and budget controls are implemented; local probes and an isolated logical

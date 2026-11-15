@@ -16,7 +16,7 @@ from research_assistant.graph.repository import corpus_names
 from research_assistant.ingestion.sources import load_corpus_chunks
 from research_assistant.pipeline import write_immutable
 from research_assistant.review.audit import audit_packets
-from research_assistant.review.contracts import EntityDefinition, HumanDecision, ReviewRevision
+from research_assistant.review.contracts import EntityDefinition, HumanDecision, ReviewRevision, mapping_identity
 
 
 @contextmanager
@@ -160,6 +160,12 @@ def decision_matches(revision: ReviewRevision, decision: HumanDecision) -> bool:
 def validate_revision(revision: ReviewRevision, chunks: dict[str, Chunk], entities: dict) -> list[str]:
     """Fail closed on source/alias/support changes; never infer missing experiment conditions."""
     errors = list(revision.validation_errors)
+    if revision.relation_roles is not None:
+        dataset_ids={e.id for e in revision.entities if e.kind=='dataset'}
+        if (revision.draft.kind!='finding' or not revision.relation_roles
+                or set(revision.relation_roles)-dataset_ids
+                or revision.entity_revision!=mapping_identity(revision.entities,revision.relation_roles)):
+            errors.append('Relationship role requires a fresh exact-bound Finding/dataset revision')
     if not revision.support or len(revision.support) > 3:
         errors.append("One to three exact supporting spans are required")
     if revision.draft.kind == "evaluation" and (revision.paper.document_type == "survey"

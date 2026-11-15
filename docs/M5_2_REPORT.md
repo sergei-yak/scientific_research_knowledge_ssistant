@@ -1,0 +1,55 @@
+# M5.2 — Isolated scope and broader reviewed traversal
+
+**Complete, 2026-11-15.** The reference-selector V2 profile now supports Finding and direct-entity starts, with explicit scope guards and pre-fallback diagnostics. Synthetic tests prove supported traversal outside the fact-ablation pool. The real-catalog engineering check preserves the original approvals and correctly falls back; **no improvement in answer quality has been established**. M5.3 model selection/shared reranking has not started.
+
+## Isolation and environment
+
+Implementation checkout: `C:/Users/serge/DBU-GraphRAG-Worktrees/retrieval-v2-m52-54d8b329`, branch `codex/retrieval-v2-m52-54d8b329`, created from baseline commit `bf36018`. The original project checkout, its executable/model bytes, working database and consumed evaluation remain preserved. Use this implementation checkout for subsequent M5 development; the original checkout still runs the baseline.
+
+New database: Compose project `dbu-m4-recovery-m5dev-2d43d2b9a2fa`, Bolt `bolt://127.0.0.1:60395`. Its two UUID-owned volumes, container ID, pinned Neo4j 5.26.32 image and loopback ports were attested before restoring the existing verified snapshot. The `m4-recovery` namespace is retained to reuse the existing strict restore guard; **the target's purpose is M5 development**, not another final evaluation. Only this exact restored copy's expansion corpus was made writable and marked with scope `m5dev-2d43d2b9a2fa`.
+
+Scope declaration: `data/scopes/retrieval-v2.json`. It binds source corpus/chunk hash, unchanged review head/directory, target/container/image/volumes and snapshot commitment. The database binds the complete declaration hash, including its snapshot identity. `.env` sets `COMPOSE_PROJECT_NAME` to the isolated project, so even a bare Compose command in this checkout cannot accidentally address the original project. Application write entry points reject another endpoint; scope-aware retrieval/display/export also reject mismatched source, checkout, corpus, head, selector or target identity. Missing scope declarations fail closed for development-worktree writes.
+
+The copied source catalog remains **20 papers / 1,427 chunks / 51 approved facts**. Current catalog SHA-256 is `8f0ad62ac6f6d190ef15b981d3bececa9d777203bac61d8b82361a3394004989`; head is `03724d5d24329b73ff53ca69bebc2df4b7e3707576ea15c8b7ccd12687019c64`. No real claim, mapping or review decision was revised. Extraction journals and current accounting files were preserved; no allowance was reset. Public M5.0/M5.1 receipts were copied for continuity, without private inputs.
+
+Environment: lockfile unchanged, **95 resolved / 79 installed packages compatible**. Initial offline setup could not find the CUDA wheel in the cache. The new environment was seeded from the installed locked dependencies using independent directories and normal immutable dependency hardlinks. A subsequent `uv sync --locked` built the new editable package using the pinned build backend; later locked/offline commands pass. Model assets were copied and hash-checked, with **zero new model downloads**. No application dependency was changed.
+
+## Implementation boundaries
+
+- `contracts.py` / `retrieval/profiles.py` define explicit profile, scope and trace contracts. Baseline remains the default; M5.2 accepts only the reference selector. CLI/UI pass these contracts to the same services. V2 synthesis is explicitly unavailable in this milestone; no provider is constructed for retrieval-only requests.
+- `retrieval/anchors.py` selects at most one explicit unambiguous Method and Dataset by longest normalized alias/stable ID, then fills at most four total anchors with leading assembled evidence. Ambiguous spellings are omitted rather than merged; reviewed seed aliases supply per-kind fallback, without becoming question matches.
+- `graph/templates_v2.py` keeps four static families. Shared method/dataset routes accept approved Findings or Evaluations and indexed entity starts. Citation remains discovery with approved source-backed targets. Finding/evaluation linkage uses reviewed Method mappings; unbound standalone `ABOUT_EVALUATION` edges are not promoted into new approval semantics. One ordered five-row cap follows each union; overall limits remain 16 calls / 80 rows / 40 retained candidates / five path edges.
+- `retrieval/service.py` shares the existing channel pools, reference ordering, atomic packer and exact fallback. Actual row outcomes, duplicate/already-baseline flags, retained ranks, chosen paths and typed pre-fallback selection/exclusion traces remain available when the returned context falls back. Standalone trace token costs are labeled and are not additive context costs. Gold is absent from seeding/ranking/packing.
+- Review contracts optionally bind `relation_roles` into a fresh revision and mapping hash. Explicit `ABOUT_DATASET` requires that new exact-bound Finding/dataset decision. Omitted roles serialize exactly as before, preserving all legacy journal/fact hashes. Packets display proposed roles; strict V2 graph readback rejects role substitution. Existing `MENTIONS` remains nonauthoritative. Snapshot validation recognizes these relationship types without granting approval.
+- Shared product validation rechecks current source/approval/scope/profile metadata before display/export. UI keeps the pilot and baseline defaults, exposes requested/effective profile and mode, and requires explicit V2 corpus/scope selection.
+
+These are implementations of [R2.1–R2.6](../project_spec.md#planned-iteration-retrieval-v2), not a new ranking model, corpus or evidence budget. The M5.1 comparison manifest remains the future development-comparison policy; this milestone does not execute its 96-read matrix.
+
+## Verification and actual outcomes
+
+**Offline:** 213 tests passed, six integration cases deselected. Tests cover scope/selector/path rejection, original default behavior, longest/ambiguous aliases, four-anchor/union limits, source ownership, explicit failures, exact fallback with retained traces, new-role approval/revocation and UI plumbing. Existing development-annotation test timing was made deterministic using a synthetic clock; production evaluation rules and real receipts were unchanged.
+
+**Native:** four selected integration cases passed on the isolated server: legacy retrieval/review/MPNet guards plus the new V2 fixture. The final V2 fixture also passed after strengthening all-family coverage. It uses UUID-owned synthetic nodes and explicitly synthetic decisions, cleans only its own records/indexes and leaves the restored graph intact. It proves:
+
+- A source paper containing **no Evaluations** reaches a supported Finding in another paper outside the complete fact-ablation pool, with one new graph item selected.
+- Indexed direct Method/entity starts return supported targets outside that pool; approved Finding/dataset links work while `MENTIONS` is excluded.
+- Unapproved role substitution, wrong-paper ownership, stale heads and revocation fail closed.
+- All four route families return supported results under their shared caps. Representative PROFILE counts were method **690 hits / 14 maximum operator rows**, dataset **434 / 14**, citation **581 / 14**, and finding linkage **1,074 / 84**; final row counts 5 / 1 / 5 / 5. Direct entity profiles also use index seeks. These measurements describe the small fixture, not a general work bound; transaction timeouts remain enforced. The preserved legacy native fixture separately exercises timeout behavior.
+
+**Real catalog:** eight engineering retrievals use one existing public discovery question across baseline/V2 and all four modes, with cached MiniLM and no gold or synthesis. All three non-Graph context hashes match across profiles. Fact-ablation and Graph return six units / **1,385 estimated tokens**, exposing two MuSiQue reporting papers. Legacy Graph returns 56 rows, V2 Graph 65; V2 still selects no novel graph item and returns exact fact-ablation evidence with its explicit fallback reason. These counts are engineering observations, not the M5.4 ablation or a relevance/quality result. A real CLI call and restarted Streamlit query additionally validate the same shared behavior and checked exports.
+
+**Preservation:** source/review/catalog hashes remain unchanged; target graph fingerprint after full scope binding is `58a501badf4c47b7e1ab7fbc606a393ba953c342ec5fc2cceafa419bb6bc10fe` (1,996 nodes / 2,191 relationships). Its expected difference from the source is the new copy's corpus control metadata. Original graph fingerprint remains `e56b78bc3d96e1517f249433518f20087707bf872f5990ca116c412b663f5325`; all 118 frozen files and original report/acceptance bindings are checked from the original checkout. The consumed evaluation target stays stopped. Generation/extraction/paid calls and private access are zero.
+
+## Artifacts, resolved issues and handoff
+
+Local evidence is under `runs/retrieval-v2/m5-2/`: UUID `2d43d2b9a2fa/` setup declaration/startup/recovery receipts; `engineering-smoke/`; `cli-graph.json`; `native-proof-accepted.json`; offline/native XML reports; UI run/provenance receipts; final acceptance and handoff. Failed/intermediate outputs are retained. Relevant failures resolved during implementation:
+
+- Bootstrap restored the new database successfully, then used a nonexistent `GraphRepository.project` attribute. Before completion, exact restored equality/target identity were reverified; only the new target's scope metadata was then written. The helper now uses explicit `PROJECT`.
+- A positive-result trace test caught Pydantic copying audit data before trace updates. Successful Graph results now explicitly retain the completed audit, as fallback already did.
+- The initial synthetic seed text did not expose its intended Method in leading evidence; the fixture was corrected to exercise Finding-start alias fallback and later strengthened to exercise citation results.
+- Initial write guards ran before pure vector/source validation; ordering was fixed so invalid inputs still fail before any service access.
+- A Windows clock tick caused a preexisting synthetic approval/revocation test to collide before its post-import timestamp repair. Its clock is now fixed before import; the real conflicting-timestamp rejection remains unchanged.
+
+**Not performed:** reranker selection/download/inference, real-catalog enrichment, extraction, new human approvals, the full development comparison, answer generation, paid probes or any private/final study. No M5.2 blocker remains. The live development UI is at `http://127.0.0.1:8502/`; it requires explicit V2 profile, expansion corpus ID and scope file. The original pilot UI/defaults are not replaced.
+
+**Next: M5.3**, pin and verify one compatible shared cross-encoder model/feature/score/resource manifest before implementing its selector arm. Keep initial comparisons on the original 51 approvals. A new final experiment still requires its later fresh-data/freeze/authorization gates.

@@ -38,6 +38,7 @@ class MPNetRepository(GraphRepository):
 
     def setup(self, corpus_id: str, chunks: dict[str, Chunk], vectors: list[list[float]], manifest: dict) -> dict:
         """Add only verified 768-D fields; refuse conflicts, frozen corpora and source mismatch."""
+        from research_assistant.graph.scope import guard_development_write
         label, _ = corpus_names(corpus_id)
         array = np.asarray(vectors, dtype=float)
         if (array.shape != (len(chunks), 768) or not np.isfinite(array).all()
@@ -46,6 +47,7 @@ class MPNetRepository(GraphRepository):
         if (manifest['corpus_id'] != corpus_id or manifest['source_chunks_sha256'] != source_identity(chunks)
                 or manifest['dimensions'] != 768 or manifest['vectors_sha256'] != fingerprint(vectors)):
             raise ValueError('MPNet manifest does not match the unchanged source corpus')
+        guard_development_write(self.settings)
         self.snapshot(corpus_id)
         encoded = json.dumps(manifest, sort_keys=True)
         with self.driver.session(database=self.database) as session:

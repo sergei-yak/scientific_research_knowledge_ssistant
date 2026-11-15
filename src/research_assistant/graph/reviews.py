@@ -34,6 +34,8 @@ class ReviewRepository(GraphRepository):
 
     def publish(self, corpus_id: str, review: dict, vectors: list[list[float]], encoder_revision: str) -> dict:
         """Validate first, then update claims, facts and review head in one transaction."""
+        from research_assistant.graph.scope import guard_development_write
+        guard_development_write(self.settings)
         active_label, vector_index, text_index = fact_names(corpus_id)
         source_label, _ = corpus_names(corpus_id)
         facts = review["facts"]
@@ -130,6 +132,9 @@ class ReviewRepository(GraphRepository):
                         entity_id = fingerprint(entity.model_dump())
                         entity_label = "Method" if entity.kind == "method" else "Dataset"
                         edge = ("OF_METHOD" if entity.kind == "method" else "ON_DATASET") if fact["kind"] == "evaluation" else ("ABOUT_METHOD" if entity.kind == "method" else "MENTIONS")
+                        edge=fact.get('relation_roles',{}).get(entity.id,edge)
+                        if edge not in {'OF_METHOD','ON_DATASET','ABOUT_METHOD','MENTIONS','ABOUT_DATASET'}:
+                            raise ValueError('Unknown reviewed relation role')
                         old_entity = tx.run(f"MATCH (e:{entity_label} {{id:$id}}) RETURN e.project AS project",
                                             id=entity_id).single()
                         if old_entity and old_entity["project"] != self.project:

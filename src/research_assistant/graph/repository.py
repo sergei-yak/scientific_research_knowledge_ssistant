@@ -25,6 +25,7 @@ class GraphRepository:
     """Use project-owned records and preserve unrelated data/schema."""
 
     def __init__(self, settings: Settings) -> None:
+        self.settings = settings
         self.driver = GraphDatabase.driver(
             settings.neo4j_uri,
             auth=(settings.neo4j_user, settings.neo4j_password.get_secret_value()),
@@ -39,6 +40,7 @@ class GraphRepository:
     def ingest(self, snapshot: dict, manifest: PaperManifestEntry,
                chunks: list[Chunk], vectors: list[list[float]]) -> dict:
         """MERGE immutable source records; mark a snapshot ready only after indexing."""
+        from research_assistant.graph.scope import guard_development_write
         label, index = corpus_names(snapshot["corpus_id"])
         array = np.asarray(vectors)
         if (array.shape != (len(chunks), 384) or not np.isfinite(array).all()
@@ -46,6 +48,7 @@ class GraphRepository:
             raise ValueError("Invalid ingestion vector dimensions/values")
         if any(chunk.paper_id != manifest.paper_id or chunk.source_sha256 != manifest.source_sha256 for chunk in chunks):
             raise ValueError("Chunk belongs to a different paper/source")
+        guard_development_write(self.settings)
         with self.driver.session(database=self.database) as session:
             for kind in ("Paper", "Chunk", "Corpus"):
                 session.run(f"CREATE CONSTRAINT ra_{kind.lower()}_id IF NOT EXISTS FOR (n:{kind}) REQUIRE n.id IS UNIQUE").consume()
@@ -103,6 +106,7 @@ class GraphRepository:
 
     def combine(self, snapshot: dict, chunk_ids: list[str]) -> dict:
         """Index an explicit union of owned chunks; preserve member snapshots and metadata."""
+        from research_assistant.graph.scope import guard_development_write
         label, index = corpus_names(snapshot["corpus_id"])
         paper_ids = [p["paper_id"] for p in snapshot["papers"]]
         if len(set(chunk_ids)) != len(chunk_ids) or len(chunk_ids) != snapshot["chunk_count"]:
@@ -110,6 +114,7 @@ class GraphRepository:
         if any(edge["citing"] not in paper_ids or edge["cited"] not in paper_ids
                for edge in snapshot["metadata"]["citation_edges"]):
             raise ValueError("Citation endpoint outside selected corpus")
+        guard_development_write(self.settings)
         with self.driver.session(database=self.database) as session:
             existing = session.run(
                 "MATCH (c:Corpus {id:$id}) RETURN c.project AS project,c.snapshot_json AS snapshot,properties(c)['frozen'] AS frozen",

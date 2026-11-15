@@ -39,6 +39,8 @@ def export_batch(directory: Path, claim_ids: list[str], batch_directory: Path, p
             lines += ["> " + quote.replace("\n", "\n> "), ""]
         for entity in item["entities"]:
             lines += [f"Explicit {entity['kind']} binding: {entity['name']}; aliases {entity['aliases']}; identity `{entity['id']}`. These exact bindings are part of the revision being reviewed.", ""]
+        if item.get('relation_roles') is not None:
+            lines += ['Proposed relationship roles requiring this fresh decision: '+json.dumps(item['relation_roles'],sort_keys=True), '']
         for span in item["support"]:
             chunk = chunks[span["chunk_id"]]
             lines += [f"[PDF page {chunk.page}]({chunk.source_url}#page={chunk.page}); chunk `{chunk.chunk_id}` "

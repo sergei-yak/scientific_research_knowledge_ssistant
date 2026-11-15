@@ -50,6 +50,8 @@ class SearchRepository(ReviewRepository):
 
     def prepare_indexes(self, corpus_id: str) -> dict:
         """Add indexes only; never reset volumes, replace sources or change human decisions."""
+        from research_assistant.graph.scope import guard_development_write
+        guard_development_write(self.settings)
         label, _ = corpus_names(corpus_id)
         chunk_text, method_alias, dataset_alias = search_names(corpus_id)
         with self.driver.session(database=self.database) as session:
@@ -104,7 +106,8 @@ class SearchRepository(ReviewRepository):
         if {r['name'] for r in rows if r['state']=='ONLINE'} != set(names):
             raise ValueError('Required retrieval indexes are unavailable; run explicit search-setup')
 
-    def fact_vectors(self, catalog: ReviewCatalog, chunks: dict[str, Chunk], revision: str) -> dict[str, list[float]]:
+    def fact_vectors(self, catalog: ReviewCatalog, chunks: dict[str, Chunk], revision: str,
+                     *, strict_roles: bool = False) -> dict[str, list[float]]:
         """Compare graph materialization with the shared authoritative projection, including support/owners."""
         label, _, _ = fact_names(catalog.corpus_id)
         rows = self.tx.run(f'''
@@ -113,8 +116,9 @@ OPTIONAL MATCH (p:Paper)-[:REPORTS_EVALUATION|REPORTS_FINDING]->(n)
 WITH f,n,collect(DISTINCT p.id) AS owners
 RETURN properties(f) AS fact,properties(n) AS claim,owners,
  [(n)-[r:SUPPORTED_BY]->(s:Chunk) | {{id:s.id,source:s.source_json,start:r.start,end:r.end,sha:r.source_sha256}}] AS support,
- [(n)-[r]->(e) WHERE type(r) IN ['OF_METHOD','ON_DATASET','ABOUT_METHOD','MENTIONS']
-   AND (e:Method OR e:Dataset) | properties(e)] AS entities
+ [(n)-[r]->(e) WHERE type(r) IN ['OF_METHOD','ON_DATASET','ABOUT_METHOD','MENTIONS','ABOUT_DATASET']
+   AND (e:Method OR e:Dataset) | properties(e)] AS entities,
+ [(n)-[r]->(e) WHERE (e:Method OR e:Dataset) | {{id:e.id,role:type(r)}}] AS entity_roles
 ''', project=self.project, corpus=catalog.corpus_id).data()
         if len(rows) != len(catalog.facts) or {row['fact']['id'] for row in rows} != set(catalog.facts):
             raise ValueError('Active graph facts differ from the current review projection')
@@ -151,6 +155,15 @@ RETURN properties(f) AS fact,properties(n) AS claim,owners,
             if actual_support != expected_support:
                 raise ValueError('Graph fact support relationships changed')
             entities = {e['id']:e for e in row['entities']}
+            if strict_roles:
+                expected_roles=[]
+                for definition in expected['entities']:
+                    edge=(('OF_METHOD' if definition['kind']=='method' else 'ON_DATASET') if expected['kind']=='evaluation'
+                          else ('ABOUT_METHOD' if definition['kind']=='method' else 'MENTIONS'))
+                    edge=expected.get('relation_roles',{}).get(definition['id'],edge)
+                    expected_roles.append((fingerprint(definition),edge))
+                if sorted((r['id'],r['role']) for r in row['entity_roles'])!=sorted(expected_roles):
+                    raise ValueError('Graph relationship role differs from its exact approved mapping')
             if set(entities) != {fingerprint(e) for e in expected['entities']}:
                 raise ValueError('Graph fact entity relationships changed')
             for definition in expected['entities']:
@@ -191,11 +204,18 @@ RETURN properties(f) AS fact,properties(n) AS claim,owners,
             rows.sort(key=lambda row:(-row['similarity'],row['id']))
         return rows[:12]
 
-    def traverse(self, corpus_id: str, template: str, params: dict, explain: str = '') -> tuple[list[dict], dict | None]:
+    def traverse(self, corpus_id: str, template: str, params: dict, explain: str = '',
+                 profile_id: str = 'baseline') -> tuple[list[dict], dict | None]:
         """Execute one fixed template, optionally collecting its read-only EXPLAIN/PROFILE summary."""
         if explain not in {'','EXPLAIN','PROFILE'}:
             raise ValueError('Invalid query inspection mode')
-        query = traversal_templates(corpus_id)[template]
+        if profile_id == 'retrieval-v2':
+            from research_assistant.graph.templates_v2 import traversal_templates_v2
+            query = traversal_templates_v2(corpus_id)[template]
+        elif profile_id == 'baseline':
+            query = traversal_templates(corpus_id)[template]
+        else:
+            raise ValueError('Unknown retrieval profile')
         result = self.tx.run((explain+' ' if explain else '') + query, **params)
         rows = result.data()
         summary = result.consume()

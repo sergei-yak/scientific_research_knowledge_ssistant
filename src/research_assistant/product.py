@@ -60,6 +60,24 @@ def validate_run(run: RunArtifact, settings: Settings,
     if run.request.mode != run.retrieval.requested_mode:
         raise ValueError('Requested mode differs from the saved retrieval')
     result = run.retrieval
+    if run.request.profile_id=='retrieval-v2':
+        from research_assistant.retrieval.profiles import reference_profile, validate_scope
+        with review_lock(review_directory):
+            scoped_catalog=load_catalog(review_directory,run.request.corpus_id,chunks)
+            scoped_repo=SearchRepository(settings)
+            try:
+                scope=validate_scope(run.request,settings,review_directory,chunks,scoped_catalog,scoped_repo)
+            finally:
+                scoped_repo.close()
+        if (result.audit.get('profile')!=reference_profile('retrieval-v2').model_dump()
+                or result.audit.get('experiment_scope')!=scope.model_dump()
+                or run.configuration.get('profile')!=result.audit['profile']
+                or run.configuration.get('experiment_scope')!=scope.model_dump()
+                or result.audit.get('requested_profile')!='retrieval-v2'
+                or result.audit.get('effective_profile')!='retrieval-v2'):
+            raise ValueError('Saved profile/selector/scope provenance differs from the validated request')
+    elif result.audit.get('requested_profile')=='retrieval-v2':
+        raise ValueError('Saved requested profile differs from retrieval provenance')
     if result.fallback_reason:
         if (run.request.mode != 'graph' or result.effective_mode != 'hybrid_facts'
                 or result.fallback_reason not in {'no_new_eligible_graph_candidates', 'graph_candidates_not_selected_within_budget'}
@@ -87,7 +105,8 @@ def validate_run(run: RunArtifact, settings: Settings,
             if snapshot != run.corpus_manifest:
                 raise ValueError('Corpus manifest changed since retrieval')
             with repo.reading(run.request.corpus_id, catalog.head, settings.graph_query_timeout_seconds):
-                repo.fact_vectors(catalog, chunks, snapshot['encoder_revision'])
+                if run.request.profile_id=='retrieval-v2':repo.fact_vectors(catalog,chunks,snapshot['encoder_revision'],strict_roles=True)
+                else:repo.fact_vectors(catalog, chunks, snapshot['encoder_revision'])
                 for item in run.retrieval.evidence:
                     if item.kind == 'approved_fact':
                         checked_fact(item, catalog)

@@ -24,7 +24,8 @@ from research_assistant.settings import Settings
 
 BASE_LABELS = {'Paper', 'Chunk', 'Corpus', 'ReviewedClaim', 'FactText', 'Method', 'Dataset', 'ReviewState'}
 RELATIONSHIPS = {'HAS_PAPER', 'HAS_CHUNK', 'CITES', 'REPORTS_EVALUATION', 'REPORTS_FINDING',
-                 'OF_METHOD', 'ON_DATASET', 'ABOUT_METHOD', 'ABOUT_EVALUATION', 'SUPPORTED_BY', 'REPRESENTS'}
+                 'OF_METHOD', 'ON_DATASET', 'ABOUT_METHOD', 'ABOUT_DATASET', 'ABOUT_EVALUATION',
+                 'MENTIONS', 'SUPPORTED_BY', 'REPRESENTS'}
 PROPERTIES = {'id', 'text', 'search_text', 'canonical_name', 'aliases', 'embedding_384', 'embedding_768'}
 
 

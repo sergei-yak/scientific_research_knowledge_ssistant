@@ -1,6 +1,6 @@
-# Frozen evaluation proposal — awaiting authorization
+# Frozen evaluation plan — authorized V2
 
-V2 preparation, recovery and public freeze verification have passed. V1 remains a historical draft, superseded before execution by stricter local-endpoint/immutable-image validation. Approval applies only to the exact V2 hash below. Preparing/verifying a proposal does not authorize generation on held-out questions.
+V2 preparation, recovery and public freeze verification passed. The user then explicitly authorized this exact V2 proposal: “Authorize this frozen local evaluation.” Receipt: `runs/m4-3/final-run-authorization.json`; verbatim displayed question/response: `final-run-chat-response.json`. V1 remains historical, superseded before execution. Approval applies only to the exact V2 hash and limits below; preparation alone did not grant authorization.
 
 ## Committed state
 
@@ -39,6 +39,6 @@ A durable ledger keyed by the exact freeze SHA allows one started execution. A n
 
 After the 96 answer runs and 48 encoder reads complete, the runner exports randomized anonymous answers and a blank human score form. It withholds condition results until all real human scores are complete and sealed. Correctness/citation support use the existing 0/0.5/1 rubric; abstention is separate. No AI-authored human scores or automatic LLM judge. The later reveal reports development and held-out results separately, paired wins/ties/losses, source-evidence recall (unanswerable N/A), encoder latency/recall, fallbacks and limitations.
 
-## Authorization required
+## Recorded authorization
 
-The user must explicitly approve this exact freeze and the bounds above once. That approval will be recorded in a new hash-bound `FinalRunAuthorization` receipt; the annotation-review receipt and exhausted M3.3 paid allowance do not qualify. No private/final execution has occurred during M4.2 preparation. Human score collection remains a later checkpoint after execution.
+The user's new exact-V2 approval is recorded in a validated hash-bound `FinalRunAuthorization` receipt. Annotation-review approvals and the exhausted M3.3 paid allowance remain separate. No private/final execution occurred during M4.2 preparation; M4.3 completed authorized execution and awaits human scoring. Human score collection remains a later checkpoint, with no automatic scores or mode reveal.

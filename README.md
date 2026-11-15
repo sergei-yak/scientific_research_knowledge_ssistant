@@ -1,12 +1,12 @@
 # Scientific Research Knowledge Assistant
 
-Current implementation: **M0–M3.3 and M4.1 complete; full five-paper acceptance gate passed**.
+Current implementation: **M0–M4.2 complete; M4.3 execution passed, human answer scoring pending**.
 Four retrieval conditions, Streamlit workflows and checked evidence export operate on the five-paper
 pilot. Both provider adapters and budget controls are implemented; local probes and an isolated logical
 restore passed. Both OpenAI live probes passed after the user replaced an expired key. The configured
 generator remains local Qwen. See `docs/M3_2_REPORT.md` and `docs/M3_3_REPORT.md` for actual outcomes;
 M4.1 selection, 20-paper ingestion, expansion-claim review and all eight expanded development-gold
-validations are complete; all 16 private annotations have human approval and public 24-question readiness is attested. M4.2 engineering, recovery and V2 freeze verification pass; its explicit final-run approval is pending. M4.3 has not started.
+validations are complete; all 16 private annotations have human approval and public 24-question readiness is attested. M4.2 is complete, including exact-V2 human authorization. M4.3 execution passed: 96 answer runs / 48 encoder reads / zero failures / $0 paid. Real blind human answer scores and condition reveal remain gated. See `docs/M4_3_REPORT.md`.
 All eight M2.3 pilot development annotations also remain human-validated; see `docs/M2_3_REPORT.md`.
 Read `project_spec.md` and `AGENTS.md` before making changes.
 
@@ -407,7 +407,7 @@ The evaluator imported an explicit exact-bound statement by Sergei Iakovlev and 
 30 minutes total private review; blank forms/pending reports remain historical. Public bindings/schema
 checks pass; `runs/m4-1/evaluation-readiness-manifest.json` commits 24 questions, six per category.
 See the evaluator handoff and `runs/m4-1/final-acceptance.json` for checks and limits. Private inputs stay external.
-No final run or further paid calls are authorized. The UI keeps the five-paper pilot default.
+Only the exact-V2 local final study is authorized; no further paid calls. The UI keeps the five-paper pilot default.
 
 Use an explicit scope for expanded retrieval; synthesis is not requested by this command:
 
@@ -453,14 +453,14 @@ The development-only scoring API is `evaluation.blinding`: `build_development_bu
 incomplete matrices, missing generation responses and inconsistent comparison settings. Only
 humans fill real scoring forms. `pytest tests/test_m4_readiness.py` exercises synthetic fixtures;
 those fixture scores do not enter project results. The dedicated frozen runner below is implemented;
-held-out execution is still unauthorized.
+one exact-V2 local execution completed; do not restart the used freeze.
 
 ## M4.2 separate encoder and frozen evaluator
 
 Current verified proposal: [run plan](docs/M4_2_RUN_PLAN.md), [actual checks/limits](docs/M4_2_REPORT.md),
 `runs/m4-2/freeze-v2.json` (SHA-256 `62feb4b684efda52fa3b85e4e9b1283ead51aa944a31dae87f2b7ccc00770942`).
-V1 is historical/superseded before execution. The restored V2 target is stopped with its read-only
-configuration and volumes retained. No extra setup/recovery is needed before the approval checkpoint.
+V1 is historical/superseded before execution. The restored V2 target retains its read-only configuration and volumes; only the authorized runner starts/stops it.
+The authorized study completed (`runs/m4-3/execution-outcome-v2.json`); target stopped and working graph unchanged. Do not launch an additional execution.
 
 The working application keeps its existing MiniLM modes. MPNet is a separate retrieval-only experiment:
 
@@ -490,7 +490,8 @@ resets working data or existing volumes. `NEO4J_READ_ONLY` defaults false for th
 The evaluator-only runner is `uv run --locked --offline python -m research_assistant.evaluation.runner --help`.
 Its `run`, `seal` and `reveal` operations require the exact public freeze and a real numerical human
 authorization receipt. It refuses private-path access before authorization; new output directories or
-receipts do not reset a started freeze's durable execution ledger. No final run is currently authorized.
+receipts do not reset a started freeze's durable execution ledger. One exact-V2 local study is now authorized
+and completed; no retry or additional started execution is authorized.
 All runs, failure diagnostics, scoring packets (including their `public/` subdirectory), gold and reveal
 maps stay in the external evaluator root. Only aggregate status/hashes return to development.
 Complete human scores must be sealed before revealing any condition results. An interrupted/failed
@@ -502,6 +503,14 @@ actual execution revisions are recorded. Current checks: 190 offline passes; thr
 native cases; 40 exact saved-score replays and 40 fresh restored-target reads. Five fresh contexts/two
 recalls differ after index rebuild. Two local development-generation smoke checks and a restarted UI
 query pass. These checks are not the final study; human answer scoring remains pending.
+
+M4.3's authorized execution has now completed: 96 answer runs, 48 separate vector-only reads,
+zero failed/unknown attempts, $0 paid; working graph unchanged and evaluation target stopped.
+The next checkpoint is [blind human answer scoring](docs/M4_3_SCORING_GUIDE.md), with outcomes in
+[M4.3 report](docs/M4_3_REPORT.md). The exact local scoring-page/CSV paths and packet hashes are in
+`runs/m4-3/blind-scoring-handoff-20261115T015647005058Z.json`. All 96 judgments are initially blank;
+complete them locally, export the completed CSV into the same external execution directory, then
+use the existing receipt for guarded `seal` followed by `reveal`. Do not rerun the consumed study.
 
 Actual task outcomes, limitations and evidence paths are maintained in `IMPLEMENTATION_PLAN.md`.
 Dependency, Docker and model downloads may need network access; service checks need local

@@ -1,6 +1,14 @@
 # Scientific Research Knowledge Assistant
 
 Current implementation: **M0–M4.3 complete; frozen evaluation scored and reported**.
+
+**Planned next iteration:** Specification 6.2 defines `retrieval-v2`; M5.0 changes documentation only.
+The [implementation plan](IMPLEMENTATION_PLAN.md#m5--planned-retrieval-v2-iteration) stages read-only
+diagnostics, isolated traversal, a gated shared reranker and fresh evaluation. M5.1–M5.6 have not
+started. The [archived 6.1 specification](docs/baselines/project_spec_v6_1.md) governs the completed
+baseline; existing `freeze-v2.json` is unrelated to the new profile name. No V2 commands or models
+are installed/implemented by this amendment; the commands below remain baseline commands.
+
 Four retrieval conditions, Streamlit workflows and checked evidence export operate on the five-paper
 pilot. Both provider adapters and budget controls are implemented; local probes and an isolated logical
 restore passed. Both OpenAI live probes passed after the user replaced an expired key. The configured

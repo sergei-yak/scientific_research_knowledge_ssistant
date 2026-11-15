@@ -1,5 +1,7 @@
 # Blind answer scoring
 
+**Current V2 status: complete.** All 96 submitted human scores passed validation and were sealed before aggregate reveal. The original download, blank form and private packet remain preserved; see [final results](FINAL_EVALUATION_REPORT.md). The procedure below is retained for provenance. Do not edit sealed results or repeat immutable exports; later corrections require a disclosed amendment.
+
 Score the anonymous answer packet locally in the external evaluator directory. Do not attach/paste questions, answers, packets, completed forms or reveal mappings into development chat. All 96 answers require real human scores before the runner reveals conditions. The earlier gold-annotation approvals do not score these generated answers.
 
 For each answer, read the question, answer and cited source quotations. Check whether the answer addresses all requested parts, preserves attribution/conditions and avoids invented measurements. Use the indexed-corpus scope; a missing retrieved passage does not make an answerable question unanswerable. Do not infer a method from answer style or open the reveal map. If more source checking is needed, use the private review/source materials locally and record uncertainty in notes.

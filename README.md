@@ -1,12 +1,12 @@
 # Scientific Research Knowledge Assistant
 
-Current implementation: **M0–M4.2 complete; M4.3 execution passed, human answer scoring pending**.
+Current implementation: **M0–M4.3 complete; frozen evaluation scored and reported**.
 Four retrieval conditions, Streamlit workflows and checked evidence export operate on the five-paper
 pilot. Both provider adapters and budget controls are implemented; local probes and an isolated logical
 restore passed. Both OpenAI live probes passed after the user replaced an expired key. The configured
 generator remains local Qwen. See `docs/M3_2_REPORT.md` and `docs/M3_3_REPORT.md` for actual outcomes;
 M4.1 selection, 20-paper ingestion, expansion-claim review and all eight expanded development-gold
-validations are complete; all 16 private annotations have human approval and public 24-question readiness is attested. M4.2 is complete, including exact-V2 human authorization. M4.3 execution passed: 96 answer runs / 48 encoder reads / zero failures / $0 paid. Real blind human answer scores and condition reveal remain gated. See `docs/M4_3_REPORT.md`.
+validations are complete; all 16 private annotations have human approval and public 24-question readiness is attested. M4.2 is complete, including exact-V2 human authorization. M4.3 execution passed: 96 answer runs / 48 encoder reads / zero failures / $0 paid. All 96 human scores validated/sealed before aggregate reveal. See [final research results](docs/FINAL_EVALUATION_REPORT.md) and `docs/M4_3_REPORT.md`.
 All eight M2.3 pilot development annotations also remain human-validated; see `docs/M2_3_REPORT.md`.
 Read `project_spec.md` and `AGENTS.md` before making changes.
 
@@ -502,15 +502,17 @@ commit is allowed when all frozen executable/model/configuration hashes still ma
 actual execution revisions are recorded. Current checks: 190 offline passes; three separately enabled
 native cases; 40 exact saved-score replays and 40 fresh restored-target reads. Five fresh contexts/two
 recalls differ after index rebuild. Two local development-generation smoke checks and a restarted UI
-query pass. These checks are not the final study; human answer scoring remains pending.
+query pass. Those are preparation checks; the separately authorized final study and human scoring are now complete.
 
 M4.3's authorized execution has now completed: 96 answer runs, 48 separate vector-only reads,
 zero failed/unknown attempts, $0 paid; working graph unchanged and evaluation target stopped.
-The next checkpoint is [blind human answer scoring](docs/M4_3_SCORING_GUIDE.md), with outcomes in
-[M4.3 report](docs/M4_3_REPORT.md). The exact local scoring-page/CSV paths and packet hashes are in
-`runs/m4-3/blind-scoring-handoff-20261115T015647005058Z.json`. All 96 judgments are initially blank;
-complete them locally, export the completed CSV into the same external execution directory, then
-use the existing receipt for guarded `seal` followed by `reveal`. Do not rerun the consumed study.
+All 96 actual human judgments have now validated and been sealed before guarded reveal. See
+[final research results](docs/FINAL_EVALUATION_REPORT.md) and [M4.3 audit](docs/M4_3_REPORT.md).
+Hybrid has the highest mean human correctness on this small held-out set; Graph falls back24/24,
+with identical fact-ablation contexts, so no selected-traversal benefit is demonstrated. The original
+[scoring guide](docs/M4_3_SCORING_GUIDE.md) remains procedural documentation. The blank handoff is
+historical; current receipt/results are `runs/m4-3/scoring-finalization-outcome-20261115T035119990546Z.json`
+and `aggregate-results-20261115T035119990546Z.json`. Do not repeat immutable exports or the consumed study.
 
 Actual task outcomes, limitations and evidence paths are maintained in `IMPLEMENTATION_PLAN.md`.
 Dependency, Docker and model downloads may need network access; service checks need local

@@ -41,4 +41,4 @@ After the 96 answer runs and 48 encoder reads complete, the runner exports rando
 
 ## Recorded authorization
 
-The user's new exact-V2 approval is recorded in a validated hash-bound `FinalRunAuthorization` receipt. Annotation-review approvals and the exhausted M3.3 paid allowance remain separate. No private/final execution occurred during M4.2 preparation; M4.3 completed authorized execution and awaits human scoring. Human score collection remains a later checkpoint, with no automatic scores or mode reveal.
+The user's new exact-V2 approval is recorded in a validated hash-bound `FinalRunAuthorization` receipt. Annotation-review approvals and the exhausted M3.3 paid allowance remain separate. No private/final execution occurred during M4.2 preparation; M4.3 completed authorized execution and all 96 submitted human scores were subsequently validated/sealed before guarded aggregate reveal. No automatic human scores, amendments or additional execution occurred; see `FINAL_EVALUATION_REPORT.md`.

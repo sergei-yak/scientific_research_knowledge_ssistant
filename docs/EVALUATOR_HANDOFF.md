@@ -1,6 +1,6 @@
 # M4.1 evaluator handoff
 
-**M4.1 readiness is attested; M4.2 V2 freeze is verified and explicitly authorized for one bounded local M4.3 study.** All 16 private annotations have human approval. The development agent must not create, list, search or read held-out questions, gold or reveal mappings. Use an evaluator-controlled directory outside this repository; do not paste private content into this chat. A Git ignore rule does not establish that boundary.
+**M4.1 readiness and M4.2/M4.3 are complete: one frozen study, all 96 human scores sealed, then aggregate reveal/report.** All 16 private annotations have human approval. The development agent must not create, list, search or read held-out questions, gold or reveal mappings. Use an evaluator-controlled directory outside this repository; do not paste private content into this chat. A Git ignore rule does not establish that boundary.
 
 ## Inputs and deliverables
 
@@ -35,7 +35,7 @@ The local guide remains at `C:\Users\serge\DBU-GraphRAG-Evaluation\expansion-v1\
 
 ## Scoring rehearsal and rubric
 
-`evaluation/blinding.py` public APIs support **development-only rehearsals**; their guards remain. They require a complete four-condition matrix and valid saved answers/contexts, assign random anonymous IDs, shuffle answers and export `public/answers.json` plus a blank `public/scores.csv`. Identity mapping stays in `private/reveal.json`; its hash is committed before scoring. Do not open the mapping until the completed form is sealed. The dedicated `evaluation.runner` reuses the shared primitives after exact-freeze authorization/private-boundary checks. For final evaluation, **every** packet file, including `public/`, stays in the external evaluator directory; never copy it into the workspace/chat. The runner completed the exact-V2 study: 96 answer runs / 48 encoder reads; no conditions revealed. Real blind human scoring is now pending; see `M4_3_REPORT.md` and `M4_3_SCORING_GUIDE.md`.
+`evaluation/blinding.py` public APIs support **development-only rehearsals**; their guards remain. They require a complete four-condition matrix and valid saved answers/contexts, assign random anonymous IDs, shuffle answers and export `public/answers.json` plus a blank `public/scores.csv`. Identity mapping stays in `private/reveal.json`; its hash is committed before scoring. Do not open the mapping until the completed form is sealed. The dedicated `evaluation.runner` reuses the shared primitives after exact-freeze authorization/private-boundary checks. For final evaluation, **every** packet file, including `public/`, stays in the external evaluator directory; never copy it into the workspace/chat. The runner completed the exact-V2 study: 96 answer runs / 48 encoder reads; no conditions revealed. All 96 actual human scores have since validated/sealed and aggregates are revealed; see `M4_3_REPORT.md` and `FINAL_EVALUATION_REPORT.md`.
 
 The public packet contains the unchanged question/answer, abstention flag and cited source quotations. It omits requested/effective modes, fallback, ranks, timing, graph paths, provider identity and internal item IDs. Answer wording and evidence can still hint at a condition; this is identity blinding, not a guarantee that a reviewer cannot infer a method. Use a second reviewer if feasible; disclose a single-reviewer limitation otherwise.
 

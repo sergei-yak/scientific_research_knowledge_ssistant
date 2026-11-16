@@ -2,15 +2,17 @@
 
 Current implementation: **M0–M4.3 complete; frozen evaluation scored and reported**.
 
-**Current iteration:** Specification 6.4 governs `retrieval-v2`; M5.0–M5.4 are complete.
+**Current iteration:** Specification 6.5 governs `retrieval-v2`; M5.0–M5.4 are complete.
 [M5.4](docs/M5_4_REPORT.md) records the matched 96-request development comparison and a **no-go**
 for a larger fresh Graph answer study under the tested original-51/catalog route+selector hypothesis.
 Development checkout: `C:/Users/serge/DBU-GraphRAG-Worktrees/retrieval-v2-m52-54d8b329`;
 the original OneDrive checkout preserves baseline code/data. Use the development checkout for V2.
-The user subsequently requested **M5.5 readiness preparation**; specification **6.4** records a
+The user subsequently requested **M5.5 readiness preparation**; specification **6.5** retains a
 preparation-only exception while preserving that negative gate. The [proposal](docs/M5_5_STUDY_PROPOSAL.md)
 and [status](docs/M5_5_REPORT.md) disclose pending fresh evaluator, implementation, restore and authorization
 gates. The 12-condition/288-request matrix is proposed only; no fresh final run is authorized.
+The user accepted the new drafts with an explicit exploratory author-context limitation; read the
+[mandatory study amendment](docs/M5_5_STUDY_AMENDMENT.md). Human source approval and final execution remain pending.
 **M6** is reserved for product demonstration readiness and has not started.
 The development UI is on port 8502.
 The [archived 6.1 specification](docs/baselines/project_spec_v6_1.md) governs the completed baseline;

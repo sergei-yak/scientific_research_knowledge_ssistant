@@ -80,3 +80,9 @@ def test_exact_authoring_receipt_cannot_be_reused_after_scope_change():
 def test_missing_or_inferred_human_provenance_is_rejected(updates):
     with pytest.raises(ValidationError):
         receipt(scope(),**updates)
+
+
+def test_model_copy_cannot_bypass_the_authoring_receipt_boundary():
+    value = scope(); approval = receipt(value).model_copy(update={'approved':False})
+    with pytest.raises(ValidationError):
+        check_authoring_authorization(value,approval)

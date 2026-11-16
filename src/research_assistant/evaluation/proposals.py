@@ -141,6 +141,8 @@ class EvaluatorAuthoringAuthorization(Contract):
 
 def check_authoring_authorization(scope: EvaluatorAuthoringScope, receipt: EvaluatorAuthoringAuthorization) -> dict:
     """Bind the exact proposal to a real receipt before dispatch; perform no private I/O."""
+    scope = EvaluatorAuthoringScope.model_validate(scope.model_dump(mode='json'))
+    receipt = EvaluatorAuthoringAuthorization.model_validate(receipt.model_dump(mode='json'))
     if receipt.scope_sha256 != fingerprint(scope.model_dump(mode='json')):
         raise ValueError('Human authoring receipt belongs to a different exact scope')
     return {'authoring_scope_authorized': True, 'final_execution_authorized': False,

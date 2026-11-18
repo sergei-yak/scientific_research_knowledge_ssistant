@@ -261,6 +261,17 @@ def retrieve_request(request: QueryRequest, settings: Settings, review_directory
 def retrieve_scoped(request: QueryRequest, settings: Settings, review_directory: Path,
                     minimum_similarity: float, encoder: Encoder | None) -> tuple[dict,RetrievalResult]:
     """Validate physical/current scope before any V2 search, retaining shared retrieval services."""
+    return retrieve_guarded(request, settings, review_directory, minimum_similarity, encoder, validate_scope)
+
+
+def retrieve_guarded(request: QueryRequest, settings: Settings, review_directory: Path,
+                     minimum_similarity: float, encoder: Encoder | None, scope_guard) -> tuple[dict,RetrievalResult]:
+    """One retrieval assembly for development and separately authorized frozen scopes.
+
+    The ordinary entry point always supplies its development guard. Only the
+    exact-authorized evaluator supplies a verified read-only guard; algorithms,
+    source checks, selector cache and evidence assembly remain shared.
+    """
     request_started=time.perf_counter()
     profile=retrieval_profile(request.profile_id,request.selector_id)
     chunks=load_corpus_chunks(request.corpus_id)
@@ -268,7 +279,7 @@ def retrieve_scoped(request: QueryRequest, settings: Settings, review_directory:
         catalog=load_catalog(review_directory,request.corpus_id,chunks)
         repo=SearchRepository(settings)
         try:
-            scope=validate_scope(request,settings,review_directory,chunks,catalog,repo)
+            scope=scope_guard(request,settings,review_directory,chunks,catalog,repo)
             selector=None
             model_readiness=None
             if request.selector_id=='cross_encoder':
@@ -285,8 +296,9 @@ def retrieve_scoped(request: QueryRequest, settings: Settings, review_directory:
                     result=retrieve_vector(request,repo,encoder,minimum_similarity,selector=selector)
             else:
                 result=retrieve_modes(request,repo,encoder,chunks,None if request.mode=='hybrid' else catalog,
-                    encoder.revision,settings.graph_query_timeout_seconds,profile_id='retrieval-v2',scope_id=scope.scope_id,selector=selector)
-            validate_scope(request,settings,review_directory,chunks,catalog,repo)
+                    encoder.revision,settings.graph_query_timeout_seconds,profile_id=request.profile_id,
+                    scope_id=getattr(scope, 'projection_scope_id', scope.scope_id),selector=selector)
+            scope_guard(request,settings,review_directory,chunks,catalog,repo)
             result.audit.update(profile=profile.model_dump(),experiment_scope=scope.model_dump(),
                                 requested_profile=request.profile_id,effective_profile=request.profile_id,
                                 final_selected_ids=[item.id for item in result.evidence])

@@ -1,6 +1,6 @@
 # Scientific Research Knowledge Assistant — Project Specification
 
-**Version 6.5 — submission edition, 2026-11-15.** `project_spec.md` is authoritative. Exact [6.1](docs/baselines/project_spec_submission_v6_1.md), [6.2](docs/baselines/project_spec_submission_v6_2.md), [6.3](docs/baselines/project_spec_submission_v6_3.md) and [6.4](docs/baselines/project_spec_submission_v6_4.md) archives remain. M5.5 preparation continues with explicitly disclosed author-context exposure; all sixteen fresh source annotations are human-approved, while technical readiness and final-run authorization remain pending. The old `freeze-v2.json` stays consumed.
+**Version 6.5 — submission edition, 2026-11-15.** `project_spec.md` is authoritative. Exact [6.1](docs/baselines/project_spec_submission_v6_1.md), [6.2](docs/baselines/project_spec_submission_v6_2.md), [6.3](docs/baselines/project_spec_submission_v6_3.md) and [6.4](docs/baselines/project_spec_submission_v6_4.md) archives remain. M5.5 preparation continues with explicitly disclosed author-context exposure; all sixteen fresh source annotations are human-approved and the versioned evaluator is implemented/tested; live recovery/resource proof, final freeze and final-run authorization remain pending. The old `freeze-v2.json` stays consumed.
 
 ## 1. Project Overview & Context
 

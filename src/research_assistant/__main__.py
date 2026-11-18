@@ -76,6 +76,7 @@ def main(argv: list[str] | None = None) -> int:
     backup.add_argument('--snapshot-dir', type=Path, required=True)
     backup.add_argument('--review-dir', type=Path, default=Path('data/reviews/pilot'))
     backup.add_argument('--freeze-corpus', action='store_true', help='Freeze the exported target corpus only; preserve working graph flags')
+    backup.add_argument('--matched-runtime-assets', action='store_true', help='Copy pinned model/tokenizer assets into a new matched-study recovery export')
     backup.add_argument('--output', type=Path, required=True)
     restore = subparsers.add_parser('snapshot-restore', help='Restore only into an attested empty disposable Compose target')
     restore.add_argument('--snapshot-dir', type=Path, required=True)
@@ -162,7 +163,8 @@ def main(argv: list[str] | None = None) -> int:
                 result = provider_checks(selected_settings, args.providers)
             elif args.command == 'snapshot-export':
                 from research_assistant.graph.recovery import export_snapshot
-                result = export_snapshot(settings, args.snapshot_dir, args.review_dir, freeze_corpus=args.freeze_corpus)
+                result = export_snapshot(settings, args.snapshot_dir, args.review_dir, freeze_corpus=args.freeze_corpus,
+                                         matched_runtime_assets=args.matched_runtime_assets)
             elif args.command == 'snapshot-restore':
                 from research_assistant.graph.recovery import restore_snapshot
                 result = restore_snapshot(args.snapshot_dir,

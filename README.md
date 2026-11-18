@@ -9,9 +9,9 @@ Development checkout: `C:/Users/serge/DBU-GraphRAG-Worktrees/retrieval-v2-m52-54
 the original OneDrive checkout preserves baseline code/data. Use the development checkout for V2.
 The user subsequently requested **M5.5 readiness preparation**; specification **6.5** retains a
 preparation-only exception while preserving that negative gate. The [proposal](docs/M5_5_STUDY_PROPOSAL.md)
-and [status](docs/M5_5_REPORT.md) record sixteen human-approved fresh annotations; versioned implementation,
-resource/restore and authorization gates remain pending. The 12-condition/288-request matrix is proposed only; no fresh final run is authorized.
-**M5.5.3 source/human annotation review is complete**: all sixteen current held-out annotations are approved. The versioned source-only attestation still needs its M5.5.2 runner-readiness adapter. The user accepted the new drafts with an explicit exploratory author-context limitation; read the
+and [status](docs/M5_5_REPORT.md) record sixteen human-approved fresh annotations; the [versioned evaluator implementation](docs/M5_5_2_REPORT.md) now passes 335 offline and two configured native checks.
+Live capacity/restore and final freeze/authorization gates remain pending. The 12-condition/288-request matrix is proposed only; no fresh final run is authorized.
+**M5.5.3 source/human annotation review is complete**: all sixteen current held-out annotations are approved. M5.5.2 now validates the versioned source-only attestation without opening private files; this does not establish live matched-run readiness. The user accepted the new drafts with an explicit exploratory author-context limitation; read the
 [mandatory study amendment](docs/M5_5_STUDY_AMENDMENT.md). Its pending-review wording records the earlier disposition checkpoint; current annotation approval is complete. Final technical readiness and execution remain pending.
 **M6** is reserved for product demonstration readiness and has not started.
 The development UI is on port 8502.
@@ -566,3 +566,21 @@ Docker/Ollama access. A sandbox permission failure is not proof that a service i
 Technical sources: [PyTorch previous versions](https://pytorch.org/get-started/previous-versions/),
 [uv PyTorch integration](https://docs.astral.sh/uv/guides/integration/pytorch/),
 [Ollama structured outputs](https://docs.ollama.com/capabilities/structured-outputs).
+
+
+## M5.5 matched evaluator commands (implementation checkout only)
+
+M5.5.2 is implemented; M5.5.4 real capacity/read-only recovery and M5.5.5 freeze/authorization are pending. Run these commands from `C:/Users/serge/DBU-GraphRAG-Worktrees/retrieval-v2-m52-54d8b329`, never the preserved baseline checkout. No private inputs are consumed by setup/help:
+
+```powershell
+uv run --locked --offline python -m research_assistant.evaluation.matched_setup source-check --attestation runs/retrieval-v2/m5-5/m5-5-3-source-human-readiness-attestation-v1-20261118T022242625263Z.json --sha256 bb785c0a08896d6144af8010d4dbeba919642c4d72a4f4a5409f621092b84f6b
+uv run --locked --offline python -m research_assistant.evaluation.matched_setup --help
+uv run --locked --offline python -m research_assistant.evaluation.matched_runner --help
+uv run --locked --offline python -m pytest -m "not integration"
+```
+
+`source-check` confirms annotation metadata only; its runtime-readiness and execution-authorization fields remain false. `scope-prepare` requires a real fresh matched recovery proof and running read-only target; `freeze-prepare` requires that scope, exact model/runtime/source bindings and the approved source attestation. Both create new immutable public proposals. `freeze-verify` reads public commitments only. None grants execution permission.
+
+A later new `snapshot-export --review-dir data/reviews/expansion-v1 --freeze-corpus --matched-runtime-assets --snapshot-dir <new-directory> --output <new-report.json>` must use the shared locked CLI prefix. It copies pinned encoder/reranker/token-cache assets into a new snapshot and leaves working graph flags/old snapshots unchanged. The future recovery workflow must use a unique `dbu-m4-recovery-m5eval-<12-hex>` target, owned volumes and proven server read-only configuration; the generic legacy recovery script is not yet the matched recovery proof.
+
+Only after M5.5.5's exact numerical human authorization may the dedicated runner `run` consume private inputs. `--start-target` starts/stops only the exact retained container ID, with no recreation/pull/restore. It refuses a previously started freeze, even with a new receipt or output path. No automatic resume/retry. `seal` requires the completed human CSV within its exact external execution directory; `reveal` requires the immutable complete score seal. Normal application commands never accept evaluator permits, and V2 UI/CLI synthesis remains disabled. See [implementation report](docs/M5_5_2_REPORT.md) for actual checks and limits.

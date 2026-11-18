@@ -159,6 +159,18 @@ def run_query(request: QueryRequest, settings: Settings, context_tokens: int = 4
         snapshot,retrieval = retrieve_request(request,settings,review_directory,minimum_similarity)
     else:
         snapshot,retrieval = retrieve_request(request,settings,review_directory,minimum_similarity,encoder=encoder)
+    return _finish_query(request, settings, snapshot, retrieval, identity, context_tokens, output_tokens,
+                        minimum_similarity, generate=generate, workflow=workflow)
+
+
+def _finish_query(request: QueryRequest, settings: Settings, snapshot: dict, retrieval: RetrievalResult,
+                 identity: dict, context_tokens: int, output_tokens: int, minimum_similarity: float,
+                 *, generate: bool, workflow: str, evaluation_permit=None) -> RunArtifact:
+    """Shared grounded generation/error handling after an entry point establishes retrieval authority."""
+    if generate and (request.profile_id == 'retrieval-v2' or evaluation_permit is not None):
+        from research_assistant.evaluation.matched_permits import validate_slot
+        validate_slot(evaluation_permit, request, settings, context_tokens, output_tokens,
+                      minimum_similarity, consume=True)
     before = check_resources()
     run = RunArtifact(
         run_id=uuid.uuid4().hex, created_at=datetime.now(timezone.utc).isoformat(),

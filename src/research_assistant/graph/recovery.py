@@ -179,7 +179,8 @@ def safe_asset(root: Path, relative: str) -> Path:
     return path
 
 
-def export_snapshot(settings: Settings, output: Path, review_directory: Path, *, freeze_corpus: bool = False) -> dict:
+def export_snapshot(settings: Settings, output: Path, review_directory: Path, *, freeze_corpus: bool = False,
+                    matched_runtime_assets: bool = False) -> dict:
     """Export graph twice around allowlisted asset copying; reject intervening writes/inconsistency."""
     if output.exists():
         raise ValueError('Snapshot directory already exists; never overwrite a backup')
@@ -226,6 +227,18 @@ def export_snapshot(settings: Settings, output: Path, review_directory: Path, *,
         relative_files.update(['pyproject.toml', 'uv.lock', 'compose.yaml', '.env.example',
                                '.streamlit/config.toml', 'README.md', 'project_spec.md',
                                'project_spec_submission.md', 'IMPLEMENTATION_PLAN.md', 'AGENTS.md'])
+        if matched_runtime_assets:
+            # A new export only. Never append assets to an existing immutable backup.
+            from research_assistant.evaluation.matched_assets import public_asset
+            from research_assistant.retrieval.reranker import verified_manifest
+            from research_assistant.smoke import encoder_artifact
+            verified_manifest()
+            for name in ('all-MiniLM-L6-v2', 'all-mpnet-base-v2'):
+                encoder_artifact(name)
+            for directory in ('.cache/models', '.cache/rerankers', '.cache/tiktoken'):
+                for path in Path(directory).rglob('*'):
+                    if path.is_file() and '__pycache__' not in path.parts:
+                        relative_files.add(public_asset(path).relative_to(root).as_posix())
         output.mkdir(parents=True)
         assets = {}
         for relative in sorted(relative_files):
@@ -255,6 +268,9 @@ def export_snapshot(settings: Settings, output: Path, review_directory: Path, *,
                     'assets': assets, 'nodes': len(graph['nodes']), 'relationships': len(graph['relationships']),
                     'configuration': settings.model_dump(mode='json', exclude={'neo4j_password', 'openai_api_key', 'openalex_api_key'}),
                     'external_dependencies': 'Locked Python environment and separately cached pinned encoder weights; not copied.'}
+        if matched_runtime_assets:
+            manifest['matched_runtime_assets'] = True
+            manifest['external_dependencies'] = 'Locked Python environment and local Ollama generator; pinned encoders/reranker/token cache copied.'
         write_immutable(output / 'manifest.json', json.dumps(manifest, indent=2) + '\n')
     return {'snapshot': str(output), 'graph_sha256': manifest['graph_sha256'],
             'manifest_sha256': hashlib.sha256((output / 'manifest.json').read_bytes()).hexdigest(),

@@ -115,10 +115,43 @@ def test_recovery_never_reuses_existing_container_or_volume(tmp_path,monkeypatch
 
 
 def test_native_cases_must_really_execute_without_skips(tmp_path,monkeypatch):
-    def command(args,env,log,timeout):
+    def command(args,env,log,timeout,**kwargs):
         Path(args[-1].split('=',1)[1]).write_text('<testsuites><testsuite tests="2" failures="0" errors="0" skipped="1"/></testsuites>')
     monkeypatch.setattr(recovery,'command',command)
     with pytest.raises(ValueError,match='execute/pass'):recovery.native_guards(Settings(),tmp_path)
+
+
+def test_explicit_harness_continuation_retains_request_caps_and_cannot_replay(tmp_path,monkeypatch):
+    plan,path=fixture(tmp_path,monkeypatch);probes.claim(plan,path)
+    for i in range(12):probes.reserve(plan,'retrieval','working-'+str(i))
+    amendment=probes.EngineeringContinuation(prior_plan_path=str(path),prior_plan_sha256=probes.file_sha(path),
+        prior_report_path='runs/retrieval-v2/m5-5/SYNTHETIC/report.json',prior_report_sha256='a'*64,
+        prior_native_xml_sha256='b'*64,
+        reason='native fixtures must run in verified recovery copy, preserving working write guard')
+    continued=plan.model_copy(update={'continuation':amendment,'native_fixture_attempt_limit':4,
+        'output_directory':'runs/retrieval-v2/m5-5/SYNTHETIC-corrected'})
+    probes.claim(continued,path)
+    for i in range(12):probes.reserve(continued,'retrieval','restored-'+str(i))
+    with pytest.raises(ValueError):probes.reserve(continued,'retrieval','extra')
+    probes.reserve(continued,'generation','first');probes.reserve(continued,'generation','second')
+    with pytest.raises(ValueError):probes.reserve(continued,'generation','extra')
+    with pytest.raises(ValueError):probes.claim(continued,path)
+    rows=[json.loads(line) for line in probes.LEDGER.read_text().splitlines()]
+    assert sum(r.get('kind')=='retrieval' for r in rows)==24
+    assert sum(r.get('kind')=='generation' for r in rows)==2
+
+
+def test_native_harness_uses_copied_sources_and_current_locked_interpreter(tmp_path,monkeypatch):
+    copied=tmp_path/'SYNTHETIC-copy';copied.mkdir()
+    calls=[]
+    def command(args,env,log,timeout,**kwargs):
+        calls.append((args,env,kwargs))
+        Path(args[-1].split('=',1)[1]).write_text('<testsuites><testsuite tests="2" failures="0" errors="0" skipped="0"/></testsuites>')
+    monkeypatch.setattr(recovery,'command',command)
+    assert recovery.native_guards(Settings(),tmp_path,copied)['tests']==2
+    args,env,kwargs=calls[0]
+    assert args[:3]==[recovery.sys.executable,'-m','pytest']
+    assert kwargs['cwd']==copied and env['PYTHONPATH']==str(copied/'src')
 
 
 def test_parity_reports_failures_and_differences_without_changing_evidence():

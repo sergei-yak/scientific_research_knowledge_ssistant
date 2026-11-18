@@ -7,10 +7,11 @@ import os
 from pathlib import Path
 import socket
 import subprocess
+import sys
 import time
 import xml.etree.ElementTree as ET
 
-from research_assistant.contracts import fingerprint
+from research_assistant.contracts import ExperimentScope,QueryRequest,RetrievalResult,fingerprint
 from research_assistant.embeddings import Encoder
 from research_assistant.evaluation.freeze import file_sha
 from research_assistant.evaluation.matched_assets import public_asset
@@ -19,6 +20,12 @@ from research_assistant.evaluation.matched_scope import FrozenEvaluationScope, i
 from research_assistant.graph.recovery import attest_target, capture, export_snapshot, require_read_only, restore_snapshot, verify_snapshot
 from research_assistant.graph.repository import GraphRepository
 from research_assistant.pipeline import write_immutable
+from research_assistant.ingestion.sources import load_corpus_chunks,source_identity
+from research_assistant.evaluation.proposals import matched_conditions
+from research_assistant.product import WORKFLOWS
+from research_assistant.retrieval.catalog import checked_fact,load_catalog
+from research_assistant.retrieval.evidence import validate_context
+from research_assistant.review.store import review_lock
 from research_assistant.retrieval.reranker import _resident, pinned_scorer
 from research_assistant.settings import Settings, configure_caches
 
@@ -55,10 +62,10 @@ def fresh_target(plan: ReadinessPlan, settings: Settings) -> tuple[list[str], di
     return ['docker','compose','-p',plan.project,'-f',str(Path('compose.yaml').resolve())],env
 
 
-def command(command: list[str], env: dict, log: Path, timeout: int) -> None:
+def command(command: list[str], env: dict, log: Path, timeout: int, *, cwd: Path | None = None) -> None:
     """Run one bounded command and retain output on failure; redact credentials before logging."""
     try:
-        result = subprocess.run(command,env=env,capture_output=True,text=True,timeout=timeout)
+        result = subprocess.run(command,env=env,capture_output=True,text=True,timeout=timeout,cwd=cwd)
     except subprocess.TimeoutExpired as exc:
         parts=[part.decode('utf-8',errors='replace') if isinstance(part,bytes) else (part or '')
                for part in (exc.stdout,exc.stderr)]
@@ -73,19 +80,75 @@ def command(command: list[str], env: dict, log: Path, timeout: int) -> None:
     result.check_returncode()
 
 
-def native_guards(target: Settings, output: Path) -> dict:
+def native_guards(target: Settings, output: Path, copied: Path | None = None) -> dict:
     """Exercise and clean UUID-owned baseline/V2 records on the new writable copy only."""
     env = {**os.environ,'NEO4J_URI':target.neo4j_uri,'RUN_V2_SMOKE':'1','RUN_RETRIEVAL_SMOKE':'1',
-           'NEO4J_PASSWORD':target.neo4j_password.get_secret_value()}
+           'NEO4J_USER':target.neo4j_user,'NEO4J_PASSWORD':target.neo4j_password.get_secret_value()}
+    if copied is not None:
+        env['PYTHONPATH']=str(copied/'src')
     report=output/'native.xml'
-    command(['uv','run','--locked','--offline','python','-m','pytest','-m','integration',
+    command([sys.executable,'-m','pytest','-m','integration',
         'tests/integration/test_graph_retrieval_repository.py','tests/integration/test_retrieval_v2_repository.py',
-        '-q','--junitxml='+str(report)],env,output/'native.log',240)
+        '-q','--junitxml='+str(report)],env,output/'native.log',240,cwd=copied)
     suites=list(ET.parse(report).getroot().iter('testsuite'))
     counts={key:sum(int(s.get(key,0)) for s in suites) for key in ('tests','failures','errors','skipped')}
     if counts != {'tests':2,'failures':0,'errors':0,'skipped':0}:
         raise ValueError('Fresh native guard checks did not execute/pass both cases')
     return counts
+
+
+def retained_working(plan: ReadinessPlan, output: Path) -> list[dict]:
+    """Reuse twelve exact validated reads after a harness-only amendment; never rerun them."""
+    amendment=plan.continuation
+    previous_path=public_asset(amendment.prior_plan_path)
+    previous=ReadinessPlan.model_validate_json(previous_path.read_bytes())
+    report_path=public_asset(amendment.prior_report_path)
+    if (file_sha(previous_path)!=amendment.prior_plan_sha256 or file_sha(report_path)!=amendment.prior_report_sha256
+            or previous.source_graph_sha256!=plan.source_graph_sha256
+            or previous.source_scope_file_sha256!=plan.source_scope_file_sha256
+            or previous.generator_digest!=plan.generator_digest):
+        raise ValueError('Continuation source or prior evidence binding changed')
+    old=public_asset(previous.output_directory)
+    report=json.loads(report_path.read_text())
+    if report.get('complete') or report.get('target_stopped') is not True or report.get('error_type')!='CalledProcessError':
+        raise ValueError('Continuation requires the retained failed and stopped harness attempt')
+    if file_sha(old/'native.xml')!=amendment.prior_native_xml_sha256:
+        raise ValueError('Original native failure record changed')
+    suites=list(ET.parse(old/'native.xml').getroot().iter('testsuite'))
+    if sum(int(s.get('tests',0)) for s in suites)!=2 or sum(int(s.get('failures',0)) for s in suites)!=2:
+        raise ValueError('Exactly two failed original fixture attempts must remain disclosed')
+    manifest,_=verify_snapshot(old/'snapshot')
+    allowed={'src/research_assistant/evaluation/matched_readiness.py','src/research_assistant/evaluation/matched_recovery.py'}
+    current={p.as_posix() for p in Path('src/research_assistant').rglob('*.py')}
+    previous_files={name for name in manifest['assets'] if name.startswith('src/research_assistant/') and name.endswith('.py')}
+    if current!=previous_files or any(file_sha(public_asset(name))!=manifest['assets'][name] for name in current-allowed):
+        raise ValueError('Working-read reuse cannot conceal retrieval/model/provider kernel changes')
+    rows=report['working']
+    policies={policy.condition_id:policy for policy in matched_conditions()}
+    if len(rows)!=12 or {row['condition_id'] for row in rows}!=set(policies) or any(row['status']!='passed' for row in rows):
+        raise ValueError('No complete successful twelve-read reference is available')
+    source=ExperimentScope.model_validate_json(Path(plan.source_scope_path).read_bytes())
+    chunks=load_corpus_chunks(source.corpus_id)
+    if source_identity(chunks)!=source.source_chunks_sha256:
+        raise ValueError('Retained working source cache changed')
+    with review_lock(Path('data/reviews/expansion-v1')):
+        catalog=load_catalog(Path('data/reviews/expansion-v1'),source.corpus_id,chunks)
+        for row in rows:
+            path=old/'working'/(row['condition_id']+'.json')
+            artifact=json.loads(path.read_text())
+            request=QueryRequest.model_validate(artifact['request'])
+            result=RetrievalResult.model_validate(artifact['retrieval'])
+            policy=policies[row['condition_id']]
+            if (request.corpus_id!=source.corpus_id or request.question!=WORKFLOWS['discovery']
+                    or (request.profile_id,request.selector_id,request.mode)!=(policy.profile_id,policy.selector_id,policy.mode)):
+                raise ValueError('Retained working request differs from the fixed engineering policy')
+            validate_context(result,chunks)
+            for item in result.evidence:
+                if item.kind=='approved_fact':checked_fact(item,catalog)
+            if result.context_sha256!=row['context_sha256'] or result.audit.get('review_head') not in {None,catalog.head}:
+                raise ValueError('Retained context/current approval head differs')
+            write_immutable(output/'working'/path.name,path.read_text())
+    return rows
 
 
 def stop_owned(plan: ReadinessPlan, scope: FrozenEvaluationScope | None, env: dict, output: Path) -> None:
@@ -131,8 +194,9 @@ def run(plan_path: Path, settings: Settings) -> dict:
     if fingerprint(capture(settings)) != plan.source_graph_sha256:
         raise ValueError('Working graph changed before readiness')
     commands,env=fresh_target(plan,settings)
+    retained=retained_working(plan,output) if plan.continuation else None
     claim(plan,plan_path)
-    output.mkdir(parents=True,exist_ok=False)
+    output.mkdir(parents=True,exist_ok=retained is not None)
     target=settings.model_copy(update={'neo4j_uri':f'bolt://127.0.0.1:{plan.bolt_port}'})
     snapshot=output/'snapshot'
     report={'task_id':'M5.5.4','purpose':'matched_readiness_not_final_evaluation',
@@ -142,10 +206,15 @@ def run(plan_path: Path, settings: Settings) -> dict:
     created=False
     scope=None
     try:
-        encoder=Encoder()
-        scorer=pinned_scorer()
-        report['working']=retrieval_probes(plan,settings,encoder)
-        del encoder,scorer
+        if retained is None:
+            encoder=Encoder()
+            scorer=pinned_scorer()
+            report['working']=retrieval_probes(plan,settings,encoder)
+            del encoder,scorer
+        else:
+            report['working']=retained
+            report['continuation']=plan.continuation.model_dump(mode='json')
+            report['retained_failed_native_attempts']=2
         _resident.cache_clear()
         gc.collect()
         report['export']=export_snapshot(settings,snapshot,Path('data/reviews/expansion-v1'),
@@ -167,7 +236,7 @@ def run(plan_path: Path, settings: Settings) -> dict:
             report['nonempty_restore_refused']=True
         else:
             raise ValueError('Repeated restore was not refused')
-        report['native_guards']=native_guards(target,output)
+        report['native_guards']=native_guards(target,output,snapshot/'files')
         if capture(target)!=graph:
             raise ValueError('Native guard cleanup changed the restored graph/schema')
         env.update(NEO4J_READ_ONLY='true')

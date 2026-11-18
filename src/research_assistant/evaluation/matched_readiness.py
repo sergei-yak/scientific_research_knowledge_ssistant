@@ -29,6 +29,17 @@ HEX = r'^[a-f0-9]{64}$'
 LEDGER = Path('data/accounting/m5-5-4-readiness.jsonl')
 
 
+class EngineeringContinuation(Contract):
+    """One disclosed harness correction; it retains every earlier request reservation."""
+
+    prior_plan_path: str
+    prior_plan_sha256: str = Field(pattern=HEX)
+    prior_report_path: str
+    prior_report_sha256: str = Field(pattern=HEX)
+    prior_native_xml_sha256: str = Field(pattern=HEX)
+    reason: Literal['native fixtures must run in verified recovery copy, preserving working write guard']
+
+
 class ReadinessPlan(Contract):
     """Fixed local preparation allowance, independent of all final-study receipts."""
 
@@ -51,6 +62,8 @@ class ReadinessPlan(Contract):
     generation_requests: Literal[2] = 2
     logical_retrieval_requests: Literal[24] = 24
     native_fixture_cases: Literal[2] = 2
+    native_fixture_attempt_limit: Literal[2,4] = 2
+    continuation: EngineeringContinuation | None = None
     extra_capacity_reranker_pairs: Literal[4] = 4
     context_tokens: Literal[4096] = 4096
     output_tokens: Literal[512] = 512
@@ -73,6 +86,8 @@ class ReadinessPlan(Contract):
                                              self.source_tree_sha256, self.generator_digest)):
             raise ValueError('Actual readiness commitments are required')
         Settings(ollama_base_url=self.ollama_base_url)
+        if self.native_fixture_attempt_limit != (4 if self.continuation else 2):
+            raise ValueError('Extra native fixture attempts require an explicit bounded continuation')
         return self
 
 
@@ -112,6 +127,16 @@ def load_plan(path: Path, settings: Settings) -> ReadinessPlan:
 def claim(plan: ReadinessPlan, path: Path) -> None:
     """A single durable task claim: new plan/output names cannot reset this allowance."""
     plan=ReadinessPlan.model_validate(plan.model_dump(mode='json'))
+    if plan.continuation:
+        rows=[json.loads(line) for line in LEDGER.read_text().splitlines()]
+        if (any(row['event']=='engineering_continuation' for row in rows)
+                or rows[0]['plan_sha256']!=plan.continuation.prior_plan_sha256
+                or sum(r.get('kind')=='retrieval' for r in rows)!=12
+                or any(r.get('kind')=='generation' for r in rows)):
+            raise ValueError('Continuation cannot reset or replay consumed allowances')
+        _event(LEDGER,{'event':'engineering_continuation','plan_sha256':file_sha(path),
+                       'output_directory':plan.output_directory,'previous_reservations_retained':True})
+        return
     _event(LEDGER, {'event':'start', 'task_id':plan.task_id, 'plan_sha256':file_sha(path),
                     'output_directory':plan.output_directory}, first=True)
 
@@ -123,7 +148,8 @@ def reserve(plan: ReadinessPlan, kind: str, label: str, *, ledger: Path = LEDGER
     if kind not in limits:
         raise ValueError('Unknown readiness reservation')
     rows = [json.loads(line) for line in ledger.read_text(encoding='utf-8').splitlines()]
-    if (not rows or rows[0]['event']!='start' or rows[0]['output_directory']!=plan.output_directory
+    owners=[row for row in rows if row['event'] in {'start','engineering_continuation'}]
+    if (not rows or rows[0]['event']!='start' or owners[-1]['output_directory']!=plan.output_directory
             or any(row.get('event')=='reservation' and row.get('kind')==kind and row.get('label')==label for row in rows)
             or sum(row.get('event')=='reservation' and row.get('kind')==kind for row in rows) >= limits[kind]):
         raise ValueError('Readiness allowance consumed, duplicated or belongs to another task')

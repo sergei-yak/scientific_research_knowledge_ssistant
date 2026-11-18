@@ -183,6 +183,10 @@ def verify_freeze(freeze: MatchedFreeze, *, verify_files: bool = True) -> None:
                 or snapshot['source_tree_sha256'] != freeze.source_tree_sha256
                 or file_sha(public_asset(freeze.recovery_report)) != freeze.recovery_report_sha256
                 or not proof.get('complete') or not proof.get('target_read_only_proved')
+                or proof.get('matched_readiness_complete') is not True
+                or (proof.get('capacity_checks') or {}).get('complete') is not True
+                or proof.get('logical_retrieval_requests') != 24
+                or proof.get('copied_runtime_assets_verified') is not True
                 or proof.get('graph_sha256') != freeze.scope.graph_sha256
                 or proof.get('snapshot_manifest_sha256') != freeze.scope.snapshot_manifest_sha256
                 or proof.get('project') != freeze.scope.target_project

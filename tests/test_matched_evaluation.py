@@ -78,6 +78,8 @@ def synthetic_setup(tmp_path,monkeypatch):
     scopepath=prefix/'scope.json';write(scopepath,scope.model_dump(mode='json'))
     tracked=Path('uv.lock');tracked.write_text('SYNTHETIC frozen lock')
     proof=prefix/'recovery.json';write(proof,{'complete':True,'target_read_only_proved':True,
+        'matched_readiness_complete':True,'capacity_checks':{'complete':True},
+        'logical_retrieval_requests':24,'copied_runtime_assets_verified':True,
         'graph_sha256':scope.graph_sha256,'snapshot_manifest_sha256':scope.snapshot_manifest_sha256,
         'project':scope.target_project,'target_uri':scope.target_uri,'image_id':scope.image_id})
     settings=Settings(generation_provider='ollama',generation_model='synthetic',max_retries=0,max_concurrency=1)
@@ -412,6 +414,16 @@ def test_complete_public_file_coverage_and_copied_runtime_proof(tmp_path,monkeyp
     monkeypatch.setattr(reranker,'verified_manifest',lambda:object())
     monkeypatch.setattr(reranker,'model_identity',lambda *a:{'SYNTHETIC':True})
     assert guards.load_freeze(x.fp).scope==x.freeze.scope
+    proof=json.loads(x.proof.read_text())
+    proof['capacity_checks']['complete']=False
+    write(x.proof,proof)
+    x.freeze.recovery_report_sha256=guards.file_sha(x.proof)
+    write(x.fp,x.freeze.model_dump(mode='json'))
+    with pytest.raises(ValueError,match='read-only recovery proof'):guards.load_freeze(x.fp)
+    proof['capacity_checks']['complete']=True
+    write(x.proof,proof)
+    x.freeze.recovery_report_sha256=guards.file_sha(x.proof)
+    write(x.fp,x.freeze.model_dump(mode='json'))
     manifest['assets']['uv.lock']='f'*64
     with pytest.raises(ValueError,match='Copied runtime'):guards.load_freeze(x.fp)
     manifest['assets']['uv.lock']=x.freeze.files['uv.lock']

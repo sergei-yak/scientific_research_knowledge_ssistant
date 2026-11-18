@@ -95,7 +95,7 @@ def load_plan(path: Path, settings: Settings) -> ReadinessPlan:
             or settings.max_retries != 0 or settings.max_concurrency != 1):
         raise ValueError('Readiness executable, source or local provider controls changed')
     output=public_asset(plan.output_directory)
-    allowed=public_asset('runs/retrieval-v2/m5-5')
+    allowed=Path.cwd().resolve()/'runs/retrieval-v2/m5-5'
     if output==allowed or not output.is_relative_to(allowed):
         raise ValueError('Readiness output must be a new M5.5 artifact directory')
     physical=attest_target(settings, {'source_uri':'bolt://127.0.0.1:7687'}, scope.target_id)

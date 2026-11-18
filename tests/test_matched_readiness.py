@@ -60,6 +60,24 @@ def test_copied_working_directory_keeps_reservations_in_original_ledger(tmp_path
     assert json.loads(original.read_text().splitlines()[-1])['label']=='restored-synthetic'
 
 
+def test_positive_public_plan_preflight_accepts_named_artifact_root_without_private_io(tmp_path,monkeypatch):
+    plan,path=fixture(tmp_path,monkeypatch)
+    source=Path(plan.source_scope_path);source.parent.mkdir(parents=True);source.write_text('SYNTHETIC scope')
+    plan.source_scope_file_sha256=probes.file_sha(source)
+    path.write_text(plan.model_dump_json())
+    scope=SimpleNamespace(target_uri='bolt://127.0.0.1:18660',target_id='SYNTHETIC',image_id=plan.image_id,
+                          container_id='a'*64,volumes=['SYNTHETIC-data','SYNTHETIC-logs'])
+    monkeypatch.setattr(probes.ExperimentScope,'model_validate_json',lambda *a:scope)
+    monkeypatch.setattr(probes,'code_identity',lambda:{'source_tree_sha256':plan.source_tree_sha256})
+    monkeypatch.setattr(probes,'attest_target',lambda *a:{'container_id':scope.container_id,
+        'image_id':scope.image_id,'volumes':scope.volumes})
+    model=SimpleNamespace(model=plan.generator_model,digest=plan.generator_digest)
+    monkeypatch.setattr(probes.ollama,'Client',lambda **k:SimpleNamespace(list=lambda:SimpleNamespace(models=[model])))
+    settings=Settings(neo4j_uri=scope.target_uri,generation_model=plan.generator_model)
+    assert probes.load_plan(path,settings)==plan
+    assert not probes.LEDGER.exists()
+
+
 @pytest.mark.parametrize('failure',[False,True])
 def test_capacity_uses_two_bounded_synthetic_calls_and_preserves_failures(tmp_path,monkeypatch,failure):
     plan,path=fixture(tmp_path,monkeypatch);probes.claim(plan,path)

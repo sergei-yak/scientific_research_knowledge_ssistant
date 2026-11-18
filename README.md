@@ -10,9 +10,9 @@ the original OneDrive checkout preserves baseline code/data. Use the development
 The user subsequently requested **M5.5 readiness preparation**; specification **6.5** retains a
 preparation-only exception while preserving that negative gate. The [proposal](docs/M5_5_STUDY_PROPOSAL.md)
 and [status](docs/M5_5_REPORT.md) record sixteen human-approved fresh annotations; the [versioned evaluator implementation](docs/M5_5_2_REPORT.md) now passes 335 offline and two configured native checks.
-[M5.5.4 live capacity and read-only recovery](docs/M5_5_4_REPORT.md) now pass; exact final freeze/authorization remain pending. The 12-condition/288-request matrix is proposed only; no fresh final run is authorized.
+[M5.5.4 live capacity and read-only recovery](docs/M5_5_4_REPORT.md) now pass; [M5.5.5 exact freeze](docs/M5_5_RUN_PLAN.md) is now prepared/verified; final human authorization remains pending. The 12-condition/288-request matrix is proposed only; no fresh final run is authorized.
 **M5.5.3 source/human annotation review is complete**: all sixteen current held-out annotations are approved. M5.5.2 now validates the versioned source-only attestation without opening private files; this does not establish live matched-run readiness. The user accepted the new drafts with an explicit exploratory author-context limitation; read the
-[mandatory study amendment](docs/M5_5_STUDY_AMENDMENT.md). Its pending-review wording records the earlier disposition checkpoint; current annotation approval is complete. Final technical readiness and execution remain pending.
+[mandatory study amendment](docs/M5_5_STUDY_AMENDMENT.md). Its pending-review wording records the earlier disposition checkpoint; current annotation approval is complete. Bounded technical readiness and the exact freeze now pass; final human authorization/execution remain pending.
 **M6** is reserved for product demonstration readiness and has not started.
 The development UI is on port 8502.
 The [archived 6.1 specification](docs/baselines/project_spec_v6_1.md) governs the completed baseline;
@@ -570,7 +570,7 @@ Technical sources: [PyTorch previous versions](https://pytorch.org/get-started/p
 
 ## M5.5 matched evaluator commands (implementation checkout only)
 
-M5.5.2 and M5.5.4 are complete; M5.5.5 exact freeze/authorization remains pending. The two-generation/24-retrieval readiness allowance is consumed; never rerun it or use a new plan/output to reset it. Run these commands from `C:/Users/serge/DBU-GraphRAG-Worktrees/retrieval-v2-m52-54d8b329`, never the preserved baseline checkout. No private inputs are consumed by setup/help:
+M5.5.2 and M5.5.4 are complete; M5.5.5 exact freeze is prepared and verified; its human authorization remains pending. The two-generation/24-retrieval readiness allowance is consumed; never rerun it or use a new plan/output to reset it. Run these commands from `C:/Users/serge/DBU-GraphRAG-Worktrees/retrieval-v2-m52-54d8b329`, never the preserved baseline checkout. No private inputs are consumed by setup/help:
 
 ```powershell
 uv run --locked --offline python -m research_assistant.evaluation.matched_setup source-check --attestation runs/retrieval-v2/m5-5/m5-5-3-source-human-readiness-attestation-v1-20261118T022242625263Z.json --sha256 bb785c0a08896d6144af8010d4dbeba919642c4d72a4f4a5409f621092b84f6b
@@ -593,4 +593,20 @@ Current M5.5.5 inputs (all in the implementation checkout):
 - Plan/outcome: `runs/retrieval-v2/m5-5/m5-5-4-plan-v3.json` and `m5-5-4-acceptance.json`.
 - Source/human attestation remains the exact M5.5.3 file above, unchanged.
 
-M5.5.4 passed 363 offline tests, two corrected native tests, 24 retrieval-only engineering reads and two local adapter probes. Two earlier native guard refusals and the declined preclaim launch remain historical. Observed free RAM reached ~2.90 GiB and GPU allocation 11,847/12,282 MiB: preserve the single-request limits and disclose limited headroom; this is not 288-request endurance evidence. No final freeze exists yet. See [readiness report](docs/M5_5_4_REPORT.md) and [bounded plan/amendment](docs/M5_5_4_PLAN.md).
+M5.5.4 passed 363 offline tests, two corrected native tests, 24 retrieval-only engineering reads and two local adapter probes. Two earlier native guard refusals and the declined preclaim launch remain historical. Observed free RAM reached ~2.90 GiB and GPU allocation 11,847/12,282 MiB: preserve the single-request limits and disclose limited headroom; this is not 288-request endurance evidence. The exact freeze is now prepared; see the final authorization checkpoint below. See [readiness report](docs/M5_5_4_REPORT.md) and [bounded plan/amendment](docs/M5_5_4_PLAN.md).
+
+
+## M5.5.5 final authorization checkpoint
+
+[Final run plan](docs/M5_5_RUN_PLAN.md) and [verification report](docs/M5_5_5_REPORT.md):
+`runs/retrieval-v2/m5-5/freeze-matched-v1.json`, exact SHA-256
+`c64da42c62fe46bbd51220738a0016d00742bb1c606575cbb68c4db21374329c`.
+The unchanged proposed limits are 24 questions × twelve matched conditions, at most288 local generations/288 logical retrievals,4096/512 context/output,concurrency1,retries0,$0 paid. Later human scoring covers288 anonymous answers. Original negative development result, accepted possible question-selection bias and tight memory headroom remain explicit.
+
+Public verification is safe and grants no private access:
+
+```powershell
+uv run --locked --offline python -m research_assistant.evaluation.matched_setup freeze-verify --freeze runs/retrieval-v2/m5-5/freeze-matched-v1.json
+```
+
+No exact final human receipt exists yet. Keep the target stopped; do not use a review/readiness/old96-run approval or infer permission from preparation. After an actual exact-bound decision, append a separate real receipt, verify the same frozen bytes again, then let only the dedicated runner consume private inputs. Do not edit the frozen proposal's false authorization field or any executable/model/config/data/index bytes. M5.6 is not started; M6 demonstration is separately reserved.

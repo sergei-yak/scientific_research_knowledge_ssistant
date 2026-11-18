@@ -10,7 +10,7 @@ the original OneDrive checkout preserves baseline code/data. Use the development
 The user subsequently requested **M5.5 readiness preparation**; specification **6.5** retains a
 preparation-only exception while preserving that negative gate. The [proposal](docs/M5_5_STUDY_PROPOSAL.md)
 and [status](docs/M5_5_REPORT.md) record sixteen human-approved fresh annotations; the [versioned evaluator implementation](docs/M5_5_2_REPORT.md) now passes 335 offline and two configured native checks.
-Live capacity/restore and final freeze/authorization gates remain pending. The 12-condition/288-request matrix is proposed only; no fresh final run is authorized.
+[M5.5.4 live capacity and read-only recovery](docs/M5_5_4_REPORT.md) now pass; exact final freeze/authorization remain pending. The 12-condition/288-request matrix is proposed only; no fresh final run is authorized.
 **M5.5.3 source/human annotation review is complete**: all sixteen current held-out annotations are approved. M5.5.2 now validates the versioned source-only attestation without opening private files; this does not establish live matched-run readiness. The user accepted the new drafts with an explicit exploratory author-context limitation; read the
 [mandatory study amendment](docs/M5_5_STUDY_AMENDMENT.md). Its pending-review wording records the earlier disposition checkpoint; current annotation approval is complete. Final technical readiness and execution remain pending.
 **M6** is reserved for product demonstration readiness and has not started.
@@ -570,7 +570,7 @@ Technical sources: [PyTorch previous versions](https://pytorch.org/get-started/p
 
 ## M5.5 matched evaluator commands (implementation checkout only)
 
-M5.5.2 is implemented; M5.5.4 real capacity/read-only recovery and M5.5.5 freeze/authorization are pending. Run these commands from `C:/Users/serge/DBU-GraphRAG-Worktrees/retrieval-v2-m52-54d8b329`, never the preserved baseline checkout. No private inputs are consumed by setup/help:
+M5.5.2 and M5.5.4 are complete; M5.5.5 exact freeze/authorization remains pending. The two-generation/24-retrieval readiness allowance is consumed; never rerun it or use a new plan/output to reset it. Run these commands from `C:/Users/serge/DBU-GraphRAG-Worktrees/retrieval-v2-m52-54d8b329`, never the preserved baseline checkout. No private inputs are consumed by setup/help:
 
 ```powershell
 uv run --locked --offline python -m research_assistant.evaluation.matched_setup source-check --attestation runs/retrieval-v2/m5-5/m5-5-3-source-human-readiness-attestation-v1-20261118T022242625263Z.json --sha256 bb785c0a08896d6144af8010d4dbeba919642c4d72a4f4a5409f621092b84f6b
@@ -579,8 +579,18 @@ uv run --locked --offline python -m research_assistant.evaluation.matched_runner
 uv run --locked --offline python -m pytest -m "not integration"
 ```
 
-`source-check` confirms annotation metadata only; its runtime-readiness and execution-authorization fields remain false. `scope-prepare` requires a real fresh matched recovery proof and running read-only target; `freeze-prepare` requires that scope, exact model/runtime/source bindings and the approved source attestation. Both create new immutable public proposals. `freeze-verify` reads public commitments only. None grants execution permission.
+`source-check` confirms annotation metadata only; its runtime-readiness and execution-authorization fields remain false. `scope-prepare` has produced the current accepted scope from actual recovery. `freeze-prepare` requires that scope, the complete M5.5.4 report (physical-only proof is insufficient), exact model/runtime/source bindings and the approved source attestation. Both create new immutable public proposals. `freeze-verify` reads public commitments only. None grants execution permission.
 
-A later new `snapshot-export --review-dir data/reviews/expansion-v1 --freeze-corpus --matched-runtime-assets --snapshot-dir <new-directory> --output <new-report.json>` must use the shared locked CLI prefix. It copies pinned encoder/reranker/token-cache assets into a new snapshot and leaves working graph flags/old snapshots unchanged. The future recovery workflow must use a unique `dbu-m4-recovery-m5eval-<12-hex>` target, owned volumes and proven server read-only configuration; the generic legacy recovery script is not yet the matched recovery proof.
+The completed M5.5.4 workflow used `snapshot-export --review-dir data/reviews/expansion-v1 --freeze-corpus --matched-runtime-assets --snapshot-dir <new-directory> --output <new-report.json>` with the shared locked CLI prefix. It copies pinned encoder/reranker/token-cache assets into a new snapshot and leaves working graph flags/old snapshots unchanged. The matched recovery workflow created new owned targets and proved server read-only behavior. The accepted target is `dbu-m4-recovery-m5eval-cf4d3a031091`, stopped and retained; the failed earlier target is also retained. Do not use the generic legacy recovery script, repoint the development scope or rebuild accepted indexes. The actual copied-context native tests preserve the working write guard.
 
 Only after M5.5.5's exact numerical human authorization may the dedicated runner `run` consume private inputs. `--start-target` starts/stops only the exact retained container ID, with no recreation/pull/restore. It refuses a previously started freeze, even with a new receipt or output path. No automatic resume/retry. `seal` requires the completed human CSV within its exact external execution directory; `reveal` requires the immutable complete score seal. Normal application commands never accept evaluator permits, and V2 UI/CLI synthesis remains disabled. See [implementation report](docs/M5_5_2_REPORT.md) for actual checks and limits.
+
+
+Current M5.5.5 inputs (all in the implementation checkout):
+
+- Scope: `runs/retrieval-v2/m5-5/m5-5-4-corrected-cf4d3a031091/scope.json`.
+- Complete readiness proof: same directory's `report.json`; snapshot: `snapshot/`.
+- Plan/outcome: `runs/retrieval-v2/m5-5/m5-5-4-plan-v3.json` and `m5-5-4-acceptance.json`.
+- Source/human attestation remains the exact M5.5.3 file above, unchanged.
+
+M5.5.4 passed 363 offline tests, two corrected native tests, 24 retrieval-only engineering reads and two local adapter probes. Two earlier native guard refusals and the declined preclaim launch remain historical. Observed free RAM reached ~2.90 GiB and GPU allocation 11,847/12,282 MiB: preserve the single-request limits and disclose limited headroom; this is not 288-request endurance evidence. No final freeze exists yet. See [readiness report](docs/M5_5_4_REPORT.md) and [bounded plan/amendment](docs/M5_5_4_PLAN.md).

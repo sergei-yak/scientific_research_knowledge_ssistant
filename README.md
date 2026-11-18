@@ -9,10 +9,10 @@ Development checkout: `C:/Users/serge/DBU-GraphRAG-Worktrees/retrieval-v2-m52-54
 the original OneDrive checkout preserves baseline code/data. Use the development checkout for V2.
 The user subsequently requested **M5.5 readiness preparation**; specification **6.5** retains a
 preparation-only exception while preserving that negative gate. The [proposal](docs/M5_5_STUDY_PROPOSAL.md)
-and [status](docs/M5_5_REPORT.md) disclose pending fresh evaluator, implementation, restore and authorization
-gates. The 12-condition/288-request matrix is proposed only; no fresh final run is authorized.
-The user accepted the new drafts with an explicit exploratory author-context limitation; read the
-[mandatory study amendment](docs/M5_5_STUDY_AMENDMENT.md). Human source approval and final execution remain pending.
+and [status](docs/M5_5_REPORT.md) record sixteen human-approved fresh annotations; versioned implementation,
+resource/restore and authorization gates remain pending. The 12-condition/288-request matrix is proposed only; no fresh final run is authorized.
+**M5.5.3 source/human annotation review is complete**: all sixteen current held-out annotations are approved. The versioned source-only attestation still needs its M5.5.2 runner-readiness adapter. The user accepted the new drafts with an explicit exploratory author-context limitation; read the
+[mandatory study amendment](docs/M5_5_STUDY_AMENDMENT.md). Its pending-review wording records the earlier disposition checkpoint; current annotation approval is complete. Final technical readiness and execution remain pending.
 **M6** is reserved for product demonstration readiness and has not started.
 The development UI is on port 8502.
 The [archived 6.1 specification](docs/baselines/project_spec_v6_1.md) governs the completed baseline;

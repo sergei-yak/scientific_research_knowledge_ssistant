@@ -10,14 +10,13 @@ the original OneDrive checkout preserves baseline code/data. Use the development
 The user subsequently requested **M5.5 readiness preparation**; specification **6.5** retains a
 preparation-only exception while preserving that negative gate. The [proposal](docs/M5_5_STUDY_PROPOSAL.md)
 and [status](docs/M5_5_REPORT.md) record sixteen human-approved fresh annotations; the [versioned evaluator implementation](docs/M5_5_2_REPORT.md) now passes 335 offline and two configured native checks.
-[M5.5.4 live capacity and read-only recovery](docs/M5_5_4_REPORT.md) now pass; [M5.5.5 exact freeze](docs/M5_5_RUN_PLAN.md) is now prepared/verified; actual exact human authorization was received on2026-11-18 for one frozen exploratory run. [M5.6 status](docs/M5_6_REPORT.md) distinguishes authorization from execution/scoring outcomes.
+[M5.5.4 live capacity and read-only recovery](docs/M5_5_4_REPORT.md) and [exact freeze](docs/M5_5_RUN_PLAN.md) pass. The exact human-authorized M5.6 run has now completed: **288 answer runs**, anonymous scoring export ready, $0 paid and evaluation target stopped. [Current report](docs/M5_6_REPORT.md); [human scoring instructions](docs/M5_6_HUMAN_SCORING.md).
 **M5.5.3 source/human annotation review is complete**: all sixteen current held-out annotations are approved. M5.5.2 now validates the versioned source-only attestation without opening private files; this does not establish live matched-run readiness. The user accepted the new drafts with an explicit exploratory author-context limitation; read the
-[mandatory study amendment](docs/M5_5_STUDY_AMENDMENT.md). Its pending-review wording records the earlier disposition checkpoint; current annotation approval is complete. Bounded technical readiness and the exact freeze pass; actual exact authorization is now recorded, while execution/scoring outcomes remain pending.
+[mandatory study amendment](docs/M5_5_STUDY_AMENDMENT.md). Earlier pending-review/prelaunch wording stays historical. Execution/export now passes; actual human answer scoring, seal, guarded reveal and final report remain pending. No condition-quality result is claimed yet.
 **M6** is reserved for product demonstration readiness and has not started.
 The development UI is on port 8502.
 The [archived 6.1 specification](docs/baselines/project_spec_v6_1.md) governs the completed baseline;
-existing `freeze-v2.json` is consumed and unrelated to the new profile name. No new generation/final
-study is authorized. Existing defaults retain baseline/reference behavior.
+both `freeze-v2.json` and the exact new `freeze-matched-v1.json` have been used once. No further generation, retry or final run is authorized. Existing defaults retain baseline/reference behavior.
 
 From the development checkout, retrieve V2 evidence with a fresh output path:
 
@@ -609,4 +608,4 @@ Public verification is safe and grants no private access:
 uv run --locked --offline python -m research_assistant.evaluation.matched_setup freeze-verify --freeze runs/retrieval-v2/m5-5/freeze-matched-v1.json
 ```
 
-Actual exact receipt now exists: `runs/retrieval-v2/m5-5/final-run-authorization-v1.json`, SHA`6e4871c6b316005bf5ed9b34a043cae12e0f4459fdefa1531da927bf1e757897`. The user explicitly approved the displayed limits/disclosures; original pending request/run-plan wording is historical. Only the dedicated runner may consume private inputs and start/stop the exact target. Keep launch HEAD/tracked files fixed through generation and blinding; use ignored status receipts. No automatic retry/resume/scoring/reveal. Do not edit frozen false flags or reuse old96/readiness permissions. M5.6 authorized/launching; M6 separately reserved.
+Actual exact receipt: `runs/retrieval-v2/m5-5/final-run-authorization-v1.json`, SHA `6e4871c6b316005bf5ed9b34a043cae12e0f4459fdefa1531da927bf1e757897`. The one dedicated execution/export has completed: 288 answer runs, anonymous packet ready, $0 paid, exact target stopped; no reveal. See [M5.6 report](docs/M5_6_REPORT.md) and [score all 288 answers](docs/M5_6_HUMAN_SCORING.md). Keep actual execution HEAD as provenance; reporting now follows export. Do not launch again, resume, reset accounting, repeat immutable exports, infer scores or reveal results before complete human sealing. Frozen false source flags and historical requests remain unchanged. M5.6 human scoring/report pending; M6 reserved.

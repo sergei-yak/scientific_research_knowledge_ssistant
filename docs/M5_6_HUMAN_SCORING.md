@@ -1,5 +1,7 @@
 # M5.6 human answer scoring
 
+**Completed:** all 288 submitted human rows have been sealed and aggregate conditions revealed. Do not repeat scoring/seal/reveal or edit the sealed scores. See [final results](M5_6_EVALUATION_REPORT.md). The instructions below describe the completed workflow.
+
 This guide contains no private questions, answers, scores or condition mapping. The frozen run has completed; use the packet linked below. Source-annotation approvals are separate from these new answer-quality ratings.
 
 1. Open [anonymous answers](C:/Users/serge/DBU-GraphRAG-Evaluation/retrieval-v2-fresh-v1/matched-executions/a31d5335a3ea4d7e829607a42ded8a3d/b379233668ed4804b764d3ee057aee05/blind/public/answers.json) and [blank scores](C:/Users/serge/DBU-GraphRAG-Evaluation/retrieval-v2-fresh-v1/matched-executions/a31d5335a3ea4d7e829607a42ded8a3d/b379233668ed4804b764d3ee057aee05/blind/public/scores.csv) in the returned `blind/public` packet: `answers.json` contains anonymous questions, answers and cited source quotations; `scores.csv` is the blank form.

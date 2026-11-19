@@ -1,6 +1,6 @@
 # Scientific Research Knowledge Assistant
 
-Current implementation: **M0–M4.3 complete; frozen evaluation scored and reported**.
+Current implementation: **M0-M5.6 complete; original and exploratory matched studies scored, sealed and reported**.
 
 **Current iteration:** Specification 6.5 governs `retrieval-v2`; M5.0–M5.4 are complete.
 [M5.4](docs/M5_4_REPORT.md) records the matched 96-request development comparison and a **no-go**
@@ -10,9 +10,9 @@ the original OneDrive checkout preserves baseline code/data. Use the development
 The user subsequently requested **M5.5 readiness preparation**; specification **6.5** retains a
 preparation-only exception while preserving that negative gate. The [proposal](docs/M5_5_STUDY_PROPOSAL.md)
 and [status](docs/M5_5_REPORT.md) record sixteen human-approved fresh annotations; the [versioned evaluator implementation](docs/M5_5_2_REPORT.md) now passes 335 offline and two configured native checks.
-[M5.5.4 live capacity and read-only recovery](docs/M5_5_4_REPORT.md) and [exact freeze](docs/M5_5_RUN_PLAN.md) pass. The exact human-authorized M5.6 run has now completed: **288 answer runs**, anonymous scoring export ready, $0 paid and evaluation target stopped. [Current report](docs/M5_6_REPORT.md); [human scoring instructions](docs/M5_6_HUMAN_SCORING.md).
+[M5.6 final results](docs/M5_6_EVALUATION_REPORT.md) are complete: 288 answer runs and 288 actual human rows sealed before guarded reveal, $0 paid, targets stopped. Primary held-out Graph/Facts comparison 0 wins / 16 ties / 0 losses, with 16/16 Graph fallbacks in each arm. Reranked Hybrid/Facts/Graph tie for highest mean correctness 0.8125; no held-out traversal advantage is established. [Operational evidence](docs/M5_6_REPORT.md).
 **M5.5.3 source/human annotation review is complete**: all sixteen current held-out annotations are approved. M5.5.2 now validates the versioned source-only attestation without opening private files; this does not establish live matched-run readiness. The user accepted the new drafts with an explicit exploratory author-context limitation; read the
-[mandatory study amendment](docs/M5_5_STUDY_AMENDMENT.md). Earlier pending-review/prelaunch wording stays historical. Execution/export now passes; actual human answer scoring, seal, guarded reveal and final report remain pending. No condition-quality result is claimed yet.
+[mandatory study amendment](docs/M5_5_STUDY_AMENDMENT.md). Earlier pending-review/prelaunch/scoring instructions stay historical. Actual human scoring, seal, guarded reveal and final report are complete. Preserve the negative development finding and exploratory selection-bias limitation; neither study may run again.
 **M6** is reserved for product demonstration readiness and has not started.
 The development UI is on port 8502.
 The [archived 6.1 specification](docs/baselines/project_spec_v6_1.md) governs the completed baseline;
@@ -608,4 +608,4 @@ Public verification is safe and grants no private access:
 uv run --locked --offline python -m research_assistant.evaluation.matched_setup freeze-verify --freeze runs/retrieval-v2/m5-5/freeze-matched-v1.json
 ```
 
-Actual exact receipt: `runs/retrieval-v2/m5-5/final-run-authorization-v1.json`, SHA `6e4871c6b316005bf5ed9b34a043cae12e0f4459fdefa1531da927bf1e757897`. The one dedicated execution/export has completed: 288 answer runs, anonymous packet ready, $0 paid, exact target stopped; no reveal. See [M5.6 report](docs/M5_6_REPORT.md) and [score all 288 answers](docs/M5_6_HUMAN_SCORING.md). Keep actual execution HEAD as provenance; reporting now follows export. Do not launch again, resume, reset accounting, repeat immutable exports, infer scores or reveal results before complete human sealing. Frozen false source flags and historical requests remain unchanged. M5.6 human scoring/report pending; M6 reserved.
+Actual exact receipt: `runs/retrieval-v2/m5-5/final-run-authorization-v1.json`, SHA `6e4871c6b316005bf5ed9b34a043cae12e0f4459fdefa1531da927bf1e757897`. Its once-only execution and subsequent real human 288-row scoring/seal/guarded reveal are complete; 60 active scoring minutes recorded. [Final matched results](docs/M5_6_EVALUATION_REPORT.md), [operations](docs/M5_6_REPORT.md). Both evaluation targets remain stopped; data/frozen bytes preserved. Do not run again, resume, reset accounting, repeat immutable seal/reveal exports or alter sealed scores after seeing results. Source-only false flags and historical requests remain unchanged. M6 demonstration readiness is next, reserved and unstarted.

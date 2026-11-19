@@ -1,6 +1,6 @@
-# M5.6 - Frozen exploratory execution; human scoring pending
+# M5.6 - Completed frozen exploratory study
 
-**Execution and anonymous export passed on 2026-11-18 (America/Chicago). M5.6 remains incomplete until real human scoring, sealing, guarded reveal and reporting finish. M6 remains reserved.** No condition-quality results are available at this checkpoint.
+**M5.6 complete on 2026-11-18 (America/Chicago): execution/export, all 288 real human score rows, immutable seal, guarded aggregate reveal and reporting passed.** The final findings and limits are in [the matched evaluation report](M5_6_EVALUATION_REPORT.md). Earlier pre-scoring status below is historical; no final run/export should be repeated. M6 remains reserved and unstarted.
 
 ## Authorization and unchanged design
 
@@ -33,7 +33,7 @@ RAM/VRAM samples were tight during execution. This one matrix completed under th
 
 Two **postexecution verification-harness** attempts were retained: the first mistakenly expected default settings to select the recorded source URI; the second used an unconfigured `Settings` constructor and failed authentication before source capture. Correcting the check to `Settings.from_env()` with the exact recorded source URI produced the 17 passing checks. These were public read-only checks, not failed study attempts, retries or changes to the frozen runner.
 
-## Artifacts and remaining human checkpoint
+## Execution artifacts and historical human-scoring checkpoint
 
 Public receipts under `runs/retrieval-v2/m5-5/m5-6/`:
 
@@ -44,8 +44,16 @@ Public receipts under `runs/retrieval-v2/m5-5/m5-6/`:
 
 The returned anonymous packet directory is `C:/Users/serge/DBU-GraphRAG-Evaluation/retrieval-v2-fresh-v1/matched-executions/a31d5335a3ea4d7e829607a42ded8a3d/b379233668ed4804b764d3ee057aee05/blind/public`. User entry files: [anonymous answers](C:/Users/serge/DBU-GraphRAG-Evaluation/retrieval-v2-fresh-v1/matched-executions/a31d5335a3ea4d7e829607a42ded8a3d/b379233668ed4804b764d3ee057aee05/blind/public/answers.json) and [blank scoring CSV](C:/Users/serge/DBU-GraphRAG-Evaluation/retrieval-v2-fresh-v1/matched-executions/a31d5335a3ea4d7e829607a42ded8a3d/b379233668ed4804b764d3ee057aee05/blind/public/scores.csv). These links come from the runner's returned locator and fixed export contract; development has not opened/stat-tested the private files.
 
-Follow the [human scoring guide](M5_6_HUMAN_SCORING.md). Make a **new** `scores-completed.csv` in that same packet directory, rate all 288 opaque answer IDs, and supply the completed file path. Preserve originals and use real decisions, identity and timezone-aware recording timestamps. Record actual active review time separately, or say not measured. Earlier source-annotation approvals are not answer-quality scores.
+**Historical pre-scoring instructions (now complete):** Follow the [human scoring guide](M5_6_HUMAN_SCORING.md). Make a **new** `scores-completed.csv` in that same packet directory, rate all 288 opaque answer IDs, and supply the completed file path. Preserve originals and use real decisions, identity and timezone-aware recording timestamps. Record actual active review time separately, or say not measured. Earlier source-annotation approvals are not answer-quality scores.
 
-**Pending, not passed:** human answer scores, complete immutable score seal, guarded condition reveal, aggregate comparisons and final M5.6 report. No scores were inferred, no condition results revealed, and no new Graph-quality claim is made. Prior 363 offline/two corrected native passes retain their historical scope; no tests were rerun for these documentation-only updates. No other live provider, UI demonstration, new model/extraction or paid check was attempted. M6 remains unstarted.
+**Historical execution-only checkpoint (superseded by finalization below):** human answer scores, complete immutable score seal, guarded condition reveal, aggregate comparisons and final M5.6 report. No scores were inferred, no condition results revealed, and no new Graph-quality claim is made. Prior 363 offline/two corrected native passes retain their historical scope; no tests were rerun for these documentation-only updates. No other live provider, UI demonstration, new model/extraction or paid check was attempted. M6 remains unstarted.
 
-The freeze has been used once. **Do not rerun/resume the evaluation, reset accounting, repeat immutable exports or restart the target.** Proceed only to actual human scoring and then the dedicated runner's bound seal/reveal workflow. Keep all private answers, notes, scores, ledgers and reveal maps outside development context.
+The freeze has been used once. **Do not rerun/resume the evaluation, reset accounting, repeat immutable exports or restart the target.** The human scoring/seal/reveal workflow is now complete; do not repeat its immutable exports. Keep all private answers, notes, scores, ledgers and reveal maps outside development context.
+
+## Completed score finalization and results
+
+The user supplied `C:/Users/serge/Downloads/scores-complited.csv` (SHA-256 `428effab5368c4f342c407ccffcc732c57b20b374dbbf307e57e9ed4ba3afb67`) and reported "1 hours" of active scoring, recorded as **60 minutes total** with no invented granular times. An exact external copy was preserved. The dedicated evaluator validated all 288 IDs/columns/ratings/reviewers/timezone timestamps and bound packet, sealed the complete real form, then performed guarded reveal once. Development received aggregate results only; no private row, note, question/answer or reveal map entered its context. No scores were edited, fabricated or changed after reveal. No generation/retrieval/provider request, target startup or paid spend accompanied finalization.
+
+Primary held-out A2 Graph vs A2 Hybrid + Facts: **0 wins / 16 ties / 0 losses**; both have correctness 0.8125 / citation 0.6250 / recall 0.4861, and Graph falls back 16/16. A1 Graph also ties its ablation on all 16. Reranked Hybrid ties the highest held-out mean correctness with lower observed retrieval latency; Vector worsens under reranking. No held-out traversal benefit or general superiority is established. All development/held-out tables, paired counts, metric interpretation and exploratory limitations are in [M5.6 evaluation results](M5_6_EVALUATION_REPORT.md).
+
+Finalization adds **16 aggregate-consistency** and **16 fresh preservation** passing groups. Both current 208/original 118 runtime assets, source/baseline working graphs, source/catalog/reviews/development bindings and stopped targets verify. Public artifacts: `human-score-intake-v1.json`, `human-score-sealing-outcome-v1.json`, `guarded-reveal-outcome-v1.json`, `aggregate-results-v1.json`, `aggregate-consistency-v1.json`, `postscoring-preservation-v1.json` under the prefix above. Actual source-only review timing and exact generation-response count remain unknown to public reporting. No new tests were needed for documentation-only updates; prior actual passes remain historical. **No M5.6 blocker remains. M6 is next, reserved and unstarted.**

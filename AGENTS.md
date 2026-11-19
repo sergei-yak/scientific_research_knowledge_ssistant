@@ -1,5 +1,9 @@
 # Agent working guide
 
+## M7 submission status
+
+M7 is complete as a public reporting/package milestone. Read `docs/M7_REPORT.md` and `docs/M7_SUBMISSION_GUIDE.md`. Ten-page report, ten editable slides, notes/checklist,197-file tested M6 source ZIP and public evidence are under `runs/m7/`. Sixteen content groups and package/preservation checks pass;118/208 frozen assets remain unchanged. No application/dependency/private/evaluation/model/service change or new request occurred. Course rubric, native PowerPoint/projector rehearsal, clean-machine asset provisioning and portal upload remain explicit manual items. Keep no-training/negative Graph/author-exposure disclosures; do not infer study or paid authorization from packaging.
+
 ## Read first
 
 - Read `project_spec.md` for requirements and `IMPLEMENTATION_PLAN.md` for milestone/boundaries/decisions. `README.md` has executable commands; milestone reports through `docs/M4_3_REPORT.md` record actual results and limits. M0–M4.3 are complete, including 96 human scores sealed before aggregate reveal. Read `docs/FINAL_EVALUATION_REPORT.md` for results/limits; never restart the used freeze. Check `docs/M2_PDF_INSPECTION.md` before relying on parsed sections/tables.

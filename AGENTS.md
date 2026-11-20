@@ -2,6 +2,8 @@
 
 ## M7 submission status
 
+**Current presentation revision:** The user requested simple storytelling speech and an early traditional RAG/Graph RAG explanation. Current deck has 11 slides with 11 embedded speeches, superseding the original ten-slide default. Read `docs/M7_PRESENTATION_REVISION.md` and `docs/PRESENTATION_SPEECH.md`; use `runs/m7/DBU_Deep_Learning_Submission_v2.zip`. Twelve revision content groups and final package/layout checks pass. Original report, v1 package, native chart/workbook bytes and 118/208 frozen files remain unchanged. No new app/runtime/private/model/service/research operation. The initial M7 record below is historical v1.
+
 M7 is complete as a public reporting/package milestone. Read `docs/M7_REPORT.md` and `docs/M7_SUBMISSION_GUIDE.md`. Ten-page report, ten editable slides, notes/checklist,197-file tested M6 source ZIP and public evidence are under `runs/m7/`. Sixteen content groups and package/preservation checks pass;118/208 frozen assets remain unchanged. No application/dependency/private/evaluation/model/service change or new request occurred. Course rubric, native PowerPoint/projector rehearsal, clean-machine asset provisioning and portal upload remain explicit manual items. Keep no-training/negative Graph/author-exposure disclosures; do not infer study or paid authorization from packaging.
 
 ## Read first

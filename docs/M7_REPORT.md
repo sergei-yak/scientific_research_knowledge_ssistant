@@ -1,5 +1,7 @@
 # M7 - Final submission preparation
 
+**Current presentation update:** The later user-requested revision adds an early RAG comparison and simple storytelling speech for all eleven slides. See [revision checks](M7_PRESENTATION_REVISION.md) and [current guide](M7_SUBMISSION_GUIDE.md). The original completion record below describes the preserved ten-slide v1 package. The ten-page report/results and all frozen studies are unchanged.
+
 Completed 2026-11-19. The user requested M7 and approved the concise defaults: approximately 8-10 report pages and ten slides. This milestone consolidates completed work; it does not change an application, model, algorithm, score, study freeze or approval. The actual course rubric/template/time limit was not supplied. Package preparation is complete; course submission is not performed.
 
 ## Tasks and deliverables

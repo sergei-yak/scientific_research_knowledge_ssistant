@@ -2,7 +2,7 @@
 
 **Version 6.5 - submission edition, 2026-11-15.** `project_spec.md` is authoritative; exact [6.1](docs/baselines/project_spec_submission_v6_1.md), [6.2](docs/baselines/project_spec_submission_v6_2.md), [6.3](docs/baselines/project_spec_submission_v6_3.md) and [6.4](docs/baselines/project_spec_submission_v6_4.md) archives remain. M0-M7 are complete (M7 prepares the submission): 288 exploratory answer runs/real human scores sealed before guarded reveal, $0 paid, target stopped. Primary held-out Graph/Facts 0/16/0 with 16/16 Graph fallbacks per arm; no traversal benefit is established. Retain negative development findings and author-context limitation. Both final freezes/scoring exports are used and must not repeat. M6 demonstration is complete ([guide](docs/M6_DEMO_GUIDE.md)). [Final results](docs/M5_6_EVALUATION_REPORT.md).
 
-**M7 delivery:** Ten-page PDF/Markdown report, ten editable slides, public evidence/source archive and checklist are prepared; see [submission guide](docs/M7_SUBMISSION_GUIDE.md). Requirements/algorithms remain version6.5. No new evaluation, runtime change or course upload; rubric/rehearsal/portal checks remain manual.
+**M7 delivery:** Ten-page PDF/Markdown report and revised eleven-slide presentation with simple storytelling speech, public evidence/source archive and checklist are prepared; see [submission guide](docs/M7_SUBMISSION_GUIDE.md). Requirements/algorithms remain version6.5. No new evaluation, runtime change or course upload; rubric/rehearsal/portal checks remain manual.
 
 ## 1. Project Overview & Context
 

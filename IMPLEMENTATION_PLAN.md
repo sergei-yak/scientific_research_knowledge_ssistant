@@ -103,6 +103,8 @@ D1–D11 are incorporated into the authoritative spec; verify them in the listed
 | D87 | User starts M7 and approves concise defaults: ten report pages and ten slides, with no supplied final rubric/template/time limit. Use public aggregates only; disclose pretrained inference/no training, separate question sets, negative Graph findings and exploratory author exposure. | M7.1-M7.2 |
 | D88 | Package the tested M6 commit9b9b6c8, locked source and public evidence; no application changes, private reads, new inference or study. PDF/Markdown plus editable native-chart PPTX are rendered/checked. Keep course requirements, native rehearsal, clean-machine setup and upload explicitly pending; mirror public documents only. | M7.3-M7.4 |
 
+| D89 | User requests nontechnical storytelling speech and an early traditional RAG/Graph RAG comparison. Add slide 2, giving 11 slides, and put all 11 speeches in speaker notes plus a rehearsal document. Simplify headings and explain intended business value without measured time/ROI claims. Preserve result tables, original chart/workbook bytes and v1 package; issue additive v2 bundle. No runtime/research change. | M7.P1-M7.P3 |
+
 ## M1 design bindings (before M2; implemented through M3.1)
 
 **Baseline profile only.** The frozen bindings below remain the reproducibility reference. R2 requirements explicitly replace their seeding/route/ranking choices for the new profile; do not change these historical bindings or treat them as simultaneously active V2 algorithms.
@@ -277,7 +279,7 @@ The user explicitly started M6. Work is complete in the separate product checkou
 | Task | Boundary / verifiable acceptance |
 |---|---|
 | M7.1 | Public-only final report: ten PDF pages plus Markdown; baseline and exploratory tables reconcile to their own aggregates, citations/limitations/no-training scope explicit. |
-| M7.2 | Ten editable slides with native evidence, exact embedded M6 screenshot, source-bearing notes and public demo script; render/re-import and inspect every slide. |
+| M7.2 | Initial ten editable slides (later revised to eleven under M7.P1-P3) with native evidence, exact embedded M6 screenshot, source-bearing notes and public demo script; render/re-import and inspect every slide. |
 | M7.3 | Tested M6 source archive, public evidence, checklist and portable submission ZIP with file hashes; omit ignored/private/model/data assets. |
 | M7.4 | Actual content/package/preservation checks, public original-project mirror, report and handoff; course rubric/native rehearsal/upload remain manual. No application/evaluation reruns. |
 
@@ -313,5 +315,7 @@ Checkboxes above are the actionable task register. For each task, append `task_i
 | M6 | done (local product demonstration) | Named pilot/expanded Standard QA/all modes, matching current reviews, source/claim/graph explanations and E-label display fix. 374 offline passes ; 12 actual service cases,two browser queries,checked PDF p.4 cards and exact six-row CSV. Three foreign V2 scope probes refused; guarded feature omitted from this checkout. Seven local model attempts including two reconciled smoke probes,19 reservations,$0. Preserved 118/208 frozen files,source graphs/reviews and stopped evaluation targets. | D83-D86; `docs/M6_REPORT.md`, `docs/M6_DEMO_GUIDE.md`, `START_DEMO.ps1`, `runs/m6/`. No Standard-product blocker. V2 remains separate/evidence-only; no new study/private/paid authority. |
 
 | M7 | done (submission preparation, no upload) | Ten-page PDF/Markdown report, ten-slide editable deck with five tables/two charts/ten notes, public demo script/checklist/evidence and197-file tested source archive. Sixteen content groups plus package/manifest checks; all report pages/exported slides inspected,118/208 frozen assets unchanged. No app/dependency/private/inference/service/study mutation. | D87-D88; `docs/M7_REPORT.md`, `docs/M7_SUBMISSION_GUIDE.md`, `runs/m7/`. Rubric, native rehearsal, clean-machine asset provisioning and portal upload remain explicitly manual. |
+
+| M7.P1-P3 | done (presentation revision only) | Eleven-slide storytelling deck with comparison on slide 2 and 11 matching speeches, 1,254 words. Six native tables/two charts/eleven notes; twelve content groups and zero layout findings/warnings. Five original tables/six chart-workbook parts, ten-page report, v1 ZIP and 118/208 frozen files preserved. Additive v2 package and public mirror checked. | D89; `docs/M7_PRESENTATION_REVISION.md`, `docs/PRESENTATION_SPEECH.md`, `runs/m7/presentation-v2/`. Timed/native rehearsal, rubric/portal checks remain manual. |
 
 Operational references: [uv lock/sync](https://docs.astral.sh/uv/concepts/projects/sync/), [Neo4j dump/load](https://neo4j.com/docs/operations-manual/current/docker/dump-load/), [Neo4j 5 query tuning](https://neo4j.com/docs/cypher-manual/5/planning-and-tuning/query-tuning/). Check command flags against the pinned version before execution.

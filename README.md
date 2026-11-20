@@ -2,7 +2,7 @@
 
 Current implementation: **M0-M7 complete (M7 prepares the submission; it does not upload it). Open the working product at http://127.0.0.1:8503/**. Current checkout: `C:/Users/serge/DBU-GraphRAG-Worktrees/m6-demonstration`; launch with `START_DEMO.ps1`. [Startup/presentation guide](docs/M6_DEMO_GUIDE.md), [actual checks and limits](docs/M6_REPORT.md).
 
-**Submission package:** [M7 guide](docs/M7_SUBMISSION_GUIDE.md), [report source](docs/PROJECT_REPORT.md), [slides/demo notes](docs/PRESENTATION_NOTES.md), [checklist](docs/SUBMISSION_CHECKLIST.md), [actual checks](docs/M7_REPORT.md). Complete bundle: `runs/m7/DBU_Deep_Learning_Submission.zip`; standalone PDF/PPTX in `runs/m7/submission/`. Verify the actual course rubric and rehearse before uploading.
+**Submission package:** [M7 guide](docs/M7_SUBMISSION_GUIDE.md), [report source](docs/PROJECT_REPORT.md), [simple speech](docs/PRESENTATION_SPEECH.md), [slides/demo notes](docs/PRESENTATION_NOTES.md), [checklist](docs/SUBMISSION_CHECKLIST.md), [actual checks](docs/M7_REPORT.md). Current bundle: `runs/m7/DBU_Deep_Learning_Submission_v2.zip`; revised 11-slide PPTX/speech in `runs/m7/presentation-v2/submission/`. The unchanged ten-page report and original v1 remain under `runs/m7/submission/`. Verify the actual course rubric and rehearse before uploading.
 
 **Current iteration:** Specification 6.5 governs `retrieval-v2`; M5.0–M5.4 are complete.
 [M5.4](docs/M5_4_REPORT.md) records the matched 96-request development comparison and a **no-go**

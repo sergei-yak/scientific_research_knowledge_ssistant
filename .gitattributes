@@ -1,1 +1,9 @@
 * text=auto eol=lf
+
+# Preserve exact validated submission bytes and manifest checksums.
+submission/** -text whitespace=cr-at-eol
+
+# Generated deliverables are binary artifacts, not source diffs.
+*.pdf binary
+*.pptx binary
+*.zip binary

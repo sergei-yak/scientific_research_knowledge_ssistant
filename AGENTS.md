@@ -1,5 +1,10 @@
 # Agent working guide
 
+## Published repository scope
+
+This branch is a public publication copy based on completed commit d6e9182. Read `docs/GITHUB_PUBLICATION.md` and use the checked public files in `submission/`. Original M6/research checkouts, local runtime assets and external private evaluation inputs remain separate. Workstation-specific paths in the historical notes below refer to the author's machine, not provisioned assets in a fresh clone. Do not search for or recreate private evaluator content, infer experiment authorization, or overwrite the original checkouts. Publication changes documentation and adds already-validated artifacts only.
+
+
 ## M7 submission status
 
 **Current presentation revision:** The user requested simple storytelling speech and an early traditional RAG/Graph RAG explanation. Current deck has 11 slides with 11 embedded speeches, superseding the original ten-slide default. Read `docs/M7_PRESENTATION_REVISION.md` and `docs/PRESENTATION_SPEECH.md`; use `runs/m7/DBU_Deep_Learning_Submission_v2.zip`. Twelve revision content groups and final package/layout checks pass. Original report, v1 package, native chart/workbook bytes and 118/208 frozen files remain unchanged. No new app/runtime/private/model/service/research operation. The initial M7 record below is historical v1.

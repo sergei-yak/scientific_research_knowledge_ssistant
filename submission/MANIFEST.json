@@ -1,0 +1,113 @@
+{
+  "format": "m7-public-submission-manifest-v2",
+  "created_at": "2026-11-20T02:30:40.871513+00:00",
+  "author": "Sergei Iakovlev",
+  "course": "DBU Deep Learning",
+  "report_pages": 10,
+  "presentation_slides": 11,
+  "speech_words": 1254,
+  "source_commit": "9b9b6c884d5616d044bbf3e0d98344e43ec91635",
+  "previous_package_sha256": "889f7db610e56675f8155e3330462075adf32f104af4b7f2ae73ad7ef8c228d6",
+  "source_presentation_sha256": "a9ebe417db8855d46d29d8c7b8c9caca8d6c313b773d23be10e7ad6fa1e36e5b",
+  "research_results_changed": false,
+  "private_content_included": false,
+  "course_upload_performed": false,
+  "files": {
+    "assets/demo-answer.jpg": {
+      "bytes": 109833,
+      "sha256": "bf8933167e7af9aa5c0cba3e1d756851a6f4bc0219daccf1fa309773c789088d"
+    },
+    "assets/demo-sources.jpg": {
+      "bytes": 157675,
+      "sha256": "d1e004f269df62c1012e9ee560674ecdfff411c5d0331d64190258429594322f"
+    },
+    "assets/followup-correctness.png": {
+      "bytes": 33708,
+      "sha256": "ae78457d91d1e51f87e6f4d667bb2994e45cd45079b241564b52c73efdcdb086"
+    },
+    "evidence/baseline-aggregates.json": {
+      "bytes": 6267,
+      "sha256": "1610ad436228dee9d020ebe255cfe5cf341b7f4519d0313aa6de7ac5c7f682b7"
+    },
+    "evidence/FINAL_EVALUATION_REPORT.md": {
+      "bytes": 12675,
+      "sha256": "aed7a35aa93f4462731311c7d5d09613609f033c7a9b9e315c0ef36150c79b74"
+    },
+    "evidence/followup-aggregates.json": {
+      "bytes": 18541,
+      "sha256": "fa7854d9247e60594a4c387476390f252f5197e97a831c639be75d2a5feda99f"
+    },
+    "evidence/M5_1_REPORT.md": {
+      "bytes": 11616,
+      "sha256": "041651218d849b9c645121e7609a6bdff3fa1892b177c25efa7f2a25be07cf64"
+    },
+    "evidence/M5_4_REPORT.md": {
+      "bytes": 12467,
+      "sha256": "fa9bbe18a7a9e04ea5919850c29afedcd6462488571ac9bcc5cffc02f9c9db08"
+    },
+    "evidence/M5_5_STUDY_AMENDMENT.md": {
+      "bytes": 2864,
+      "sha256": "26a1eea2e902686e81ea79987d3d498eedd199d564a4b9f51f42faa9021c0843"
+    },
+    "evidence/M5_6_EVALUATION_REPORT.md": {
+      "bytes": 12536,
+      "sha256": "53bb4cf3e35e30993d0794d9cd09f794887413ab5b23cd0e9188dbcf2d69318d"
+    },
+    "evidence/M6_DEMO_GUIDE.md": {
+      "bytes": 7518,
+      "sha256": "8bd0bc39ffe5536e527ef27e7c2bf4b71092170a5ba46e64601dd2015c45215a"
+    },
+    "evidence/M6_REPORT.md": {
+      "bytes": 9279,
+      "sha256": "31ed53b1c6a0cea5f904effa45e3168ca1c06f50da2675c77d08343726ca3973"
+    },
+    "evidence/m7-content-validation.json": {
+      "bytes": 4256,
+      "sha256": "b9e3f96fb44cbe84d266d39b874ef47d64c87135273822ca6a2eaa98ce4f61ec"
+    },
+    "evidence/presentation-v2-validation.json": {
+      "bytes": 3227,
+      "sha256": "8934fd98f16b73fc34b31e13618bc40aa0c7baef079e53ebe261bc36b40346b3"
+    },
+    "M7_PRESENTATION_REVISION.md": {
+      "bytes": 4404,
+      "sha256": "7f3251d8367a01871c86581349f5d347a117b44fa72e6810dc6961fca83d1007"
+    },
+    "M7_REPORT.md": {
+      "bytes": 7512,
+      "sha256": "534035e0550bb228cdbff45246441849c5e5bbf9f569f6802ec67fdc66f88f82"
+    },
+    "Presentation_Notes.md": {
+      "bytes": 4474,
+      "sha256": "1634d3da5f66eaaf8fc51e89801edd545c56d674110103dfec0e652b642fe69c"
+    },
+    "Presentation_Speech.md": {
+      "bytes": 8597,
+      "sha256": "54e344bf393971d8e9d57656d9e5aeab7c6649f45842e07adda69bcc1601f4c0"
+    },
+    "Project_Presentation_Storytelling_v2.pptx": {
+      "bytes": 159068,
+      "sha256": "0c89c23a518c96b72d6c9303564094c5d8703529589fe7f0dd52c3a3512ee9f2"
+    },
+    "Project_Report.md": {
+      "bytes": 28853,
+      "sha256": "c68d04f624aaa6fed3ddbb3d8f9741217501d17bb5e9dfe3d175807f96464c1f"
+    },
+    "Project_Report.pdf": {
+      "bytes": 213708,
+      "sha256": "148afa9e1635344ccc4bed605fc67d45e7ad87ab4f46c77324a084f8dd45e108"
+    },
+    "Source_M6_9b9b6c8.zip": {
+      "bytes": 742777,
+      "sha256": "17e08e51bb644822674992b1361f32face0d13d0dd65a97e8edce65299636deb"
+    },
+    "START_HERE.md": {
+      "bytes": 3322,
+      "sha256": "59deedfab500c1b1a745cdc56bd85c53b664613c85307c16d7df3f7447396258"
+    },
+    "Submission_Checklist.md": {
+      "bytes": 3267,
+      "sha256": "c85695f8bdeaf4dd4e0b73f479d76db3825c3fc8e254a18af4c5555073f29f17"
+    }
+  }
+}

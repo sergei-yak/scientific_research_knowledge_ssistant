@@ -105,6 +105,8 @@ D1–D11 are incorporated into the authoritative spec; verify them in the listed
 
 | D89 | User requests nontechnical storytelling speech and an early traditional RAG/Graph RAG comparison. Add slide 2, giving 11 slides, and put all 11 speeches in speaker notes plus a rehearsal document. Simplify headings and explain intended business value without measured time/ROI claims. Preserve result tables, original chart/workbook bytes and v1 package; issue additive v2 bundle. No runtime/research change. | M7.P1-M7.P3 |
 
+| D90 | User explicitly requests pushing the complete project to the new public GitHub repository. Publish current M6/M7 source history and exact public submission artifacts from a separate checkout; exclude ignored/private/runtime assets, audit reachable history and manifest hashes, and push a new main without force. Preserve all original working/frozen checkouts. No runtime/research/dependency change. | PUB.1-PUB.3; `docs/GITHUB_PUBLICATION.md` |
+
 ## M1 design bindings (before M2; implemented through M3.1)
 
 **Baseline profile only.** The frozen bindings below remain the reproducibility reference. R2 requirements explicitly replace their seeding/route/ranking choices for the new profile; do not change these historical bindings or treat them as simultaneously active V2 algorithms.

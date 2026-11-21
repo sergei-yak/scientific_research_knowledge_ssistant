@@ -4,6 +4,9 @@ A local assistant for asking questions about scientific papers and checking the 
 
 ## Start here
 
+- [Class progress report with completion percentages and screenshots](coursework/progress-2026-11-21/Project_Progress_Report.pdf)
+- [M8 plan for users to bring their own papers (not implemented)](docs/M8_PLAN.md)
+
 - [Final report, 10 pages](submission/Project_Report.pdf)
 - [Presentation, 11 slides with speech in speaker notes](submission/Project_Presentation_Storytelling_v2.pptx)
 - [Simple storytelling speech](docs/PRESENTATION_SPEECH.md)
@@ -18,6 +21,10 @@ The source covers the completed M0-M7 project: Python services, CLI, Streamlit U
 The indexed research collection has 20 papers, 1,427 chunks and 51 human-approved claims. In both small held-out studies, Graph requests fell back to the matching fact-augmented evidence. No held-out benefit from selected graph traversal was established. The exploratory follow-up found mode-dependent reranker quality/latency trade-offs. Its question-author exposure and negative development gate remain disclosed in the [study amendment](docs/M5_5_STUDY_AMENDMENT.md) and [results](docs/M5_6_EVALUATION_REPORT.md).
 
 The neural models were pretrained externally. No neural network was trained or fine-tuned for this project. Intended business value is easier research and source checking; user time savings and financial return were not measured.
+
+## Planned product extension
+
+M8 will add named collections, PDF uploads/supported links, source-cited QA and optional human-reviewed graph features. It is 0% implemented. The original M0-M7 scope is complete; the progress report's approximately 89% is an equal 8-of-9 milestone count including planned M8, not model accuracy or an effort estimate. [Scope and acceptance plan](docs/M8_PLAN.md).
 
 ## Running locally
 

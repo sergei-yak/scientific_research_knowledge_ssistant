@@ -1,0 +1,39 @@
+{
+  "format": "class-progress-evidence-manifest-v1",
+  "date": "2026-11-21",
+  "author": "Sergei Iakovlev",
+  "report_pages": 3,
+  "source_commit": "dd2d07ab850dcfd2ea505948ad4b5040304eabb4",
+  "percentage_basis": "8of9 equally counted accepted top-level milestones",
+  "overall_rounded": 89,
+  "m8_implementation": 0,
+  "files": {
+    "assets/demo-answer.jpg": {
+      "bytes": 109833,
+      "sha256": "bf8933167e7af9aa5c0cba3e1d756851a6f4bc0219daccf1fa309773c789088d"
+    },
+    "assets/demo-sources.jpg": {
+      "bytes": 157675,
+      "sha256": "d1e004f269df62c1012e9ee560674ecdfff411c5d0331d64190258429594322f"
+    },
+    "assets/github-code.jpg": {
+      "bytes": 135104,
+      "sha256": "b9243b524e883a0f3f79c35a2de54ea11bc1730fcf6cdc7984e456389905410e"
+    },
+    "Project_Progress_Report.pdf": {
+      "bytes": 512886,
+      "sha256": "1e10da2f8cdc7a4c3df42e94a6b02181fb21814ca11c4d13f4eb7e72d150e2a4"
+    },
+    "README.md": {
+      "bytes": 1797,
+      "sha256": "002cdee6e404dd9d31083b390242fbb1f3fc12ba3b2a3ccfe9bff4abdfef2489"
+    },
+    "report-data.json": {
+      "bytes": 4658,
+      "sha256": "bcc0f75ec3ea3c31a89047b63af7d4212c2aec76960a1e0931233aada842bad9"
+    }
+  },
+  "course_portal_upload_performed": false,
+  "new_model_calls": 0,
+  "private_inputs_read": false
+}

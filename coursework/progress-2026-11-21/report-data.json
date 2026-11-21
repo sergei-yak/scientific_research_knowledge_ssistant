@@ -1,0 +1,94 @@
+{
+  "title": "Scientific Research Knowledge Assistant Project Progress Report",
+  "author": "Sergei Iakovlev",
+  "course": "DBU Deep Learning",
+  "date": "21 November 2026",
+  "description": "My project is a local scientific research assistant. A user asks a question about a collection of research papers, and the app retrieves supporting passages, writes an answer and links back to the paper pages. It can help a research team compare methods and inspect evidence. I compare traditional passage search with Graph RAG, which can also follow reviewed connections between papers, methods and datasets. The current product uses prepared five- and twenty-paper collections. M8 will add user-provided papers; it is not available yet.",
+  "features": [
+    {
+      "id": "M0",
+      "element": "Environment setup and locked Python/dependency configuration",
+      "completion_percent": 100
+    },
+    {
+      "id": "M1",
+      "element": "Read a research PDF, create searchable passages and generate cited answers",
+      "completion_percent": 100
+    },
+    {
+      "id": "M2",
+      "element": "Five-paper pilot, source-bound claim extraction and human review",
+      "completion_percent": 100
+    },
+    {
+      "id": "M3",
+      "element": "Four retrieval modes, research workflows, interface and evidence exports",
+      "completion_percent": 100
+    },
+    {
+      "id": "M4",
+      "element": "Twenty-paper corpus and original controlled retrieval/answer evaluation",
+      "completion_percent": 100
+    },
+    {
+      "id": "M5",
+      "element": "Broader graph routes, shared reranker and exploratory follow-up evaluation",
+      "completion_percent": 100
+    },
+    {
+      "id": "M6",
+      "element": "Working local demonstration, source cards, corpus selection and checked downloads",
+      "completion_percent": 100
+    },
+    {
+      "id": "M7",
+      "element": "Final report, presentation, simple speech and public project materials",
+      "completion_percent": 100
+    },
+    {
+      "id": "M8",
+      "element": "User-provided PDFs/links and dynamic collections: planned, not implemented",
+      "completion_percent": 0
+    }
+  ],
+  "overall_percent_rounded": 89,
+  "completion_basis": "Eight of nine top-level milestones completed, equally counted; not effort-weighted, answer accuracy or M8 implementation progress. Original M0-M7 scope complete.",
+  "m8_implementation_percent": 0,
+  "repository": "https://github.com/sergei-yak/scientific_research_knowledge_ssistant",
+  "code_permalink": "https://github.com/sergei-yak/scientific_research_knowledge_ssistant/blob/dd2d07ab850dcfd2ea505948ad4b5040304eabb4/src/research_assistant/ui/app.py#L153-L161",
+  "challenges": [
+    {
+      "topic": "Reliable source support",
+      "detail": "PDF reading order, parsed section names and generated wording can be imperfect. I retain exact quotations and PDF page references, and require human review before scientific claims become approved facts. Citation IDs alone do not prove every sentence correct."
+    },
+    {
+      "topic": "Graph quality",
+      "detail": "Graph retrieval did not add selected evidence on the held-out questions. Broader routes and reranking were tested, but no held-out traversal benefit was established. This remains a reported limitation, not a claimed quality improvement."
+    },
+    {
+      "topic": "Local hardware and response time",
+      "detail": "The local generator competes for limited memory. Product checks observed answers taking 35-76 seconds, with additional cold-start time possible. CPU embeddings and bounded contexts help manage resources; instantaneous answers are not promised."
+    },
+    {
+      "topic": "Review and evaluation effort",
+      "detail": "Source claims and evaluation annotations needed separate human review. Each study used a small held-out sample and one answer scorer. The follow-up author knew earlier outcomes, so that study is explicitly exploratory."
+    },
+    {
+      "topic": "Usability and next work",
+      "detail": "Earlier corpus/review mismatches and citation-display bugs were fixed and checked. Users still cannot upload their own papers in the UI. The newly planned M8 addresses this through isolated collections, imports, ordinary QA and optional reviewed graph features."
+    }
+  ],
+  "screenshot_dates": {
+    "app": "Recorded M6 demonstration, 18 November 2026",
+    "code": "GitHub screenshot captured 21 November 2026"
+  },
+  "recorded_m6_checks": {
+    "offline_passed": 374,
+    "integration_deselected": 7,
+    "live_service_cases": 12,
+    "browser_queries": 2,
+    "csv_rows_matched": 6
+  },
+  "new_model_calls": 0,
+  "private_inputs_read": false
+}

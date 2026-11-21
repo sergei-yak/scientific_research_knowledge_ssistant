@@ -5,10 +5,12 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import subprocess
+import time
 from typing import Literal
 from urllib.parse import urlsplit
 
 from neo4j import GraphDatabase, Query
+from neo4j.exceptions import ServiceUnavailable, SessionExpired
 from pydantic import Field, model_validator
 
 from research_assistant.collections.contracts import CollectionLimits, ImmutableContract, LIMITS
@@ -70,7 +72,7 @@ def load_user_scope(workspace: Path | None = None) -> UserCollectionScope:
     return scope
 
 
-def inspect_target(scope: UserCollectionScope) -> dict:
+def inspect_target(scope: UserCollectionScope, *, allow_stopped: bool = False) -> dict:
     """Attest only the exact named M8 container; never expose container environment secrets."""
     result = subprocess.run(['docker', 'inspect', scope.target_project + '-neo4j-1'],
         capture_output=True, text=True, check=True, timeout=20)
@@ -78,16 +80,37 @@ def inspect_target(scope: UserCollectionScope) -> dict:
     mounts = container.get('Mounts', [])
     volumes = {m.get('Name') for m in mounts if m.get('Destination') in {'/data', '/logs'}}
     bindings = container.get('NetworkSettings', {}).get('Ports', {}).get('7687/tcp') or []
+    if allow_stopped and not container['State']['Running']:
+        bindings = container.get('HostConfig', {}).get('PortBindings', {}).get('7687/tcp') or []
     port = urlsplit(scope.target_uri).port
     if (container['Id'] != scope.container_id or container['Image'] != scope.image_id
             or container['Config'].get('Labels', {}).get('com.docker.compose.project') != scope.target_project
-            or volumes != set(scope.volumes) or not container['State']['Running']
+            or volumes != set(scope.volumes) or (not allow_stopped and not container['State']['Running'])
             or not bindings or any(b['HostIp'] != '127.0.0.1' or int(b['HostPort']) != port for b in bindings)
             or any(m.get('Type') != 'volume' or not m.get('RW') for m in mounts
                    if m.get('Destination') in {'/data', '/logs'})):
         raise ValueError('M8 container, image, port or writable volume identity changed')
     return {'container_id': container['Id'], 'project': scope.target_project,
             'image_id': container['Image'], 'volumes': sorted(volumes), 'target_uri': scope.target_uri}
+
+
+def start_user_target(settings: Settings) -> dict:
+    """Start only the already-attested container ID; never recreate, restore or reconfigure it."""
+    scope = load_user_scope()
+    if settings.neo4j_uri != scope.target_uri or settings.neo4j_database != scope.database:
+        raise ValueError('Configured database is not the declared M8 target')
+    inspect_target(scope, allow_stopped=True)
+    subprocess.run(['docker', 'start', scope.container_id], capture_output=True, check=True, timeout=30)
+    for attempt in range(30):
+        try:
+            guard_user_write(settings)
+            return {'status': 'passed', 'scope_id': scope.scope_id, 'container_id': scope.container_id,
+                    'target_uri': scope.target_uri}
+        except (ServiceUnavailable, SessionExpired):
+            if attempt == 29:
+                raise
+            time.sleep(1)
+    raise ValueError('M8 database did not become ready')
 
 
 def guard_user_write(settings: Settings) -> None:

@@ -145,6 +145,8 @@ class CollectionRegistry:
         """Publish a new revision; readiness/approvals do not carry to a changed binding."""
         with self._locked():
             current = self.get(collection_id)
+            if self._path('.query.lock').exists():
+                raise ValueError('A question is running; wait before changing collection revisions')
             if current.sha256 != expected_sha256:
                 raise ValueError('Collection changed; reload before publishing')
             if any(j.collection_id == collection_id and j.state not in TERMINAL_STATES for j in self.jobs()):
@@ -159,6 +161,8 @@ class CollectionRegistry:
     def queue(self, collection_id: str, expected_sha256: str, inputs: tuple[InputReference, ...]) -> ImportJob:
         """Reserve the sole foreground import slot; M8.1 does not execute the queued work."""
         with self._locked():
+            if self._path('.query.lock').exists():
+                raise ValueError('A question is running; wait before starting an import')
             current = self.get(collection_id)
             if current.sha256 != expected_sha256:
                 raise ValueError('Collection changed; reload before queueing')
@@ -194,13 +198,33 @@ class CollectionRegistry:
         self.get_job(job_id)
         path = self._path('.worker.lock')
         token = job_id + ':' + uuid4().hex
-        with path.open('x', encoding='utf-8') as handle:
-            handle.write(token)
+        with self._locked():
+            if self._path('.query.lock').exists():
+                raise ValueError('A question is running; import worker cannot start')
+            with path.open('x', encoding='utf-8') as handle:
+                handle.write(token)
         try:
             yield token
         finally:
             if path.read_text(encoding='utf-8') != token:
                 raise ValueError('Import worker lock changed; preserve it for investigation')
+            path.unlink()
+
+    @contextmanager
+    def query_lock(self) -> Iterator[None]:
+        """Serialize local queries with imports across sessions; never reclaim a stale lock."""
+        path = self._path('.query.lock')
+        token = uuid4().hex
+        with self._locked():
+            if self._path('.worker.lock').exists() or any(j.state not in TERMINAL_STATES for j in self.jobs()):
+                raise ValueError('An import is active or reserved; finish it before asking a question')
+            with path.open('x', encoding='utf-8') as handle:
+                handle.write(token)
+        try:
+            yield
+        finally:
+            if path.read_text(encoding='utf-8') != token:
+                raise ValueError('Question lock ownership changed; preserve it for investigation')
             path.unlink()
 
     def get_job(self, job_id: str) -> ImportJob:
@@ -283,7 +307,7 @@ class CollectionRegistry:
         return self._path('collections', collection.collection_id, 'revisions', f'{collection.revision:06d}', 'reviews')
 
     def describe(self, collection: UserCollection) -> dict:
-        """Expose pending readiness honestly; M8.3 will verify actual indexes and review heads."""
+        """Describe metadata only; workspace QA separately verifies actual live readiness."""
         return {**collection.model_dump(mode='json'), 'sha256': collection.sha256,
             'review_directory': str(self.review_directory(collection)),
             'readiness': 'empty' if not collection.documents else 'not_verified', 'available_modes': []}

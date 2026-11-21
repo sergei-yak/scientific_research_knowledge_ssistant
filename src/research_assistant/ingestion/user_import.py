@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 import hashlib
 import json
+import logging
 from pathlib import Path
 import subprocess
 import sys
@@ -165,7 +166,7 @@ class SharedCollectionIndexer:
 
 def run_import(registry: CollectionRegistry, job_id: str, inputs: list[ImportInput], settings: Settings,
                *, encoder_factory=Encoder, downloader=download_pdf, inspector=inspect_isolated,
-               indexer=None, write_guard=guard_user_write) -> dict:
+               indexer=None, write_guard=guard_user_write, on_progress=None) -> dict:
     """Execute a queued job once; persist every terminal outcome, never automatically resume/retry."""
     job = registry.get_job(job_id)
     if job.state != 'queued' or tuple(item.reference for item in inputs) != job.inputs:
@@ -173,6 +174,12 @@ def run_import(registry: CollectionRegistry, job_id: str, inputs: list[ImportInp
     directory = registry._path('jobs', job_id)
     with registry.worker(job_id) as token:
         items, request_count, started = [], 0, time.monotonic()
+        def notify(current) -> None:
+            if on_progress is not None:
+                try:
+                    on_progress(current)
+                except Exception:
+                    logging.getLogger(__name__).warning('Import progress view unavailable; durable processing continues')
         def reserve(request: dict) -> None:
             nonlocal request_count
             if request_count >= len(job.inputs) * (LIMITS.max_redirects + 1):
@@ -182,6 +189,7 @@ def run_import(registry: CollectionRegistry, job_id: str, inputs: list[ImportInp
                 {**request, 'reserved_at': datetime.now(timezone.utc).isoformat(), 'automatic_retries': 0})
         try:
             job = registry.advance(job_id, job.sha256, token, 'resolving')
+            notify(job)
             write_guard(settings)
             current = registry.get(job.collection_id)
             if current.sha256 != job.collection_sha256:
@@ -222,6 +230,7 @@ def run_import(registry: CollectionRegistry, job_id: str, inputs: list[ImportInp
                     'Every supplied PDF already belongs to this indexed collection; no revision/index changed')
             else:
                 job = registry.advance(job_id, job.sha256, token, 'parsing')
+                notify(job)
                 documents = list(current.documents)
                 for reference, item, path in new_sources:
                     inspection_path = registry._path('jobs', job_id, 'inspection', f"{item['input_index']:03d}.json")
@@ -247,10 +256,12 @@ def run_import(registry: CollectionRegistry, job_id: str, inputs: list[ImportInp
                     inspected = json.loads(registry._path('documents', document.source_sha256, 'inspection.json').read_bytes())
                     prepared.append(PreparedPaper(document, PaperManifestEntry.model_validate(inspected['manifest']), inspected['pages']))
                 job = registry.advance(job_id, job.sha256, token, 'indexing')
+                notify(job)
                 encoder = encoder_factory()
                 binding = (indexer or SharedCollectionIndexer(registry, settings))(candidate, prepared, encoder)
                 candidate = UserCollection.model_validate({**candidate.model_dump(), 'binding': binding})
                 job = registry.publish_import(job_id, job.sha256, token, candidate)
+            notify(job)
             outcome = {'status': job.state, 'job_id': job_id, 'job_sha256': job.sha256,
                 'collection_id': job.collection_id, 'output_corpus_id': job.output_corpus_id, 'items': items,
                 'request_attempts': request_count, 'new_documents': len(new_sources),

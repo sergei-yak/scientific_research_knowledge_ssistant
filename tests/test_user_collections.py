@@ -229,6 +229,44 @@ def test_user_guard_rejects_foreign_endpoint_before_docker(registry, monkeypatch
         scope_module.guard_user_write(Settings())
 
 
+def test_stopped_target_is_attested_before_exact_id_start(registry, monkeypatch):
+    monkeypatch.chdir(registry.workspace)
+    scope = registry.scope
+    container = target_container(scope)
+    container['State']['Running'] = False
+    container['HostConfig'] = {'PortBindings': container['NetworkSettings']['Ports']}
+    container['NetworkSettings']['Ports'] = {}
+    calls = []
+    def command(args, **kwargs):
+        calls.append(args)
+        return SimpleNamespace(stdout=json.dumps([container]))
+    monkeypatch.setattr(scope_module.subprocess, 'run', command)
+    monkeypatch.setattr(scope_module, 'guard_user_write', lambda settings: None)
+    assert scope_module.start_user_target(Settings(neo4j_uri=scope.target_uri))['status'] == 'passed'
+    assert calls == [['docker', 'inspect', scope.target_project + '-neo4j-1'],
+                     ['docker', 'start', scope.container_id]]
+    container['HostConfig']['PortBindings']['7687/tcp'][0]['HostIp'] = '0.0.0.0'
+    calls.clear()
+    with pytest.raises(ValueError, match='identity changed'):
+        scope_module.start_user_target(Settings(neo4j_uri=scope.target_uri))
+    assert len(calls) == 1
+
+
+def test_start_fails_closed_on_foreign_settings_and_owner(registry, monkeypatch):
+    monkeypatch.chdir(registry.workspace)
+    calls = []
+    monkeypatch.setattr(scope_module, 'inspect_target', lambda *a, **k: calls.append('inspect'))
+    monkeypatch.setattr(scope_module.subprocess, 'run', lambda *a, **k: calls.append('start'))
+    with pytest.raises(ValueError, match='not the declared'):
+        scope_module.start_user_target(Settings())
+    assert calls == []
+    def wrong_owner(settings): raise ValueError('Workspace owner changed')
+    monkeypatch.setattr(scope_module, 'guard_user_write', wrong_owner)
+    with pytest.raises(ValueError, match='owner changed'):
+        scope_module.start_user_target(Settings(neo4j_uri=registry.scope.target_uri))
+    assert calls == ['inspect', 'start']
+
+
 def test_registry_cli_uses_same_service(registry, monkeypatch, capsys):
     from research_assistant.collections.__main__ import main
     monkeypatch.chdir(registry.workspace)

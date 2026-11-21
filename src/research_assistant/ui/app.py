@@ -26,6 +26,12 @@ def cached_encoder() -> Encoder:
 def display_run(run: RunArtifact, settings: Settings,review_directory: Path = Path('data/reviews/pilot')) -> None:
     """Render checked saved request identity, structured views, excerpts and optional synthesis."""
     view, csv_text = prepare_output(run, settings, review_directory=review_directory)
+    render_run(run, view, csv_text)
+
+
+def render_run(run: RunArtifact, view, csv_text: str, *, source_card=None,
+               show_reviewed_features: bool = True, paper_labels: dict[str, str] | None = None) -> None:
+    """Shared presentation of already-validated output; source adapters do no retrieval/generation."""
     st.caption(f'Retrieval profile: {run.request.profile_id} · selector: {run.request.selector_id}')
     retrieval = run.retrieval
     st.subheader('Submitted question')
@@ -48,7 +54,7 @@ def display_run(run: RunArtifact, settings: Settings,review_directory: Path = Pa
             if (row['paper'], citation) not in seen:
                 st.link_button(f'{row["method"]} · {row["paper"]} · reporting source', citation)
                 seen.add((row['paper'], citation))
-    else:
+    elif show_reviewed_features:
         st.info('No approved claims selected for this workflow. Raw excerpts may still help answer the question.')
     for notice in view.notices:
         st.caption(notice)
@@ -62,32 +68,38 @@ def display_run(run: RunArtifact, settings: Settings,review_directory: Path = Pa
         st.text(run.result.answer)
         if run.result.citations:
             st.caption('Cited source cards: ' + ', '.join(citation['evidence_id'] for citation in run.result.citations))
-        st.caption('Generated synthesis is separate from approved claims; a valid citation is not a correctness score.')
+        st.caption('Check the answer against its cited passages; a valid citation is not a correctness score.')
         if run.generation:
             st.caption(f'{run.generation.provider} · {run.generation.model} · {run.generation.elapsed_ms:.0f} ms · run {run.run_id}')
     st.subheader('Source evidence')
-    st.write('Each card contains exact text from a paper. An approved claim is a source-checked summary; the excerpt underneath lets you verify it.')
+    st.write('Each card contains exact text from a paper.' +
+        (' An approved claim is a source-checked summary; the excerpt underneath lets you verify it.' if show_reviewed_features else ' Use the page reference and PDF to check the answer.'))
     st.caption('PDF page numbers are authoritative. Parsed section labels are unverified; figures and numeric tables are not validated.')
     for index, item in enumerate(retrieval.evidence, 1):
-        with st.expander(f'E{index} · {"Approved paper claim" if item.kind == "approved_fact" else "Raw excerpt"} · {", ".join(item.paper_ids)}'):
+        papers = ', '.join((paper_labels or {}).get(key, key) for key in item.paper_ids)
+        with st.expander(f'E{index} · {"Approved paper claim" if item.kind == "approved_fact" else "Raw excerpt"} · {papers}'):
             if item.claim_text:
                 st.text(item.claim_text)
                 st.caption(f'Claim {item.approved_claim_ids[0]} · revision {item.claim_revision}')
                 st.table([{'Reported condition': field.replace('_', ' ').title(), 'Value': known(item.conditions.get(field))} for field in ['method', 'dataset', 'dataset_version', 'split', 'metric', 'protocol']])
             for number, excerpt in enumerate(item.excerpts, 1):
-                st.link_button(f'{excerpt.paper_id} · PDF p. {excerpt.page} · source {number}',
-                               excerpt.source_url.split('#')[0] + f'#page={excerpt.page}')
+                if source_card is not None:
+                    source_card(excerpt, key=f'pdf_{index}_{number}')
+                else:
+                    st.link_button(f'{excerpt.paper_id} · PDF p. {excerpt.page} · source {number}',
+                                   excerpt.source_url.split('#')[0] + f'#page={excerpt.page}')
                 st.text(excerpt.text)
             if item.graph_paths:
                 st.write('Graph connection used: this evidence was reached by following reviewed relationships between papers, methods or datasets.')
                 for path in item.graph_paths:
                     st.caption(f"Route: {path['template'].replace('_', ' ')}. Reporting paper: {path['reporting_paper_id']}.")
                 st.json(item.graph_paths)
-    st.subheader('Graph connections used')
-    if any(item.graph_paths for item in retrieval.evidence):
-        st.write('Connection routes are shown in the source cards above. They explain how evidence was found; they are not extra scientific proof.')
-    else:
-        st.info('No graph connection was added to this result.' + (' The graph search fell back to Hybrid + Approved Facts.' if retrieval.fallback_reason else ' Other retrieval modes can return source evidence directly.'))
+    if show_reviewed_features:
+        st.subheader('Graph connections used')
+        if any(item.graph_paths for item in retrieval.evidence):
+            st.write('Connection routes are shown in the source cards above. They explain how evidence was found; they are not extra scientific proof.')
+        else:
+            st.info('No graph connection was added to this result.' + (' The graph search fell back to Hybrid + Approved Facts.' if retrieval.fallback_reason else ' Other retrieval modes can return source evidence directly.'))
     with st.expander('Run provenance and exact model context'):
         st.caption(f'Corpus {run.request.corpus_id} · context SHA-256 {retrieval.context_sha256}')
         st.json({'requested_mode': retrieval.requested_mode, 'effective_mode': retrieval.effective_mode,

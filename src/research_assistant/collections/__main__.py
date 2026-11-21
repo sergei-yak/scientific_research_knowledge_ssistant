@@ -10,7 +10,7 @@ from pydantic import ValidationError
 
 from research_assistant.collections.scope import guard_user_write
 from research_assistant.collections.store import CollectionRegistry
-from research_assistant.settings import Settings
+from research_assistant.settings import Settings, configure_caches
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -30,11 +30,24 @@ def main(argv: list[str] | None = None) -> int:
     rename.add_argument('--expected-head', required=True)
     rename.add_argument('--name', required=True)
     commands.add_parser('scope-check')
+    commands.add_parser('start', help='Start only the exact retained M8 container, without recreation')
     importing = commands.add_parser('import', help='Import explicitly supplied PDFs/links once, without generation')
     importing.add_argument('--collection', required=True)
     importing.add_argument('--expected-head', required=True)
     importing.add_argument('--pdf', action='append', type=Path, default=[])
     importing.add_argument('--url', action='append', default=[])
+    query = commands.add_parser('query', help='Ask only the selected committed collection using shared services')
+    query.add_argument('--collection', required=True)
+    query.add_argument('--expected-head', required=True)
+    query.add_argument('--question', required=True)
+    query.add_argument('--mode', choices=['vector', 'hybrid'], default='hybrid')
+    query.add_argument('--generate', action='store_true')
+    query.add_argument('--output', type=Path, required=True)
+    export = commands.add_parser('export', help='Validate saved collection evidence without new inference')
+    export.add_argument('--collection', required=True)
+    export.add_argument('--run', type=Path, required=True)
+    export.add_argument('--format', choices=['csv', 'json'], default='csv')
+    export.add_argument('--output', type=Path, required=True)
     args = parser.parse_args(argv)
     try:
         settings = Settings.from_env()
@@ -44,16 +57,38 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     try:
         registry = CollectionRegistry()
+        configure_caches()
+        if args.command in {'query', 'export'} and args.output.exists():
+            raise ValueError('Output file exists; choose a new path before executing')
         if args.command == 'scope-check':
             guard_user_write(settings)
             result = {'status': 'passed', 'scope_id': registry.scope.scope_id,
                       'target_uri': registry.scope.target_uri}
+        elif args.command == 'start':
+            from research_assistant.collections.scope import start_user_target
+            result = start_user_target(settings)
         elif args.command == 'list':
             result = {'collections': [registry.describe(row) for row in registry.list()]}
         elif args.command == 'jobs':
             result = {'jobs': [job.model_dump(mode='json') for job in registry.jobs()]}
         elif args.command == 'job':
             result = registry.get_job(args.job).model_dump(mode='json')
+        elif args.command == 'query':
+            from research_assistant.collections.workspace import query_collection
+            from research_assistant.pipeline import write_immutable
+            run = query_collection(registry, args.collection, args.expected_head,
+                args.question, args.mode, settings, generate=args.generate)
+            write_immutable(args.output, run.model_dump_json(indent=2) + '\n')
+            result = {'status': 'passed', 'run_id': run.run_id, 'output': str(args.output),
+                      'evidence_units': len(run.retrieval.evidence), 'generation_requested': run.generation_requested}
+        elif args.command == 'export':
+            from research_assistant.collections.workspace import checked_output
+            from research_assistant.contracts import RunArtifact
+            from research_assistant.pipeline import write_immutable
+            run = RunArtifact.model_validate_json(args.run.read_bytes())
+            _, csv_text, _ = checked_output(registry, args.collection, run, settings)
+            write_immutable(args.output, '\ufeff' + csv_text if args.format == 'csv' else run.model_dump_json(indent=2) + '\n')
+            result = {'status': 'passed', 'output': str(args.output), 'new_generation_requests': 0}
         elif args.command == 'import':
             from research_assistant.collections.contracts import InputReference
             from research_assistant.ingestion.user_import import ImportInput, run_import

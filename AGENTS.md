@@ -1,6 +1,11 @@
 # Agent working guide
 
-## M8 planning and class progress
+
+## Current M8 implementation
+
+The user started M8 on 21 November 2026. **M8.1 is complete; M8.2-M8.5 remain not_started.** Work in `C:/Users/serge/DBU-GraphRAG-Worktrees/m8-user-collections`, branch `codex/m8-user-collections`; read specification 6.7, `docs/M8_PLAN.md` and `docs/M8_1_REPORT.md`. Preserve the M6 demonstration checkout/source and both research scopes. New M8 target `dbu-m8-user-c09ff451237f`, Bolt 65488, has only its own owner marker; its separate volumes and registry are retained. `data/scopes/user-collections.json` binds physical ownership and fixed limits. Never copy that declaration to a foreign checkout, mix it with an M5 scope, repoint a target or clear old locks/history. M8.1 provides CLI/metadata and write guards only; uploads, user-collection QA/UI and reviewed graph use follow in M8.2-M8.4. `describe` reports no available modes yet. 414 offline tests and one distinct native target check pass; seven other integration cases were not rerun. No model, paid, private or new study request occurred. Class progress PDF remains the earlier preimplementation snapshot; M7 stays internal and excluded from its features.
+
+## Historical M8 planning and class progress
 
 The user requested M8 in the roadmap and a class progress document on 21 November 2026. Specification 6.6 adds planning only; exact 6.5 main/summary archives preserve the completed research scope. Read `docs/M8_PLAN.md`: M8.1-M8.5 remain not_started, 0% implemented. No uploader, URL import or user-collection feature was added today. The three-page assignment PDF is `coursework/progress-2026-11-21/Project_Progress_Report.pdf`, with actual public app/source/code screenshots. Its approximately 88% count means seven of eight listed technical milestones (M0-M6 plus planned M8) complete, not effort, accuracy or M8 progress. M7 remains internal submission/presentation preparation and must not appear as a progress-report feature or contribute to its completion percentage. M0-M7 remain complete internally. No app/dependency/model/private/evaluation/service changes or new spending/probe allowance. Future M8 implementation needs its own isolated product scope; preserve M6, both old research targets and all original review/cumulative accounting rules. Course-portal upload remains manual.
 

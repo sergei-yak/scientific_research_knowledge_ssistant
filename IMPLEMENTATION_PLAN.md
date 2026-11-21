@@ -1,8 +1,8 @@
 # Implementation plan
 
-**Status:** M0-M7 are complete. M8 is planned with 0% implementation; see `docs/M8_PLAN.md`. This increment adds the roadmap and class progress evidence only. M7 is a documentation/package-only consolidation; see `docs/M7_REPORT.md` and `docs/M7_SUBMISSION_GUIDE.md`. Course-portal submission and rubric/rehearsal checks remain manual. Current working product: `C:/Users/serge/DBU-GraphRAG-Worktrees/m6-demonstration`, branch `codex/m6-demonstration`, port 8503. See `docs/M6_REPORT.md` and `docs/M6_DEMO_GUIDE.md`. Original/M5 checkouts preserve their118/208 frozen runtime entries and unchanged studies. M6 changes only product collection/target presentation, citation/source UX, tests and launch/documentation. Standard supports live Qwen with either corpus/all four modes; V2 remains scoped/evidence-only and is not offered from a foreign checkout. No private evaluation read or new study/paid authorization.
+**Status:** M0-M7 remain complete internally. M8.1 is complete in the isolated `codex/m8-user-collections` checkout; M8.2-M8.5 remain not_started. See `docs/M8_PLAN.md` and `docs/M8_1_REPORT.md`. The working M6 UI is preserved; new uploads/collection QA are not available yet. M7 is a documentation/package-only consolidation; see `docs/M7_REPORT.md` and `docs/M7_SUBMISSION_GUIDE.md`. Course-portal submission and rubric/rehearsal checks remain manual. Current working product: `C:/Users/serge/DBU-GraphRAG-Worktrees/m6-demonstration`, branch `codex/m6-demonstration`, port 8503. See `docs/M6_REPORT.md` and `docs/M6_DEMO_GUIDE.md`. Original/M5 checkouts preserve their118/208 frozen runtime entries and unchanged studies. M6 changes only product collection/target presentation, citation/source UX, tests and launch/documentation. Standard supports live Qwen with either corpus/all four modes; V2 remains scoped/evidence-only and is not offered from a foreign checkout. No private evaluation read or new study/paid authorization.
 
-**Requirements:** Specification **6.6** adds M8 planning; preserved **6.5** research/R2.1-R2.8 and its explicit continuation/exploratory exceptions govern the current profile; model/runtime pin remains 6.3 and no R2 algorithm/budget changed. Exact archived versions preserve earlier requirements. This plan supplies ownership/gates/verification, never conflicting algorithms. Corpus expansion/PPR/community summaries/fine-tuning, further paid calls or another final run remain outside this task.
+**Requirements:** Specification **6.7** records M8.1 contracts/registry/isolation and fixed v1 limits; **6.6** archives preserve its planning snapshot; preserved **6.5** research/R2.1-R2.8 and its explicit continuation/exploratory exceptions govern the current profile; model/runtime pin remains 6.3 and no R2 algorithm/budget changed. Exact archived versions preserve earlier requirements. This plan supplies ownership/gates/verification, never conflicting algorithms. Corpus expansion/PPR/community summaries/fine-tuning, further paid calls or another final run remain outside this task.
 
 ## Decision log
 
@@ -109,6 +109,7 @@ D1–D11 are incorporated into the authoritative spec; verify them in the listed
 
 | D91 | User requests M8 in the plan and a class progress document. Archive exact 6.5 specs, add 6.6 planning-only BYO-paper scope, and define M8.1-M8.5 gates with 0% implementation. Preserve existing corpora/frozen results and review rules. The initial class document counted 8/9 milestones (~89%); D92 supersedes that presentation by excluding internal M7 from the feature list and denominator. Include actual screenshot evidence plus GitHub source, not a link alone. | M8 planning; `docs/M8_PLAN.md`; class progress report |
 | D92 | User clarifies that M7 is internal submission/presentation preparation, not a project feature. Remove it from the class progress feature list and denominator; count seven complete technical milestones (M0-M6) plus planned M8, 7/8 = 87.5% (~88%). Keep M7 and all completed research/submission records intact internally. Regenerate the report and hashes without application or research changes. | Class progress revision 2; internal M7 |
+| D93 | User starts M8. Implement M8.1 first in a separate `codex/m8-user-collections` checkout with a NEW empty UUID-owned Neo4j target and checkout-local JSON registry, preserving M6 and both consumed studies. Pin v1 resource/URL/import policy before adapters/UI. Reuse exact locked local dependency files after an offline PyTorch cache miss; no upgrades/downloads. Metadata never grants index readiness or human approval. | M8.1; specification 6.7; `docs/M8_1_REPORT.md` |
 
 ## M1 design bindings (before M2; implemented through M3.1)
 
@@ -290,9 +291,17 @@ M7 is internal reporting, presentation and packaging work. It is not a product f
 | M7.3 | Tested M6 source archive, public evidence, checklist and portable submission ZIP with file hashes; omit ignored/private/model/data assets. |
 | M7.4 | Actual content/package/preservation checks, public original-project mirror, report and handoff; course rubric/native rehearsal/upload remain manual. No application/evaluation reruns. |
 
-## M8 - Bring your own research papers (planned)
+## M8 - Bring your own research papers (in progress)
 
-**Implementation 0%.** [Detailed scope, module/contract boundaries and acceptance](docs/M8_PLAN.md). In order: M8.1 registry/contracts/isolation; M8.2 PDF/link imports and statuses; M8.3 selected-collection Vector/Hybrid QA; M8.4 optional source-bound human graph review; M8.5 offline/isolated integration/public cross-topic product verification. Every implementation task remains not_started. Any later implementation uses a separate product checkout and writable user-collection scope, preserving M6 and the completed research. No code, document import, inference, private access or new study is part of this planning task.
+[Detailed scope, contracts, fixed v1 limits and acceptance](docs/M8_PLAN.md).
+
+- [x] **M8.1:** Collection/import contracts, create-only registry, restart/ownership/cap checks and new physical writable target. 414 offline tests and one M8-native check pass; both protected graphs and 118/208 frozen files are preserved.
+- [ ] **M8.2:** PDF/link imports, actual byte/page/chunk caps, public-address/redirect checks and statuses.
+- [ ] **M8.3:** Selected-collection Vector/Hybrid QA, UI, citations and exports.
+- [ ] **M8.4:** Optional source-bound human graph review and shared fact/Graph eligibility.
+- [ ] **M8.5:** Isolated integration/public cross-topic product verification.
+
+Use `C:/Users/serge/DBU-GraphRAG-Worktrees/m8-user-collections`, branch `codex/m8-user-collections`; never write M8 source into retained M6/research checkouts. M8.1 performs no PDF/network import, model request, private access or new study. Its metadata readiness remains empty/not_verified until M8.3 supplies actual index/review checks.
 
 ## Progress record
 
@@ -330,6 +339,7 @@ Checkboxes above are the actionable task register. For each task, append `task_i
 | M7.P1-P3 | done (presentation revision only) | Eleven-slide storytelling deck with comparison on slide 2 and 11 matching speeches, 1,254 words. Six native tables/two charts/eleven notes; twelve content groups and zero layout findings/warnings. Five original tables/six chart-workbook parts, ten-page report, v1 ZIP and 118/208 frozen files preserved. Additive v2 package and public mirror checked. | D89; `docs/M7_PRESENTATION_REVISION.md`, `docs/PRESENTATION_SPEECH.md`, `runs/m7/presentation-v2/`. Timed/native rehearsal, rubric/portal checks remain manual. |
 
 | M8 planning / class evidence | done (planning/document only) | M8.1-M8.5 recorded at 0% implementation; exact 6.5 archives and synchronized 6.6 main/summary. Class report documents completed technical milestones M0-M6 and planned M8, actual recorded app/source screenshots and a real current GitHub code screenshot, challenges and future work. D92 excludes internal M7 and updates the technical milestone count to 7/8 (~88%). | D91; `docs/M8_PLAN.md`, `coursework/progress-2026-11-21/`. No M8 feature implementation or research execution. |
-| M8 implementation | not_started (0%) | No uploader, URL importer or dynamic user-collection feature has been implemented by this increment. | Start with M8.1 only after the user starts implementation; record actual limits/checks, not assumed passes. |
+| M8.1 | done (collection foundation) | Immutable contracts, content-bound revisions/reviews, append-only registry/CLI, resource/URL policy, one import reservation and isolated M8 target. 414 offline tests (40 new) pass; eight integration cases deselected in that run, with the new M8 native case separately passed. Exact physical ownership, rollback/frozen refusal, registry restart and explicit job interruption verified. No uploads/QA/UI added, no inference/private/paid calls. | D93; `docs/M8_1_REPORT.md`, `runs/m8/m8-1/`. Proceed to M8.2 actual input resolution/worker; retain scope/volumes and all prior studies. |
+| M8.2-M8.5 | not_started | Import worker, selected-collection QA/UI, optional review and cross-topic product verification remain future work. | Use M8 checkout only; preserve M6 demo. |
 
 Operational references: [uv lock/sync](https://docs.astral.sh/uv/concepts/projects/sync/), [Neo4j dump/load](https://neo4j.com/docs/operations-manual/current/docker/dump-load/), [Neo4j 5 query tuning](https://neo4j.com/docs/cypher-manual/5/planning-and-tuning/query-tuning/). Check command flags against the pinned version before execution.

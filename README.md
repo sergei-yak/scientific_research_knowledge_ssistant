@@ -1,5 +1,8 @@
 # Scientific Research Knowledge Assistant
 
+**Active M8 work:** M8.1 (persistent collection registry/contracts and an isolated target) is complete in this checkout. Actual PDF/link import and the new collection UI/QA are pending M8.2/M8.3. [Setup commands and results](docs/M8_1_REPORT.md), [remaining M8 tasks](docs/M8_PLAN.md). The existing M6 demonstration remains in its retained checkout on port 8503. Use `.venv/Scripts/python.exe -m research_assistant.collections list` to inspect the new metadata registry; no document import/model call occurs.
+
+
 **Class progress and next step:** [Three-page class progress PDF](coursework/progress-2026-11-21/Project_Progress_Report.pdf) includes actual screenshots, per-feature completion and challenges. [M8 plan](docs/M8_PLAN.md) adds user-provided papers to the roadmap at 0% implementation. Specification 6.6 records planning only; original studies/results remain unchanged. The progress report counts seven of eight technical milestones (~88%); internal M7 submission/presentation work is excluded.
 
 Current implementation: **M0-M7 complete (M7 prepares the submission; it does not upload it). Open the working product at http://127.0.0.1:8503/**. Current checkout: `C:/Users/serge/DBU-GraphRAG-Worktrees/m6-demonstration`; launch with `START_DEMO.ps1`. [Startup/presentation guide](docs/M6_DEMO_GUIDE.md), [actual checks and limits](docs/M6_REPORT.md).

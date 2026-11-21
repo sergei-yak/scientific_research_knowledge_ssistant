@@ -24,7 +24,7 @@ The neural models were pretrained externally. No neural network was trained or f
 
 ## Planned product extension
 
-M8 will add named collections, PDF uploads/supported links, source-cited QA and optional human-reviewed graph features. It is 0% implemented. The original M0-M7 scope is complete; the progress report's approximately 89% is an equal 8-of-9 milestone count including planned M8, not model accuracy or an effort estimate. [Scope and acceptance plan](docs/M8_PLAN.md).
+M8 will add named collections, PDF uploads/supported links, source-cited QA and optional human-reviewed graph features. It is 0% implemented. The progress report shows completed technical milestones M0-M6 and planned M8: approximately 88% by equal 7-of-8 count, not model accuracy or an effort estimate. Internal M7 submission/presentation preparation is excluded from its feature list and completion calculation. [Scope and acceptance plan](docs/M8_PLAN.md).
 
 ## Running locally
 

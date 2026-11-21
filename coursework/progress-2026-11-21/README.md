@@ -2,7 +2,7 @@
 
 Upload [Project_Progress_Report.pdf](Project_Progress_Report.pdf) for the class progress assignment. It is a three-page document covering the project description, tasks/features and completion percentages, actual interface/output/code screenshots, GitHub source and encountered challenges.
 
-The completion estimate is an explicitly equal count of top-level milestones: M0-M7 are accepted and complete; M8 is planned but not implemented. Eight of nine milestones gives 88.9%, rounded to 89%. This is not effort-weighted completion, answer accuracy or a claim that M8 exists. The original class-project scope is complete. [M8 task plan](../../docs/M8_PLAN.md).
+The completion estimate equally counts only the eight technical milestones shown: M0-M6 are complete; M8 is planned but not implemented. Seven of eight gives 87.5%, rounded to 88%. Internal submission and presentation preparation is excluded from both the feature list and percentage. This is not effort-weighted completion, answer accuracy or a claim that M8 exists. The existing research assistant is implemented. [M8 task plan](../../docs/M8_PLAN.md).
 
 Screenshots in `assets/` are real captures. `demo-answer.jpg` and `demo-sources.jpg` are the existing M6 demonstration recorded 18 November 2026; no new model call was made for this document. `github-code.jpg` was captured 21 November 2026 from the public source at commit dd2d07a, `src/research_assistant/ui/app.py` lines 153-161. The PDF uses native image crops; the original screenshot bytes remain unchanged. The repository link complements, rather than replaces, the assignment's requested screenshots.
 

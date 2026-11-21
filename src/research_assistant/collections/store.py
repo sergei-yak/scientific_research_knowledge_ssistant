@@ -11,7 +11,7 @@ from typing import Iterator
 from uuid import uuid4
 
 from research_assistant.collections.contracts import (
-    CorpusBinding, DocumentVersion, ImportJob, InputReference, LIMITS, TERMINAL_STATES, UserCollection,
+    CorpusBinding, DocumentVersion, ImportJob, InputReference, JOB_TRANSITIONS, LIMITS, TERMINAL_STATES, UserCollection,
 )
 from research_assistant.collections.scope import load_user_scope
 
@@ -88,6 +88,11 @@ class CollectionRegistry:
             if (sequence != number or identity != ident or row.previous_sha256 != previous
                     or row.scope_sha256 != self.scope.sha256 or envelope['sha256'] != row.sha256):
                 raise ValueError('Registry record hash, chain or ownership mismatch')
+            if kind == 'jobs' and rows:
+                fixed = ('job_id', 'collection_id', 'collection_sha256', 'scope_sha256', 'created_at', 'inputs')
+                if (any(getattr(row, key) != getattr(rows[-1], key) for key in fixed)
+                        or row.state not in JOB_TRANSITIONS[rows[-1].state]):
+                    raise ValueError('Import history changed identity or has an invalid state transition')
             rows.append(row)
             previous = row.sha256
         return rows
@@ -159,8 +164,8 @@ class CollectionRegistry:
                 raise ValueError('Collection changed; reload before queueing')
             if any(job.state not in TERMINAL_STATES for job in self.jobs()):
                 raise ValueError('Another import is active; no automatic takeover/retry')
-            if len(current.documents) + len(inputs) > LIMITS.max_documents:
-                raise ValueError('Document limit would be exceeded')
+            if current.binding:
+                self.committed_import(current)
             job = ImportJob(job_id='import-' + uuid4().hex, collection_id=collection_id,
                 collection_sha256=current.sha256, scope_sha256=self.scope.sha256, sequence=1,
                 previous_sha256='0' * 64, created_at=datetime.now(timezone.utc), inputs=inputs)
@@ -170,6 +175,8 @@ class CollectionRegistry:
     def interrupt(self, job_id: str, expected_sha256: str, reason: str) -> ImportJob:
         """Explicitly close an unexecuted/stopped import without erasing its reservation/history."""
         with self._locked():
+            if self._path('.worker.lock').exists():
+                raise ValueError('An import worker is active; stop it before explicitly interrupting')
             history = self._history('jobs', job_id, ImportJob)
             if not history:
                 raise ValueError('Import job does not exist')
@@ -180,6 +187,94 @@ class CollectionRegistry:
                 'previous_sha256': current.sha256, 'state': 'interrupted', 'reason': reason})
             self._append('jobs', job_id, job)
             return job
+
+    @contextmanager
+    def worker(self, job_id: str) -> Iterator[str]:
+        """Run one foreground worker; abrupt crashes leave an explicit lock/reservation."""
+        self.get_job(job_id)
+        path = self._path('.worker.lock')
+        token = job_id + ':' + uuid4().hex
+        with path.open('x', encoding='utf-8') as handle:
+            handle.write(token)
+        try:
+            yield token
+        finally:
+            if path.read_text(encoding='utf-8') != token:
+                raise ValueError('Import worker lock changed; preserve it for investigation')
+            path.unlink()
+
+    def get_job(self, job_id: str) -> ImportJob:
+        """Read one exact job, validating its collection revision and the entire status chain."""
+        history = self._history('jobs', job_id, ImportJob)
+        if not history:
+            raise ValueError('Import job does not exist')
+        job = history[-1]
+        if job.collection_sha256 not in {
+                c.sha256 for c in self._history('collections', job.collection_id, UserCollection)}:
+            raise ValueError('Import job references an unknown collection revision')
+        return job
+
+    def _advance(self, job: ImportJob, state: str, reason: str | None = None,
+                 output_corpus_id: str | None = None) -> ImportJob:
+        """Append a checked status event under both caller-held locks."""
+        if state not in JOB_TRANSITIONS[job.state]:
+            raise ValueError('Invalid import state transition')
+        updated = ImportJob.model_validate({**job.model_dump(), 'sequence': job.sequence + 1,
+            'previous_sha256': job.sha256, 'state': state, 'reason': reason,
+            'output_corpus_id': output_corpus_id})
+        self._append('jobs', job.job_id, updated)
+        return updated
+
+    def _check_worker(self, job_id: str, token: str) -> None:
+        """A live worker cannot be replaced by another process or an unrelated job."""
+        if not token.startswith(job_id + ':') or self._path('.worker.lock').read_text(encoding='utf-8') != token:
+            raise ValueError('Import worker ownership mismatch')
+
+    def advance(self, job_id: str, expected_sha256: str, token: str,
+                state: str, reason: str | None = None) -> ImportJob:
+        """Record progress/failure; ready requires a separate source-binding commit."""
+        with self._locked():
+            self._check_worker(job_id, token)
+            job = self.get_job(job_id)
+            if job.sha256 != expected_sha256 or state == 'ready':
+                raise ValueError('Import head changed or ready requires a committed collection')
+            return self._advance(job, state, reason)
+
+    def publish_import(self, job_id: str, expected_sha256: str, token: str,
+                       collection: UserCollection) -> ImportJob:
+        """Commit a fully indexed new revision; partial multi-file writes never gain a commit receipt."""
+        with self._locked():
+            self._check_worker(job_id, token)
+            job = self.get_job(job_id)
+            current = self.get(job.collection_id)
+            if (job.sha256 != expected_sha256 or job.state != 'indexing'
+                    or current.sha256 != job.collection_sha256
+                    or collection.collection_id != current.collection_id
+                    or collection.scope_sha256 != self.scope.sha256
+                    or collection.previous_sha256 != current.sha256
+                    or collection.revision != current.revision + 1 or collection.binding is None
+                    or collection.documents[:len(current.documents)] != current.documents):
+                raise ValueError('Indexed collection does not match its reserved source revision')
+            self._append('collections', collection.collection_id, collection)
+            ready = self._advance(job, 'ready', output_corpus_id=collection.corpus_id)
+            self._write(self._path('jobs', job_id, 'commit.json'), {
+                'collection_sha256': collection.sha256, 'job_sha256': ready.sha256,
+                'corpus_id': collection.corpus_id, 'scope_sha256': self.scope.sha256})
+            return ready
+
+    def committed_import(self, collection: UserCollection) -> ImportJob:
+        """Incomplete publication is an error, never an inferred success or automatic resume."""
+        if collection.scope_sha256 != self.scope.sha256 or collection.binding is None:
+            raise ValueError('Collection has no committed index binding')
+        for job in self.jobs():
+            if job.collection_id != collection.collection_id or job.output_corpus_id != collection.corpus_id:
+                continue
+            expected = {'collection_sha256': collection.sha256, 'job_sha256': job.sha256,
+                        'corpus_id': collection.corpus_id, 'scope_sha256': self.scope.sha256}
+            path = self._path('jobs', job.job_id, 'commit.json')
+            if job.state == 'ready' and path.exists() and json.loads(path.read_bytes()) == expected:
+                return job
+        raise ValueError('Collection publication is incomplete; explicit investigation required')
 
     def review_directory(self, collection: UserCollection) -> Path:
         """Derive the only valid review root for this exact scope, collection and revision."""

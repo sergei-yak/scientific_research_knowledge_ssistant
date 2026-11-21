@@ -16,6 +16,13 @@ Digest = Annotated[str, Field(pattern=r'^[a-f0-9]{64}$')]
 CollectionId = Annotated[str, Field(pattern=r'^uc-[a-f0-9]{32}$')]
 JobId = Annotated[str, Field(pattern=r'^import-[a-f0-9]{32}$')]
 TERMINAL_STATES = frozenset({'ready', 'duplicate', 'failed', 'interrupted'})
+JOB_TRANSITIONS = {
+    'queued': {'resolving', 'failed', 'interrupted'},
+    'resolving': {'parsing', 'duplicate', 'failed', 'interrupted'},
+    'parsing': {'indexing', 'duplicate', 'failed', 'interrupted'},
+    'indexing': {'ready', 'failed', 'interrupted'},
+    **{state: set() for state in TERMINAL_STATES},
+}
 
 
 class ImmutableContract(Contract):

@@ -1,5 +1,9 @@
 # Agent working guide
 
+## M8 planning and class progress
+
+The user requested M8 in the roadmap and a class progress document on 21 November 2026. Specification 6.6 adds planning only; exact 6.5 main/summary archives preserve the completed research scope. Read `docs/M8_PLAN.md`: M8.1-M8.5 remain not_started, 0% implemented. No uploader, URL import or user-collection feature was added today. The three-page assignment PDF is `coursework/progress-2026-11-21/Project_Progress_Report.pdf`, with actual public app/source/code screenshots. Its approximately 89% count means 8/9 top-level milestones complete, not effort, accuracy or M8 progress. M0-M7 remain complete. No app/dependency/model/private/evaluation/service changes or new spending/probe allowance. Future M8 implementation needs its own isolated product scope; preserve M6, both old research targets and all original review/cumulative accounting rules. Course-portal upload remains manual.
+
 ## M7 submission status
 
 **Current presentation revision:** The user requested simple storytelling speech and an early traditional RAG/Graph RAG explanation. Current deck has 11 slides with 11 embedded speeches, superseding the original ten-slide default. Read `docs/M7_PRESENTATION_REVISION.md` and `docs/PRESENTATION_SPEECH.md`; use `runs/m7/DBU_Deep_Learning_Submission_v2.zip`. Twelve revision content groups and final package/layout checks pass. Original report, v1 package, native chart/workbook bytes and 118/208 frozen files remain unchanged. No new app/runtime/private/model/service/research operation. The initial M7 record below is historical v1.

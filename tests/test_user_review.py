@@ -310,3 +310,12 @@ def test_review_cli_uses_same_source_and_presentation_contract(review_scene,caps
     shown = reviews.ReviewPresentation.model_validate_json(Path('shown.json').read_bytes())
     assert shown.revision.draft==draft and not shown.errors
     assert not state(s.registry.review_directory(s.row))['decisions']
+
+
+def test_cli_failed_extraction_is_a_failure_exit_not_success(review_scene,monkeypatch,capsys):
+    from research_assistant.collections.__main__ import main
+    s=review_scene
+    monkeypatch.setattr(proposals,'extract_proposals',lambda *a,**k:{'status':'failed','message':'Synthetic provider failure','claims':[]})
+    assert main(['review-extract','--collection',s.row.collection_id,'--expected-head',s.row.sha256,
+                 '--chunk-id','synthetic-chunk'])==1
+    assert json.loads(capsys.readouterr().out)['status']=='failed'

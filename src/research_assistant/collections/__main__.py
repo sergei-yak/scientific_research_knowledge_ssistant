@@ -150,7 +150,7 @@ def main(argv: list[str] | None = None) -> int:
         else:
             result = registry.describe(registry.get(args.collection))
         print(json.dumps(result, indent=2))
-        return 0
+        return 1 if result.get('status') == 'failed' else 0
     except Exception as exc:
         message = (exc.errors(include_input=False, include_url=False)[0]['msg']
                    if isinstance(exc, ValidationError) else str(exc))

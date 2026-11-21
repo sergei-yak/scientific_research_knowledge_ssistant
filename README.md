@@ -1,6 +1,6 @@
 # Scientific Research Knowledge Assistant
 
-**Class progress and next step:** [Three-page class progress PDF](coursework/progress-2026-11-21/Project_Progress_Report.pdf) includes actual screenshots, per-feature completion and challenges. [M8 plan](docs/M8_PLAN.md) adds user-provided papers to the roadmap at 0% implementation. Specification 6.6 records planning only; original studies/results remain unchanged.
+**Class progress and next step:** [Three-page class progress PDF](coursework/progress-2026-11-21/Project_Progress_Report.pdf) includes actual screenshots, per-feature completion and challenges. [M8 plan](docs/M8_PLAN.md) adds user-provided papers to the roadmap at 0% implementation. Specification 6.6 records planning only; original studies/results remain unchanged. The progress report counts seven of eight technical milestones (~88%); internal M7 submission/presentation work is excluded.
 
 Current implementation: **M0-M7 complete (M7 prepares the submission; it does not upload it). Open the working product at http://127.0.0.1:8503/**. Current checkout: `C:/Users/serge/DBU-GraphRAG-Worktrees/m6-demonstration`; launch with `START_DEMO.ps1`. [Startup/presentation guide](docs/M6_DEMO_GUIDE.md), [actual checks and limits](docs/M6_REPORT.md).
 

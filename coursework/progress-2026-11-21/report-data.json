@@ -41,18 +41,13 @@
       "completion_percent": 100
     },
     {
-      "id": "M7",
-      "element": "Final report, presentation, simple speech and public project materials",
-      "completion_percent": 100
-    },
-    {
       "id": "M8",
       "element": "User-provided PDFs/links and dynamic collections: planned, not implemented",
       "completion_percent": 0
     }
   ],
-  "overall_percent_rounded": 89,
-  "completion_basis": "Eight of nine top-level milestones completed, equally counted; not effort-weighted, answer accuracy or M8 implementation progress. Original M0-M7 scope complete.",
+  "overall_percent_rounded": 88,
+  "completion_basis": "Seven of eight technical milestones shown are complete, equally counted; not effort-weighted, answer accuracy or M8 implementation progress.",
   "m8_implementation_percent": 0,
   "repository": "https://github.com/sergei-yak/scientific_research_knowledge_ssistant",
   "code_permalink": "https://github.com/sergei-yak/scientific_research_knowledge_ssistant/blob/dd2d07ab850dcfd2ea505948ad4b5040304eabb4/src/research_assistant/ui/app.py#L153-L161",

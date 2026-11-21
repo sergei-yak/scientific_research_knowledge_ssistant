@@ -107,7 +107,8 @@ D1–D11 are incorporated into the authoritative spec; verify them in the listed
 
 | D90 | User explicitly requests pushing the complete project to the new public GitHub repository. Publish current M6/M7 source history and exact public submission artifacts from a separate checkout; exclude ignored/private/runtime assets, audit reachable history and manifest hashes, and push a new main without force. Preserve all original working/frozen checkouts. No runtime/research/dependency change. | PUB.1-PUB.3; `docs/GITHUB_PUBLICATION.md` |
 
-| D91 | User requests M8 in the plan and a class progress document. Archive exact 6.5 specs, add 6.6 planning-only BYO-paper scope, and define M8.1-M8.5 gates with 0% implementation. Preserve existing corpora/frozen results and review rules. Class percentages count 8/9 accepted milestones (~89%), not model accuracy or effort. Include actual screenshot evidence plus GitHub source, not a link alone. | M8 planning; `docs/M8_PLAN.md`; class progress report |
+| D91 | User requests M8 in the plan and a class progress document. Archive exact 6.5 specs, add 6.6 planning-only BYO-paper scope, and define M8.1-M8.5 gates with 0% implementation. Preserve existing corpora/frozen results and review rules. The initial class document counted 8/9 milestones (~89%); D92 supersedes that presentation by excluding internal M7 from the feature list and denominator. Include actual screenshot evidence plus GitHub source, not a link alone. | M8 planning; `docs/M8_PLAN.md`; class progress report |
+| D92 | User clarifies that M7 is internal submission/presentation preparation, not a project feature. Remove it from the class progress feature list and denominator; count seven complete technical milestones (M0-M6) plus planned M8, 7/8 = 87.5% (~88%). Keep M7 and all completed research/submission records intact internally. Regenerate the report and hashes without application or research changes. | Class progress revision 2; internal M7 |
 
 ## M1 design bindings (before M2; implemented through M3.1)
 
@@ -278,7 +279,9 @@ The user explicitly started M6. Work is complete in the separate product checkou
 - [x] **M6.3 — Product behavior and usability:** Clear workflow/corpus/profile/synthesis controls; compare compatible reports, show uncertainty/insufficient evidence and checked exports. Any new profile synthesis support must pass its actual service guards and product tests.
 - [x] **M6.4 — Demonstration package:** Startup/shutdown guide, several public demo prompts, reproducible script/screenshots and recorded latency/first-load limits. Keep private test material/results sealed; no remote deployment/authentication added.
 
-## M7 - Final submission preparation (complete)
+## M7 - Internal final submission preparation (complete)
+
+M7 is internal reporting, presentation and packaging work. It is not a product feature and is excluded from the class progress report's technical feature list and completion calculation (D92).
 
 | Task | Boundary / verifiable acceptance |
 |---|---|
@@ -326,7 +329,7 @@ Checkboxes above are the actionable task register. For each task, append `task_i
 
 | M7.P1-P3 | done (presentation revision only) | Eleven-slide storytelling deck with comparison on slide 2 and 11 matching speeches, 1,254 words. Six native tables/two charts/eleven notes; twelve content groups and zero layout findings/warnings. Five original tables/six chart-workbook parts, ten-page report, v1 ZIP and 118/208 frozen files preserved. Additive v2 package and public mirror checked. | D89; `docs/M7_PRESENTATION_REVISION.md`, `docs/PRESENTATION_SPEECH.md`, `runs/m7/presentation-v2/`. Timed/native rehearsal, rubric/portal checks remain manual. |
 
-| M8 planning / class evidence | done (planning/document only) | M8.1-M8.5 recorded at 0% implementation; exact 6.5 archives and synchronized 6.6 main/summary. Class report documents original M0-M7 completion and planned M8, actual recorded app/source screenshots and a real current GitHub code screenshot, challenges and future work. | D91; `docs/M8_PLAN.md`, `coursework/progress-2026-11-21/`. No M8 feature implementation or research execution. |
+| M8 planning / class evidence | done (planning/document only) | M8.1-M8.5 recorded at 0% implementation; exact 6.5 archives and synchronized 6.6 main/summary. Class report documents completed technical milestones M0-M6 and planned M8, actual recorded app/source screenshots and a real current GitHub code screenshot, challenges and future work. D92 excludes internal M7 and updates the technical milestone count to 7/8 (~88%). | D91; `docs/M8_PLAN.md`, `coursework/progress-2026-11-21/`. No M8 feature implementation or research execution. |
 | M8 implementation | not_started (0%) | No uploader, URL importer or dynamic user-collection feature has been implemented by this increment. | Start with M8.1 only after the user starts implementation; record actual limits/checks, not assumed passes. |
 
 Operational references: [uv lock/sync](https://docs.astral.sh/uv/concepts/projects/sync/), [Neo4j dump/load](https://neo4j.com/docs/operations-manual/current/docker/dump-load/), [Neo4j 5 query tuning](https://neo4j.com/docs/cypher-manual/5/planning-and-tuning/query-tuning/). Check command flags against the pinned version before execution.

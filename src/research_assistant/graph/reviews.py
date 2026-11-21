@@ -168,13 +168,13 @@ class ReviewRepository(GraphRepository):
         return [{"id": row["id"], "evidence": EvidenceItem.model_validate_json(row["evidence"]).model_dump()} for row in records]
 
 
-def synchronize_review(directory: Path, settings: Settings) -> dict:
+def synchronize_review(directory: Path, settings: Settings, *, encoder_factory=None) -> dict:
     """Rebuild only current human-approved facts; no LLM calls, approvals or silent truncation."""
     with review_lock(directory):
         chunks = load_chunks(directory)
         review = projection(directory, chunks)
         config = json.loads((directory / "config.json").read_text(encoding="utf-8"))
-        encoder = Encoder() if review["facts"] else None
+        encoder = (encoder_factory or Encoder)() if review["facts"] else None
         snapshot = json.loads((Path("data/processed") / config["corpus_id"] / "snapshot.json").read_text(encoding="utf-8"))
         if encoder and encoder.revision != snapshot["encoder_revision"]:
             raise ValueError("Fact encoder revision differs from the corpus encoder")

@@ -51,7 +51,7 @@ def render_run(run: RunArtifact, view, csv_text: str, *, source_card=None,
         seen = set()
         for row in view.rows:
             citation = row['citations'].split('; ')[0]
-            if (row['paper'], citation) not in seen:
+            if source_card is None and (row['paper'], citation) not in seen:
                 st.link_button(f'{row["method"]} · {row["paper"]} · reporting source', citation)
                 seen.add((row['paper'], citation))
     elif show_reviewed_features:

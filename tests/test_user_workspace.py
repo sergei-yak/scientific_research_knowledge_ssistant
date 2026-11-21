@@ -124,10 +124,12 @@ def test_cross_collection_and_stale_revision_cannot_display_or_export(scene):
 
 
 @pytest.mark.parametrize('mode', ['graph', 'hybrid_facts', 'unknown'])
-def test_unreviewed_modes_rejected_before_query_or_source_access(scene, monkeypatch, mode):
-    monkeypatch.setattr(workspace, 'verify_collection', lambda *a, **k: pytest.fail('No ready/source check'))
-    with pytest.raises(ValueError, match='human review'):
+def test_unreviewed_modes_rejected_before_query(scene, monkeypatch, mode):
+    if mode == 'unknown':
+        monkeypatch.setattr(workspace, 'verify_collection', lambda *a, **k: pytest.fail('No ready/source check'))
+    with pytest.raises(ValueError, match='Unsupported|review is not ready'):
         ask(scene, mode=mode)
+    assert not scene.calls
     assert not scene.calls
 
 
@@ -211,7 +213,7 @@ def test_ui_only_offers_vector_hybrid_and_requires_explicit_submit(scene, monkey
     next(item for item in app.text_area if item.label == 'Research question').set_value('What is described?')
     button(app, 'Ask question').click().run()
     assert not app.exception and len(scene.calls) == 1 and not scene.calls[0][1]['generate']
-    assert len(app.get('download_button')) == 3  # source PDF, shared CSV, shared JSON
+    assert len(app.get('download_button')) == 4  # proposal PDF plus source PDF/CSV/JSON
     app.run()
     next(item for item in app.selectbox if item.label == 'Retrieval mode').set_value('vector').run()
     assert len(scene.calls) == 1 and any('Requested: hybrid' in c.value for c in app.caption)
@@ -225,7 +227,8 @@ def test_ui_selection_change_clears_previous_answer_and_exports(scene, monkeypat
     button(app, 'Ask question').click().run()
     next(item for item in app.selectbox if item.label == 'Paper collection').set_value(other.collection_id).run()
     assert not app.exception and len(scene.calls) == 1
-    assert 'user_run' not in app.session_state and not app.get('download_button')
+    assert 'user_run' not in app.session_state
+    assert not any(b.proto.label in {'Download evidence CSV','Download run JSON'} for b in app.get('download_button'))
 
 
 def test_ui_empty_collection_import_and_generation_controls(scene, monkeypatch):
@@ -243,7 +246,8 @@ def test_ui_empty_collection_import_and_generation_controls(scene, monkeypatch):
     assert any('Supported fixture answer.' == text.value for text in app.text)
     scene.state['online'] = False
     app.run()
-    assert 'user_run' not in app.session_state and not app.get('download_button')
+    assert 'user_run' not in app.session_state
+    assert not any(b.proto.label in {'Download evidence CSV','Download run JSON'} for b in app.get('download_button'))
 
 
 def test_ui_file_import_form_really_runs_and_clears_previous_output(scene, monkeypatch):
@@ -261,7 +265,8 @@ def test_ui_file_import_form_really_runs_and_clears_previous_output(scene, monke
     assert not app.exception
     assert app.session_state['last_import']['status'] == 'ready'
     assert len(scene.registry.get(scene.row.collection_id).documents) == 2
-    assert 'user_run' not in app.session_state and not app.get('download_button')
+    assert 'user_run' not in app.session_state
+    assert not any(b.proto.label in {'Download evidence CSV','Download run JSON'} for b in app.get('download_button'))
     assert len(scene.calls) == 1
 
 

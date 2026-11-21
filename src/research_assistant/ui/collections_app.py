@@ -15,6 +15,7 @@ from research_assistant.collections.workspace import (
 from research_assistant.contracts import RunArtifact, fingerprint
 from research_assistant.settings import Settings, configure_caches
 from research_assistant.ui.app import cached_encoder, render_run
+from research_assistant.ui.collection_review import review_panel
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +40,8 @@ def show_result(registry: CollectionRegistry, collection, saved: dict, settings:
     labels = {key: (urlsplit(source.web_url).path.rsplit('/', 1)[-1]
                    if source.web_url else source.filename)[:100]
               for key, source in ready.sources.items()}
-    render_run(run, view, csv_text, source_card=source_card, show_reviewed_features=False,
+    render_run(run, view, csv_text, source_card=source_card,
+               show_reviewed_features=run.request.mode not in USER_MODES,
                paper_labels=labels)
 
 
@@ -82,7 +84,7 @@ def main() -> None:
         selector_key = 'collection_selector_' + fingerprint(list(by_id))[:16]
         if selector_key not in st.session_state:
             st.session_state[selector_key] = st.session_state['user_collection']
-        selected = st.selectbox('Paper collection', list(by_id), index=None,
+        selected = st.selectbox('Paper collection', list(by_id), index=0,
             format_func=lambda key: by_id[key].name, key=selector_key)
         st.session_state['user_collection'] = selected
         st.caption('Each collection keeps its own papers, revisions and source references.')
@@ -138,17 +140,27 @@ def main() -> None:
             st.table([{'Source': d.source.value, 'PDF pages': d.pdf_pages,
                        'Indexed pages': len(d.indexed_pages)} for d in collection.documents])
     usable = False
+    modes = dict(USER_MODES)
     try:
         ready = verify_collection(registry, selected, settings, collection.sha256)
         usable = True
         st.caption(f'Ready to search · {ready.collection.binding.chunk_count} passages')
     except Exception as exc:
         st.info('Collection is not ready for questions: ' + message(exc, settings))
+    if usable:
+        try:
+            status = review_panel(registry,ready,settings,cached_encoder,message)
+            if status['ready']:
+                from research_assistant.collections.reviews import FACT_MODES
+                modes.update(FACT_MODES)
+        except Exception as exc:
+            st.session_state.pop('user_run',None)
+            st.error('Review tools are unavailable: '+message(exc,settings))
     with st.form('user_query'):
         question = st.text_area('Research question', max_chars=2000,
             placeholder='For example: What problem does this method solve, and what limitations do the authors report?')
-        mode = st.selectbox('Retrieval mode', list(USER_MODES), index=1, format_func=USER_MODES.get,
-            help='Vector finds similar passages. Hybrid combines meaning and keyword search.')
+        mode = st.selectbox('Retrieval mode', list(modes), index=1, format_func=modes.get,
+            help='Vector: similar passages. Hybrid: meaning and keywords. Fact/Graph modes appear only after human review and index publication; Graph may explicitly fall back.')
         generate = st.checkbox('Generate an answer', value=False)
         st.caption(f'Configured generator: {settings.generation_provider} / {settings.generation_model}. Generation is optional; local answers can take a minute or more.')
         submitted = st.form_submit_button('Ask question', type='primary', disabled=not usable)

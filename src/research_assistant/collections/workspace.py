@@ -21,6 +21,7 @@ from research_assistant.product import ProductView, prepare_output
 from research_assistant.settings import Settings
 
 USER_MODES = {'vector': 'Vector', 'hybrid': 'Hybrid'}
+ALL_USER_MODES = {**USER_MODES, 'hybrid_facts': 'Hybrid + Approved Facts', 'graph': 'Graph'}
 
 
 @dataclass(frozen=True)
@@ -122,14 +123,17 @@ def verify_collection(registry: CollectionRegistry, collection_id: str, settings
 def checked_output(registry: CollectionRegistry, collection_id: str, run: RunArtifact,
                    settings: Settings, expected_head: str | None = None) -> tuple[ProductView, str, ReadyCollection]:
     """Recheck before every display/export; never retrieve, encode or regenerate a saved answer."""
-    if (run.request.mode not in USER_MODES or run.request.profile_id != 'baseline'
+    if (run.request.mode not in ALL_USER_MODES or run.request.profile_id != 'baseline'
             or run.request.selector_id != 'reference' or run.request.scope_file is not None
             or run.workflow != 'ask'):
-        raise ValueError('User collections currently support standard Vector/Hybrid questions only')
+        raise ValueError('User collections support the standard reference profile only')
     ready = verify_collection(registry, collection_id, settings, expected_head)
+    if run.request.mode not in USER_MODES:
+        from research_assistant.collections.reviews import require_fact_ready
+        require_fact_ready(registry, ready, settings)
     if (run.request.corpus_id != ready.collection.corpus_id or run.corpus_manifest != ready.snapshot
             or run.configuration.get('user_collection') != ready.marker
-            or any(item.kind != 'chunk' or item.graph_paths for item in run.retrieval.evidence)):
+            or (run.request.mode in USER_MODES and any(item.kind != 'chunk' or item.graph_paths for item in run.retrieval.evidence))):
         raise ValueError('Saved answer/evidence belongs to a different or changed collection')
     references = {key: {'reference': source.reference, 'filename': source.filename}
                   for key, source in ready.sources.items()}
@@ -142,10 +146,13 @@ def query_collection(registry: CollectionRegistry, collection_id: str, expected_
                      question: str, mode: str, settings: Settings, *, generate: bool = False,
                      encoder=None) -> RunArtifact:
     """One explicit query through shared retrieval/generation, retaining completed and failed artifacts."""
-    if mode not in USER_MODES:
-        raise ValueError('Fact/Graph modes require collection-specific human review; use Vector or Hybrid')
+    if mode not in ALL_USER_MODES:
+        raise ValueError('Unsupported collection retrieval mode')
     with registry.query_lock():
         ready = verify_collection(registry, collection_id, settings, expected_head)
+        if mode not in USER_MODES:
+            from research_assistant.collections.reviews import require_fact_ready
+            require_fact_ready(registry, ready, settings)
         request = QueryRequest(question=question.strip(), corpus_id=ready.collection.corpus_id, mode=mode)
         def bind(run: RunArtifact) -> RunArtifact:
             return run.model_copy(update={'configuration': {**run.configuration, 'user_collection': ready.marker}})

@@ -1,6 +1,6 @@
 {
-  "format": "class-progress-evidence-manifest-v2",
-  "revision": 2,
+  "format": "class-progress-evidence-manifest-v3",
+  "revision": 3,
   "date": "2026-11-21",
   "author": "Sergei Iakovlev",
   "report_pages": 3,
@@ -22,8 +22,8 @@
       "sha256": "b9243b524e883a0f3f79c35a2de54ea11bc1730fcf6cdc7984e456389905410e"
     },
     "Project_Progress_Report.pdf": {
-      "bytes": 512812,
-      "sha256": "26dff323bc3ccdc609296091adfc88fd8efe7ca1307cf886c2e0fd1979653b53"
+      "bytes": 512777,
+      "sha256": "12aa63ff54974b629c0f919f2a8a62b3e3bf47b59565af17ed43b87944a95745"
     },
     "README.md": {
       "bytes": 1884,

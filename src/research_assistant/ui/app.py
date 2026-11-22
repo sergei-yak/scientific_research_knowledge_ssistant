@@ -47,7 +47,8 @@ def render_run(run: RunArtifact, view, csv_text: str, *, source_card=None,
         columns = ['paper', 'method', 'dataset']
         if run.workflow == 'comparison':
             columns.extend(['dataset_version', 'split', 'metric', 'protocol'])
-        st.table([{column: row[column] for column in columns} for row in view.rows])
+        st.table([{column: (paper_labels or {}).get(row[column],row[column]) if column=='paper' else row[column]
+                   for column in columns} for row in view.rows])
         seen = set()
         for row in view.rows:
             citation = row['citations'].split('; ')[0]

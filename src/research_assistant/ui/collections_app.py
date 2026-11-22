@@ -26,6 +26,14 @@ def message(exc: Exception, settings: Settings) -> str:
     return settings.redact(text)
 
 
+def import_failure_message(outcome: dict, settings: Settings) -> str:
+    """Explain unsupported PDF failures without putting internal storage paths in the main flow."""
+    if outcome.get('error_code') == 'pdf_parse_failed':
+        return ('This file could not be read as a supported PDF. Choose a valid, text-based, '
+                'unencrypted PDF. Details are saved in Import history.')
+    return settings.redact(outcome.get('reason', outcome['status']))
+
+
 def show_result(registry: CollectionRegistry, collection, saved: dict, settings: Settings) -> None:
     """Revalidate saved output and source files before rendering any answer/download."""
     run = RunArtifact.model_validate(saved)
@@ -102,7 +110,7 @@ def main() -> None:
         elif previous['status'] == 'duplicate':
             st.info('Those PDF bytes are already in this collection. No new revision was created.')
         else:
-            st.error('Import failed: ' + previous.get('reason', previous['status']))
+            st.error('Import failed: ' + import_failure_message(previous, settings))
     with st.expander('Add papers', expanded=not collection.documents):
         st.caption('Text-based PDFs only. Up to 10 papers per collection; 25 MiB and 100 pages per PDF. Scanned or password-protected files are unsupported.')
         epoch = st.session_state.get('upload_epoch', 0)

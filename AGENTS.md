@@ -1,7 +1,11 @@
 # Agent working guide
 
 
-## Current final delivery
+## Current presentation revision
+
+The user requested slide2 explain entities/nodes and relationships/edges. V4 in `submission/presentation-v4/` adds the editable three-node/two-edge teaching example and matching simple speech. The other ten slide bodies/notes and all other PPTX parts match v3 exactly. Use the complete v4 ZIP/current submission guide; original v3/v2 packages and report/progress/source bytes stay unchanged. Read `docs/SLIDE_2_GRAPH_EXPLANATION.md`. This is internal presentation work, with no application/model/review/private/research operation. Fresh rendering/import/layout checks pass; v4 native PowerPoint was not rerun and earlier v3 rehearsal stays historical.
+
+## Retained v3 delivery record
 
 The user requested updated submission materials, rehearsal and GitHub finalization after M8. Current package is `submission/v3/`, with ten-page report, eleven editable slides/eleven simple speeches, three-page completed progress snapshot, M8 screenshots/guides and source archive for tested commit665956553fca8fca2c5fe990a62e935ee6b305d6. Read `docs/M7_SUBMISSION_GUIDE.md`, `docs/DEMO_REHEARSAL.md` and `docs/DELIVERY_V3_REPORT.md`. This delivery work is internal, not a project feature. Old packages/progress snapshot and both studies remain unchanged.
 

@@ -1,0 +1,71 @@
+{
+  "description": "My project is a local scientific research assistant. Users create a collection, upload research PDFs or paste public paper links, ask questions and check the exact passages and PDF pages behind an answer. The business idea is to make research and evidence checking easier. Traditional RAG searches passages; Graph RAG can additionally follow reviewed connections. The completed product was checked on AI and physics papers without changing the original scientific experiments.",
+  "features": [
+    {
+      "id": "M0",
+      "element": "Environment, locked dependencies and setup",
+      "completion_percent": 100
+    },
+    {
+      "id": "M1",
+      "element": "PDF passages and cited local answers",
+      "completion_percent": 100
+    },
+    {
+      "id": "M2",
+      "element": "Pilot corpus and source-bound human claim review",
+      "completion_percent": 100
+    },
+    {
+      "id": "M3",
+      "element": "Four retrieval modes, workflows and evidence exports",
+      "completion_percent": 100
+    },
+    {
+      "id": "M4",
+      "element": "Twenty-paper corpus and original controlled evaluation",
+      "completion_percent": 100
+    },
+    {
+      "id": "M5",
+      "element": "Broader graph routes, shared reranker and exploratory evaluation",
+      "completion_percent": 100
+    },
+    {
+      "id": "M6",
+      "element": "Working local product demonstration and source inspection",
+      "completion_percent": 100
+    },
+    {
+      "id": "M8",
+      "element": "User PDFs/links, separate collections, review and cross-topic QA",
+      "completion_percent": 100
+    }
+  ],
+  "overall_percent": 100,
+  "completion_basis": "8/8 bounded technical milestone gates, not effort, accuracy, course grade or production readiness",
+  "repository": "https://github.com/sergei-yak/scientific_research_knowledge_ssistant",
+  "code_permalink": "https://github.com/sergei-yak/scientific_research_knowledge_ssistant/blob/665956553fca8fca2c5fe990a62e935ee6b305d6/src/research_assistant/ui/collections_app.py",
+  "challenges": [
+    {
+      "topic": "Reliable sources",
+      "detail": "PDF reading order, section labels and generated wording can be imperfect. Exact quotations/pages and human review support checking; citations alone do not prove every sentence."
+    },
+    {
+      "topic": "Graph coverage",
+      "detail": "The studies did not show a held-out traversal benefit. The current two approved AI claims create no cross-paper connections, so Graph honestly falls back. This remains a disclosed limitation."
+    },
+    {
+      "topic": "Hardware and waiting",
+      "detail": "Local models need substantial memory. M8.5 generation alone took about 23-54 seconds; loading and validation add time. Concurrent-user/endurance capacity is not established."
+    },
+    {
+      "topic": "New documents and isolation",
+      "detail": "Uploads/links need byte/page/network limits, duplicate/failure handling and separate collection/review bindings. Physics approvals cannot be borrowed from AI papers."
+    },
+    {
+      "topic": "Reproducibility and evaluation",
+      "detail": "Dependencies/model identities are pinned; experiments remain frozen. Small samples, one scorer and exploratory author-context exposure limit conclusions. No neural model was trained."
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "recorded_at": "2026-11-22T02:34:56.307877+00:00",
+  "scope": "DEL.2 public technical rehearsal",
+  "new_query_count": 1,
+  "new_question_encodings": 1,
+  "physics_run": "33020f61de644ea7a8ad39f49dfd1e55",
+  "physics_context_exact_previous": true,
+  "actual_run_export_matches": true,
+  "existing_ai_csv_matches": true,
+  "existing_ai_run": "d1ece748a9b54606885cae41358d0d1c",
+  "approved_count_preserved": 2,
+  "review_head_preserved": "a9186baf29125d7158d9a077154066e792689a731569ebc458add131eaab53d6",
+  "native_powerpoint_opened": true,
+  "native_slide_count": 11,
+  "native_slideshow_screens_checked": [
+    2,
+    10,
+    11
+  ],
+  "native_screenshot_sha256": "ab4d1c059e6ea75c3dc091f5319ab3f0ee01ca78a71b4fbf2d6f53611b83071b",
+  "spoken_rehearsal_measured": false,
+  "projector_checked": false,
+  "new_generation_attempts": 0,
+  "new_extraction_attempts": 0,
+  "imports": 0,
+  "new_human_decisions": 0,
+  "private_access": false,
+  "paid_spend": 0,
+  "old_engineering_scopes_reused": false,
+  "delivery_probe_scope_closed": true
+}

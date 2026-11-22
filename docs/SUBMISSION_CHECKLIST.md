@@ -1,30 +1,28 @@
-# Final submission checklist
+# Final submission checklist - v3
 
-M7 prepares a ten-page report and revised 11-slide deck. The user's later request adds an early RAG comparison and simple storytelling speech to the initial ten-slide default. No final rubric, template, presentation duration or portal requirements were supplied. This package has not been submitted to a course portal.
+The current package contains the completed M8 product and unchanged research findings. Earlier v1/v2 packages and the preimplementation progress snapshot remain historical. No course-portal upload is performed here.
 
-## Prepared and checked by M7
+## Prepared and checked
 
-- [x] Report covers the problem, pretrained neural components, corpus, architecture, controlled comparisons, methods, results, product and limitations.
-- [x] Original and exploratory studies remain distinct; no across-study improvement claim or held-out traversal benefit is invented.
-- [x] Human rubric means are labeled correctly; recall sample size and unanswerable N/A rules are stated.
-- [x] Negative development gate, author-outcome exposure, one-rater/small-sample limits and lack of neural training are explicit.
-- [x] Editable presentation includes eleven slides, native result charts/tables, speaker notes and sources.
-- [x] Every slide has simple storytelling speech, with the business intention separated from unmeasured time/cost benefits.
-- [x] Traditional RAG versus Graph RAG is explained on slide 2, before the results.
-- [x] Demonstration script uses public prompts and separates Standard product behavior from the retained V2 research scope.
-- [x] Public evidence reports/aggregates and actual M6 screenshots are included.
-- [x] Source archive identifies the tested M6 commit and retains `uv.lock`; model/data provisioning prerequisites are disclosed.
-- [x] Secrets, private evaluation content, downloaded PDFs, model weights, database volumes and caches are excluded from the bundle.
-- [x] Report pages and slide previews were inspected; the package manifest provides file hashes. See `M7_REPORT.md` and `M7_PRESENTATION_REVISION.md` for actual checks and remaining limits.
+- [x] Ten-page report includes the completed user-document product and keeps original research results/limitations distinct.
+- [x] Eleven editable slides retain the early traditional RAG/Graph RAG explanation and simple storytelling speech on every slide.
+- [x] Actual current-topic screenshots, user/demo guide and tested M8 source archive are supplied.
+- [x] Three-page progress document lists eight technical elements with completion percentages and challenges; internal submission work is excluded.
+- [x] No-training, negative Graph findings, one-rater/small-sample and exploratory author-context disclosures remain explicit.
+- [x] Native research tables/charts remain editable; original chart/workbook bytes and public aggregates are preserved.
+- [x] All final slide previews and PDF pages were inspected; package/source/hash and preservation checks pass.
+- [x] PowerPoint opened the final file with eleven slides/notes; slide-show checks covered the RAG, product and closing slides.
+- [x] Actual app rehearsal checked AI sources/CSV, collection-switch clearing, a new physics evidence-only question and run export.
+- [x] Secrets, private evaluation content, source PDFs, model weights, databases and local raw runs are excluded from publication.
 
-## Sergei's final handoff
+## Sergei's final actions
 
-- [ ] Read the final report and notes; verify name, course and preferred date. Add a student ID/instructor only if your course requires them.
-- [ ] Compare the actual rubric with this package: especially whether pretrained-model inference/system evaluation satisfies any model-training requirement.
-- [ ] Confirm required report format/page count, slide/demo time limit, citation style and AI-assistance disclosure. Adapt only if the actual instructions require it.
-- [ ] Open the exported deck in the presentation software you will use. M7 did not test Microsoft PowerPoint or a projector; rehearse the eleven slides and demo once.
-- [ ] Before presenting, verify the existing working Neo4j/Ollama services and cached assets with the M6 guide. Do not rerun study or readiness harnesses.
-- [ ] Confirm whether the instructor expects source ZIP, repository URL, video or data access. A clean-machine build and redistribution of model/data assets have not been newly tested or supplied.
-- [ ] Upload the required files to the actual course portal; retain its submission receipt. No upload, email, publication or external sharing was performed by M7.
+- [ ] Confirm the instructor's rubric, including whether pretrained-model inference/evaluation satisfies any training requirement.
+- [ ] Confirm your name/course, required report/slide limits, citation style and AI-assistance disclosure.
+- [ ] Read the eleven speeches aloud in Presenter View and measure your actual duration; the estimate is 10-12 minutes plus a 3-5 minute demo.
+- [ ] Check the actual projector/display scaling and practice switching between slide 10 and the browser. The native screen smoke check is not a spoken/projector rehearsal.
+- [ ] Before presenting, check the existing owned M8 services and model/data assets. Do not reset volumes or rerun consumed studies/readiness harnesses.
+- [ ] Verify the required delivery format: progress PDF, report, PPTX, ZIP, GitHub link or video. A fresh-machine build has not been newly tested.
+- [ ] Upload only requested files to the course portal and keep its receipt.
 
-The automated/authoring work is complete when the M7 receipt passes; the unchecked items are course-specific decisions and Sergei's presentation/submission steps, not inferred approvals or hidden experimental work.
+See [the rehearsal guide](DEMO_REHEARSAL.md). These remaining personal/course-specific actions are not incomplete application features.

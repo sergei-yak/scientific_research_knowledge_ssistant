@@ -1,6 +1,14 @@
 # Agent working guide
 
 
+## Current final delivery
+
+The user requested updated submission materials, rehearsal and GitHub finalization after M8. Current package is `submission/v3/`, with ten-page report, eleven editable slides/eleven simple speeches, three-page completed progress snapshot, M8 screenshots/guides and source archive for tested commit665956553fca8fca2c5fe990a62e935ee6b305d6. Read `docs/M7_SUBMISSION_GUIDE.md`, `docs/DEMO_REHEARSAL.md` and `docs/DELIVERY_V3_REPORT.md`. This delivery work is internal, not a project feature. Old packages/progress snapshot and both studies remain unchanged.
+
+The current request supersedes earlier instructions to keep GitHub main at the pre-M8 release: main may advance through the reviewed history-preserving v3 merge. Preserve previous commit401a0f85c8de8b23e826671ad23b7a273f5e6fe8 and every original public v2 file; no force push or branch deletion. A separate release checkout may integrate publication-only history without modifying the working app or retained research/M6 checkouts. Check the actual remote before asserting publication state. Documentation/public delivery artifacts may be mirrored to the original root; no M8 runtime copies into it.
+
+The eleven-slide final file opened in Microsoft PowerPoint and ran a slide show, with slides2/10/11 checked. Personal speech timing/projector/rubric/portal checks remain manual. The separate delivery scope used one public physics evidence query/one question encoding and reviewed an existing AI output/export; zero generation/extraction/import/paid/private/new decision. Earlier engineering/study scopes remain closed; no routine test silently replays them. Runtime/source/model/lock bytes remain tested M8 bytes. All118/208 frozen assets, old source approvals/results and prior public packages stay protected.
+
 ## Current M8 implementation
 
 **M8.1-M8.5 complete for the bounded local first release.** Work only in `C:/Users/serge/DBU-GraphRAG-Worktrees/m8-user-collections`, branch `codex/m8-user-collections`. Read specification6.11, `docs/M8_USER_GUIDE.md`, `docs/M8_5_REPORT.md` and `docs/M8_PLAN.md`. Port8504 / `START_M8.ps1` is the active product; M6/main/both research scopes remain preserved. Exact target `dbu-m8-user-c09ff451237f`, Bolt65488, retains its volumes/data. No runtime source copies or repointing into old checkouts. Launcher uses the exact retained container ID, timeout300 when unset and file watching off; restart after source/interface changes and verify an actual page/query.

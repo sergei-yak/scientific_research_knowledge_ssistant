@@ -1,3 +1,9 @@
+# Current GitHub release - v3
+
+The user requested finalizing GitHub after completed M8. The current release combines the tested M8 source and new [v3 materials](../submission/v3/START_HERE.md) with the older main publication history, preserving every original v2 file and its commit. See [delivery checks](DELIVERY_V3_REPORT.md) and the release pull request for the exact remote outcome. No force push, branch deletion, permission change, private-data publication or research rerun.
+
+## Historical first publication
+
 # GitHub publication
 
 Repository: [sergei-yak/scientific_research_knowledge_ssistant](https://github.com/sergei-yak/scientific_research_knowledge_ssistant).

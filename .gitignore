@@ -16,3 +16,4 @@ runs/
 *.dump
 *.log
 .DS_Store
+~$*

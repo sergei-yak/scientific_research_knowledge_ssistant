@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "source_sha256": "0c89c23a518c96b72d6c9303564094c5d8703529589fe7f0dd52c3a3512ee9f2",
+  "parts": {
+    "ppt/slides/charts/chart1.xml": "3415ba80637bf2fa9230a2d3b95768b95bcaddbbd8d55fbbecba827929315ab7",
+    "ppt/slides/charts/chart2.xml": "cfc93dc5f10892091ea5ff275e1d605462f48dd1458e514bcff19f29b304fc92",
+    "ppt/embeddings/chart-data-snapshot-001.xlsx": "cbcada33c08099c1c1db87bc4a0262304f494c6c6efdb08f6ad7482d4dfd5e30",
+    "ppt/slides/charts/_rels/chart1.xml.rels": "08d9a730b9d55a57141192c8ffdf07d56687ac3b98e8afe58707157f5369d5af",
+    "ppt/embeddings/chart-data-snapshot-002.xlsx": "1c6ee0686d136a38cb933627a1b498fe1f7d4113ecbbfc9ffe4dc58231d6a3a7",
+    "ppt/slides/charts/_rels/chart2.xml.rels": "68115ab9999b1dc383cf32895a0c7fc443ded8adddc8a60d4cc8b69bd8bab27b"
+  }
+}

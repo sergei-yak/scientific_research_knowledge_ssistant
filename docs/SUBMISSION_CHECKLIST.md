@@ -1,4 +1,4 @@
-# Final submission checklist - v3
+# Final submission checklist - v4
 
 The current package contains the completed M8 product and unchanged research findings. Earlier v1/v2 packages and the preimplementation progress snapshot remain historical. No course-portal upload is performed here.
 
@@ -11,7 +11,7 @@ The current package contains the completed M8 product and unchanged research fin
 - [x] No-training, negative Graph findings, one-rater/small-sample and exploratory author-context disclosures remain explicit.
 - [x] Native research tables/charts remain editable; original chart/workbook bytes and public aggregates are preserved.
 - [x] All final slide previews and PDF pages were inspected; package/source/hash and preservation checks pass.
-- [x] PowerPoint opened the final file with eleven slides/notes; slide-show checks covered the RAG, product and closing slides.
+- [x] PowerPoint checked v3 with eleven slides/notes; v4 has fresh rendering/import/layout checks. Native PowerPoint was not rerun for the revised slide2.
 - [x] Actual app rehearsal checked AI sources/CSV, collection-switch clearing, a new physics evidence-only question and run export.
 - [x] Secrets, private evaluation content, source PDFs, model weights, databases and local raw runs are excluded from publication.
 

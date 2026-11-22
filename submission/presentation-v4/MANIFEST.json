@@ -1,0 +1,31 @@
+{
+  "format": "presentation-revision-v4",
+  "files": {
+    "DBU_Deep_Learning_Submission_v4.zip": "94c9ff1c1b43fea7d69b31965366b46a140a2eecc8e5e6e041d3305f7373b6a1",
+    "Presentation_Speech.md": "1e79af44d9f185438a9eedde0baee6c9609b9bc5b6b3918bf9a5f6b2f6a965e1",
+    "Project_Presentation_Storytelling_v4.pptx": "41339c68c062ad97d0e8c91278d97ce99142e36cfa7dd33a4dc43dafa3fc7143",
+    "README.md": "8f28d32e45919f402f0244145b2a9482997e55eef091d1591078c10c30bdbfef",
+    "Slide_02_Entities_Relationships.png": "eda0509b0394ced41230264e67f4bd9ec68bc2cd4607b3744ca5251bd26c7d58",
+    "Validation_v4.json": "34507c4034afb7a0de57eebc7094654e18aa298f0d7e1e6107ea15b898a153fc"
+  },
+  "checks": [
+    "same-package-parts",
+    "only-slide2-and-its-notes-changed",
+    "entity-node-and-relationship-edge-definitions",
+    "three-editable-entity-nodes",
+    "two-editable-relationships",
+    "arrows-at-relationship-targets",
+    "relationships-have-labels",
+    "graph-leads-back-to-source-passages",
+    "speech-exactly-matches-updated-script",
+    "example-clearly-illustrative",
+    "review-rule-attributed-to-this-project",
+    "all-ten-other-slide-bodies-and-notes-exact",
+    "ten-other-spoken-sections-unchanged",
+    "old-report-progress-source-bytes-preserved",
+    "v3-protected-files-unchanged",
+    "working-runtime-unchanged",
+    "full-zip-checked"
+  ],
+  "count": 17
+}

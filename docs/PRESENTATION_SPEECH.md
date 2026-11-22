@@ -12,15 +12,19 @@ You have papers open everywhere. One explains a method, another lists its weakne
 
 That is the problem behind my project. I built an assistant that lets people bring their own research papers, ask questions, and inspect the original sources behind an answer. The business idea is easier research and easier checking. I tested the system and answer quality, but I have not measured business time savings.
 
-## Slide 2 - Traditional RAG and Graph RAG: what changes?
+## Slide 2 - Graph RAG: entities and relationships
 
-Before we look inside the project, imagine these papers as a small library. RAG means the assistant looks up source material before writing an answer.
+Imagine two papers. The first says Method A was tested on Dataset X. The second says the same about Method B. A dataset is simply a collection of test data.
 
-Traditional RAG finds passages related to your question. It can bring together passages from several documents. Graph RAG adds a map of connections, such as which methods use a particular test dataset.
+Traditional RAG searches their text for useful passages. Graph RAG also turns the information into a map.
 
-Suppose we ask, "Which methods use the same test data?" Traditional RAG searches for relevant text. Graph RAG can also follow the stored links between methods and that dataset, then bring back the supporting text.
+The important things are called entities. Here, Method A, Method B and Dataset X each become a node - the circles on this slide.
 
-My question was whether those extra connections would help people get better answers. They might help, but we need to test that.
+A relationship describes how two things are connected. "Evaluated on" becomes a labelled arrow from a method to its dataset. Both arrows lead to the same Dataset X node.
+
+Now we can ask, "Which methods were evaluated on Dataset X?" The assistant follows those connections to Method A and Method B, then retrieves the source passages so we can check the answer.
+
+In my project, a person reviews proposed connections before the graph uses them. My research tests whether adding this structure leads to better supported answers.
 
 ## Slide 3 - Is following connections worth the extra work?
 

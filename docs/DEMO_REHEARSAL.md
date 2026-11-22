@@ -1,6 +1,6 @@
 # Presentation and demonstration rehearsal
 
-Use the **v3 eleven-slide deck** and [matching simple speech](PRESENTATION_SPEECH.md). The working product is M8 at **http://127.0.0.1:8504/**; launch `START_M8.ps1` from the M8 checkout if needed. Follow [the user guide](M8_USER_GUIDE.md). The preserved M6 demo is optional historical material.
+Use the **v4 eleven-slide deck** and [matching simple speech](PRESENTATION_SPEECH.md). The working product is M8 at **http://127.0.0.1:8504/**; launch `START_M8.ps1` from the M8 checkout if needed. Follow [the user guide](M8_USER_GUIDE.md). The preserved M6 demo is optional historical material.
 
 ## Suggested running order
 
@@ -12,7 +12,7 @@ Use the **v3 eleven-slide deck** and [matching simple speech](PRESENTATION_SPEEC
 | Slide 10 + app | Bring your own papers; inspect evidence and export it | 3-5 minutes |
 | Slide 11 | Intended business value, limits and possible future research | 1 minute |
 
-These are estimates, not a measured spoken rehearsal or a course time limit. The script has approximately 1,270 spoken words. Shorten model-name explanations first if your actual limit is lower. Keep the negative Graph result, exploratory limitation and no-training disclosure.
+These are estimates, not a measured spoken rehearsal or a course time limit. The script has approximately 1,300 spoken words. Shorten model-name explanations first if your actual limit is lower. Keep the negative Graph result, exploratory limitation and no-training disclosure.
 
 ## App demonstration after slide 10
 
@@ -24,9 +24,9 @@ These are estimates, not a measured spoken rehearsal or a course time limit. The
 6. Explain optional **Review claims and connections** and **Update reviewed index**. Do not create or approve new claims during the talk merely to enable a mode. The current AI Graph result has an explicit fallback because these claims create no cross-paper connections; physics fact/Graph remain unavailable without its own review.
 7. Return to slide 11: “The workflow works on user-provided papers. Better graph answers and business time savings still need separate evidence.”
 
-## Technical rehearsal actually performed
+## Technical rehearsal actually performed (v3; v4 changes slide 2 only)
 
-- Opened the final v3 file in Microsoft PowerPoint. It reports eleven slides with notes. Slide-show mode was started; the early RAG comparison, closing slide and M8 demonstration slide were visually checked. The deck remains open in normal view at slide 10. This is a native compatibility/screen check, not a timed spoken or projector rehearsal.
+- Opened the earlier v3 file in Microsoft PowerPoint. It reports eleven slides with notes. Slide-show mode was started; the early RAG comparison, closing slide and M8 demonstration slide were visually checked. The deck remains open in normal view at slide 10. This is a native compatibility/screen check, not a timed spoken or projector rehearsal.
 - In the actual app, inspected the existing reviewed AI result and exact PDF-page-6 quotations, downloaded its CSV, switched collections and verified the old result cleared, then submitted one new physics Hybrid evidence-only query. Six units/1,715 estimated tokens and PDF-page-1 support were displayed; run JSON downloaded successfully. No inference for answer generation, extraction, import or new human decision occurred.
 - Both direct product examples remain separate from the frozen scientific studies. Do not rerun engineering/evaluation harnesses or reset data to prepare a presentation.
 

@@ -1,0 +1,9 @@
+# Slide 2 revision: entities, relationships and graph structure
+
+The user requested a clearer explanation of Graph RAG through its main components. Presentation v4 replaces only slide2 and its speech with explicit entity-to-node and relationship-to-edge definitions, three editable example nodes, two labelled directed edges, and a source-retrieval question. The example is hypothetical and simplifies the production schema; shared dataset identity does not establish score comparability. Human approval is a rule of this project, not a universal property of Graph RAG.
+
+The deck still has11 slides. The other ten slide XML parts, their ten notes, original research tables/charts/workbooks, assets and all remaining PPTX parts match v3 exactly (76 protected parts). The original v3 deck, ZIP, report/progress PDFs and source snapshot remain unchanged. The full v4 ZIP reuses the same report/progress/source/evidence with the new deck and matching speech; no application/retrieval/model/result change occurs.
+
+The updated slide was rendered and inspected in the live viewer and after final PPTX import. Package/import/native graph/table/chart/font checks pass with zero layout findings or warnings. The five remaining tables and two native research charts stay editable. New arrows correctly point from Method A/B toward Dataset X. Native PowerPoint was not rerun for v4; v3's native rehearsal stays historical. A first archive verification refused reused in-memory ZIP metadata; copying that metadata fixed the builder, with source bytes unchanged.
+
+No application tests, provider/service requests, model downloads, review decisions, private evaluation access or research operation was performed. The working app/runtime remains identical to the tested M8 snapshot. Revision checks and public hash manifests bind the new artifacts. See the current submission guide and `submission/presentation-v4/README.md`.

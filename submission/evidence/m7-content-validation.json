@@ -1,0 +1,169 @@
+{
+  "format": "m7-content-validation-v1",
+  "status": "passed",
+  "groups": 16,
+  "checks": [
+    {
+      "id": "M7-C01",
+      "name": "Report length and nonempty pages",
+      "status": "passed",
+      "detail": {
+        "pages": 10,
+        "words": 3801
+      }
+    },
+    {
+      "id": "M7-C02",
+      "name": "Report tables reconcile with public aggregates",
+      "status": "passed",
+      "detail": {
+        "numeric_cells": 64
+      }
+    },
+    {
+      "id": "M7-C03",
+      "name": "Report PDF contains the checked result rows",
+      "status": "passed",
+      "detail": {
+        "rows": 16
+      }
+    },
+    {
+      "id": "M7-C04",
+      "name": "Editable presentation structure",
+      "status": "passed",
+      "detail": {
+        "slides": 10,
+        "native_tables": 5
+      }
+    },
+    {
+      "id": "M7-C05",
+      "name": "Native chart data equal public source values",
+      "status": "passed",
+      "detail": {
+        "charts": 2,
+        "data_points": 12
+      }
+    },
+    {
+      "id": "M7-C06",
+      "name": "Primary-contrast slide table equals public values",
+      "status": "passed",
+      "detail": {
+        "numeric_cells": 9
+      }
+    },
+    {
+      "id": "M7-C07",
+      "name": "Speaker notes retained in exported deck",
+      "status": "passed",
+      "detail": {
+        "notes_slides": 10
+      }
+    },
+    {
+      "id": "M7-C08",
+      "name": "Actual screenshot bytes embedded, not linked",
+      "status": "passed",
+      "detail": {
+        "sha256": "bf8933167e7af9aa5c0cba3e1d756851a6f4bc0219daccf1fa309773c789088d"
+      }
+    },
+    {
+      "id": "M7-C09",
+      "name": "Presentation finalizer and workbook portability checks",
+      "status": "passed",
+      "detail": {
+        "layout_findings": 0,
+        "layout_warnings": 0,
+        "native_chart_workbooks": 2
+      }
+    },
+    {
+      "id": "M7-C10",
+      "name": "Reported paired comparisons reconcile",
+      "status": "passed",
+      "detail": {
+        "followup_primary": [
+          0,
+          16,
+          0
+        ],
+        "original_hybrid_vs_vector": [
+          6,
+          9,
+          1
+        ]
+      }
+    },
+    {
+      "id": "M7-C11",
+      "name": "Public aggregate copies remain exact",
+      "status": "passed",
+      "detail": {
+        "files": 2,
+        "private_inputs_accessed": false
+      }
+    },
+    {
+      "id": "M7-C12",
+      "name": "Both consumed freezes and runtime asset sets preserved",
+      "status": "passed",
+      "detail": {
+        "baseline_files": 118,
+        "followup_files": 208
+      }
+    },
+    {
+      "id": "M7-C13",
+      "name": "Source ZIP exact tracked inventory and exclusion policy",
+      "status": "passed",
+      "detail": {
+        "files": 197,
+        "source_commit": "9b9b6c884d5616d044bbf3e0d98344e43ec91635"
+      }
+    },
+    {
+      "id": "M7-C14",
+      "name": "No tracked application/runtime or retained M5 changes",
+      "status": "passed",
+      "detail": {
+        "tracked_changes": [
+          "AGENTS.md",
+          "IMPLEMENTATION_PLAN.md",
+          "README.md",
+          "project_spec.md",
+          "project_spec_submission.md"
+        ]
+      }
+    },
+    {
+      "id": "M7-C15",
+      "name": "Report citations, scope disclosures and placeholder scan",
+      "status": "passed",
+      "detail": {
+        "research_model_references": 10,
+        "evidence_references": 5
+      }
+    },
+    {
+      "id": "M7-C16",
+      "name": "All final slides re-imported and rendered",
+      "status": "passed",
+      "detail": {
+        "full_slide_previews": 10,
+        "manual_visual_review": "All ten report pages and all ten exact exported slide previews inspected; screenshot repair checked."
+      }
+    }
+  ],
+  "skips": [
+    "Microsoft PowerPoint/projector native execution",
+    "Clean-machine application reproduction",
+    "New application/service/model/evaluation checks: documentation-only milestone",
+    "Course rubric/template/time-limit/portal validation: not supplied"
+  ],
+  "private_filesystem_access": false,
+  "generation_requests": 0,
+  "paid_spend": 0
+}

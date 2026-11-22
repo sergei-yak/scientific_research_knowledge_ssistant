@@ -1,0 +1,130 @@
+{
+  "format": "m7-presentation-revision-validation-v2",
+  "status": "passed",
+  "groups": 12,
+  "checks": [
+    {
+      "id": "M7-P01",
+      "name": "Eleven matching plain-language speeches",
+      "status": "passed",
+      "detail": {
+        "speeches": 11,
+        "words": 1254
+      }
+    },
+    {
+      "id": "M7-P02",
+      "name": "Slide count, titles and page numbers",
+      "status": "passed",
+      "detail": {
+        "slides": 11,
+        "native_tables": 6
+      }
+    },
+    {
+      "id": "M7-P03",
+      "name": "Speech and source notes embedded for every slide",
+      "status": "passed",
+      "detail": {
+        "speaker_notes": 11
+      }
+    },
+    {
+      "id": "M7-P04",
+      "name": "All five original tables remain exact",
+      "status": "passed",
+      "detail": {
+        "source_table_count": 5,
+        "changed_result_cells": 0
+      }
+    },
+    {
+      "id": "M7-P05",
+      "name": "Original chart and embedded workbook bytes preserved",
+      "status": "passed",
+      "detail": {
+        "chart_workbook_parts": 6,
+        "charts": 2,
+        "workbooks": 2
+      }
+    },
+    {
+      "id": "M7-P06",
+      "name": "All chart values still reconcile to public aggregates",
+      "status": "passed",
+      "detail": {
+        "values": 12
+      }
+    },
+    {
+      "id": "M7-P07",
+      "name": "RAG comparison appears before results without a single-document myth",
+      "status": "passed",
+      "detail": {
+        "comparison_slide": 2,
+        "first_results_slide": 7
+      }
+    },
+    {
+      "id": "M7-P08",
+      "name": "Actual demo image and crop preserved",
+      "status": "passed",
+      "detail": {
+        "sha256": "bf8933167e7af9aa5c0cba3e1d756851a6f4bc0219daccf1fa309773c789088d",
+        "new_slide": 10
+      }
+    },
+    {
+      "id": "M7-P09",
+      "name": "Final export/import, portable charts and layout checks pass",
+      "status": "passed",
+      "detail": {
+        "findings": 0,
+        "warnings": 0,
+        "rendered_slides": 11,
+        "native_PowerPoint_open_verified": false
+      }
+    },
+    {
+      "id": "M7-P10",
+      "name": "Scientific and business limitations remain explicit",
+      "status": "passed",
+      "detail": {
+        "training_claims": false,
+        "measured_ROI_claims": false
+      }
+    },
+    {
+      "id": "M7-P11",
+      "name": "Original M7 bundle, deck and report remain unchanged",
+      "status": "passed",
+      "detail": {
+        "original_slides": 10,
+        "original_report_pages": 10
+      }
+    },
+    {
+      "id": "M7-P12",
+      "name": "Frozen assets and application/runtime preserved",
+      "status": "passed",
+      "detail": {
+        "frozen_files": [
+          118,
+          208
+        ],
+        "runtime_files_changed": 0,
+        "private_inputs_accessed": false
+      }
+    }
+  ],
+  "slides": 11,
+  "speech_words": 1254,
+  "generation_requests": 0,
+  "paid_spend": 0,
+  "private_files_accessed": 0,
+  "service_mutations": 0,
+  "manual_pending": [
+    "Native Microsoft PowerPoint/projector rehearsal",
+    "Actual course time limit and portal upload"
+  ]
+}

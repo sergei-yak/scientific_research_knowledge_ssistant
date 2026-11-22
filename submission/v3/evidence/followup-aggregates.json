@@ -1,0 +1,612 @@
+{
+  "status": "complete_scored",
+  "freeze_sha256": "c64da42c62fe46bbd51220738a0016d00742bb1c606575cbb68c4db21374329c",
+  "conditions": {
+    "A0-vector": {
+      "answers": 24,
+      "arm_id": "A0",
+      "profile_id": "baseline",
+      "selector_id": "reference",
+      "mode": "vector",
+      "mean_correctness": 0.7083333333333334,
+      "mean_citation_support": 0.5,
+      "mean_evidence_recall_answerable": 0.35185185185185186,
+      "median_retrieval_ms": 69.30199995986186,
+      "fallbacks": 0
+    },
+    "A0-hybrid": {
+      "answers": 24,
+      "arm_id": "A0",
+      "profile_id": "baseline",
+      "selector_id": "reference",
+      "mode": "hybrid",
+      "mean_correctness": 0.75,
+      "mean_citation_support": 0.5416666666666666,
+      "mean_evidence_recall_answerable": 0.5,
+      "median_retrieval_ms": 42.762800003401935,
+      "fallbacks": 0
+    },
+    "A0-hybrid_facts": {
+      "answers": 24,
+      "arm_id": "A0",
+      "profile_id": "baseline",
+      "selector_id": "reference",
+      "mode": "hybrid_facts",
+      "mean_correctness": 0.7291666666666666,
+      "mean_citation_support": 0.5625,
+      "mean_evidence_recall_answerable": 0.5185185185185185,
+      "median_retrieval_ms": 113.00514999311417,
+      "fallbacks": 0
+    },
+    "A0-graph": {
+      "answers": 24,
+      "arm_id": "A0",
+      "profile_id": "baseline",
+      "selector_id": "reference",
+      "mode": "graph",
+      "mean_correctness": 0.7291666666666666,
+      "mean_citation_support": 0.5625,
+      "mean_evidence_recall_answerable": 0.5185185185185185,
+      "median_retrieval_ms": 156.1418499913998,
+      "fallbacks": 24
+    },
+    "A1-vector": {
+      "answers": 24,
+      "arm_id": "A1",
+      "profile_id": "retrieval-v2",
+      "selector_id": "reference",
+      "mode": "vector",
+      "mean_correctness": 0.7083333333333334,
+      "mean_citation_support": 0.5,
+      "mean_evidence_recall_answerable": 0.35185185185185186,
+      "median_retrieval_ms": 68.7978999922052,
+      "fallbacks": 0
+    },
+    "A1-hybrid": {
+      "answers": 24,
+      "arm_id": "A1",
+      "profile_id": "retrieval-v2",
+      "selector_id": "reference",
+      "mode": "hybrid",
+      "mean_correctness": 0.75,
+      "mean_citation_support": 0.5416666666666666,
+      "mean_evidence_recall_answerable": 0.5,
+      "median_retrieval_ms": 43.639250012347475,
+      "fallbacks": 0
+    },
+    "A1-hybrid_facts": {
+      "answers": 24,
+      "arm_id": "A1",
+      "profile_id": "retrieval-v2",
+      "selector_id": "reference",
+      "mode": "hybrid_facts",
+      "mean_correctness": 0.7291666666666666,
+      "mean_citation_support": 0.5625,
+      "mean_evidence_recall_answerable": 0.5185185185185185,
+      "median_retrieval_ms": 115.61050001182593,
+      "fallbacks": 0
+    },
+    "A1-graph": {
+      "answers": 24,
+      "arm_id": "A1",
+      "profile_id": "retrieval-v2",
+      "selector_id": "reference",
+      "mode": "graph",
+      "mean_correctness": 0.75,
+      "mean_citation_support": 0.5833333333333334,
+      "mean_evidence_recall_answerable": 0.5185185185185185,
+      "median_retrieval_ms": 161.29760001786053,
+      "fallbacks": 23
+    },
+    "A2-vector": {
+      "answers": 24,
+      "arm_id": "A2",
+      "profile_id": "retrieval-v2",
+      "selector_id": "cross_encoder",
+      "mode": "vector",
+      "mean_correctness": 0.6458333333333334,
+      "mean_citation_support": 0.4583333333333333,
+      "mean_evidence_recall_answerable": 0.37037037037037035,
+      "median_retrieval_ms": 343.90484998584725,
+      "fallbacks": 0
+    },
+    "A2-hybrid": {
+      "answers": 24,
+      "arm_id": "A2",
+      "profile_id": "retrieval-v2",
+      "selector_id": "cross_encoder",
+      "mode": "hybrid",
+      "mean_correctness": 0.7916666666666666,
+      "mean_citation_support": 0.5208333333333334,
+      "mean_evidence_recall_answerable": 0.4166666666666667,
+      "median_retrieval_ms": 506.5298500121571,
+      "fallbacks": 0
+    },
+    "A2-hybrid_facts": {
+      "answers": 24,
+      "arm_id": "A2",
+      "profile_id": "retrieval-v2",
+      "selector_id": "cross_encoder",
+      "mode": "hybrid_facts",
+      "mean_correctness": 0.8333333333333334,
+      "mean_citation_support": 0.5833333333333334,
+      "mean_evidence_recall_answerable": 0.537037037037037,
+      "median_retrieval_ms": 924.4405000354163,
+      "fallbacks": 0
+    },
+    "A2-graph": {
+      "answers": 24,
+      "arm_id": "A2",
+      "profile_id": "retrieval-v2",
+      "selector_id": "cross_encoder",
+      "mode": "graph",
+      "mean_correctness": 0.8333333333333334,
+      "mean_citation_support": 0.5833333333333334,
+      "mean_evidence_recall_answerable": 0.537037037037037,
+      "median_retrieval_ms": 1012.8099999856204,
+      "fallbacks": 24
+    }
+  },
+  "splits": {
+    "development": {
+      "conditions": {
+        "A0-vector": {
+          "answers": 8,
+          "arm_id": "A0",
+          "profile_id": "baseline",
+          "selector_id": "reference",
+          "mode": "vector",
+          "mean_correctness": 0.6875,
+          "mean_citation_support": 0.375,
+          "mean_evidence_recall_answerable": 0.2777777777777778,
+          "median_retrieval_ms": 70.2638500079047,
+          "fallbacks": 0
+        },
+        "A0-hybrid": {
+          "answers": 8,
+          "arm_id": "A0",
+          "profile_id": "baseline",
+          "selector_id": "reference",
+          "mode": "hybrid",
+          "mean_correctness": 0.75,
+          "mean_citation_support": 0.5625,
+          "mean_evidence_recall_answerable": 0.5555555555555556,
+          "median_retrieval_ms": 42.96200000680983,
+          "fallbacks": 0
+        },
+        "A0-hybrid_facts": {
+          "answers": 8,
+          "arm_id": "A0",
+          "profile_id": "baseline",
+          "selector_id": "reference",
+          "mode": "hybrid_facts",
+          "mean_correctness": 0.8125,
+          "mean_citation_support": 0.625,
+          "mean_evidence_recall_answerable": 0.7777777777777778,
+          "median_retrieval_ms": 113.48475000704639,
+          "fallbacks": 0
+        },
+        "A0-graph": {
+          "answers": 8,
+          "arm_id": "A0",
+          "profile_id": "baseline",
+          "selector_id": "reference",
+          "mode": "graph",
+          "mean_correctness": 0.8125,
+          "mean_citation_support": 0.625,
+          "mean_evidence_recall_answerable": 0.7777777777777778,
+          "median_retrieval_ms": 157.8798499831464,
+          "fallbacks": 8
+        },
+        "A1-vector": {
+          "answers": 8,
+          "arm_id": "A1",
+          "profile_id": "retrieval-v2",
+          "selector_id": "reference",
+          "mode": "vector",
+          "mean_correctness": 0.6875,
+          "mean_citation_support": 0.375,
+          "mean_evidence_recall_answerable": 0.2777777777777778,
+          "median_retrieval_ms": 68.32635001046583,
+          "fallbacks": 0
+        },
+        "A1-hybrid": {
+          "answers": 8,
+          "arm_id": "A1",
+          "profile_id": "retrieval-v2",
+          "selector_id": "reference",
+          "mode": "hybrid",
+          "mean_correctness": 0.75,
+          "mean_citation_support": 0.5625,
+          "mean_evidence_recall_answerable": 0.5555555555555556,
+          "median_retrieval_ms": 43.639250012347475,
+          "fallbacks": 0
+        },
+        "A1-hybrid_facts": {
+          "answers": 8,
+          "arm_id": "A1",
+          "profile_id": "retrieval-v2",
+          "selector_id": "reference",
+          "mode": "hybrid_facts",
+          "mean_correctness": 0.8125,
+          "mean_citation_support": 0.625,
+          "mean_evidence_recall_answerable": 0.7777777777777778,
+          "median_retrieval_ms": 115.30229999334551,
+          "fallbacks": 0
+        },
+        "A1-graph": {
+          "answers": 8,
+          "arm_id": "A1",
+          "profile_id": "retrieval-v2",
+          "selector_id": "reference",
+          "mode": "graph",
+          "mean_correctness": 0.875,
+          "mean_citation_support": 0.6875,
+          "mean_evidence_recall_answerable": 0.7777777777777778,
+          "median_retrieval_ms": 169.9046500143595,
+          "fallbacks": 7
+        },
+        "A2-vector": {
+          "answers": 8,
+          "arm_id": "A2",
+          "profile_id": "retrieval-v2",
+          "selector_id": "cross_encoder",
+          "mode": "vector",
+          "mean_correctness": 0.625,
+          "mean_citation_support": 0.375,
+          "mean_evidence_recall_answerable": 0.3888888888888889,
+          "median_retrieval_ms": 348.8754499994684,
+          "fallbacks": 0
+        },
+        "A2-hybrid": {
+          "answers": 8,
+          "arm_id": "A2",
+          "profile_id": "retrieval-v2",
+          "selector_id": "cross_encoder",
+          "mode": "hybrid",
+          "mean_correctness": 0.75,
+          "mean_citation_support": 0.3125,
+          "mean_evidence_recall_answerable": 0.2777777777777778,
+          "median_retrieval_ms": 510.89249999495223,
+          "fallbacks": 0
+        },
+        "A2-hybrid_facts": {
+          "answers": 8,
+          "arm_id": "A2",
+          "profile_id": "retrieval-v2",
+          "selector_id": "cross_encoder",
+          "mode": "hybrid_facts",
+          "mean_correctness": 0.875,
+          "mean_citation_support": 0.5,
+          "mean_evidence_recall_answerable": 0.6388888888888888,
+          "median_retrieval_ms": 924.4405000354163,
+          "fallbacks": 0
+        },
+        "A2-graph": {
+          "answers": 8,
+          "arm_id": "A2",
+          "profile_id": "retrieval-v2",
+          "selector_id": "cross_encoder",
+          "mode": "graph",
+          "mean_correctness": 0.875,
+          "mean_citation_support": 0.5,
+          "mean_evidence_recall_answerable": 0.6388888888888888,
+          "median_retrieval_ms": 1031.9086499803234,
+          "fallbacks": 8
+        }
+      },
+      "questions": 8,
+      "paired_correctness": {
+        "A2-graph_vs_A2-hybrid_facts": {
+          "wins": 0,
+          "ties": 8,
+          "losses": 0
+        },
+        "A1-graph_vs_A1-hybrid_facts": {
+          "wins": 1,
+          "ties": 7,
+          "losses": 0
+        },
+        "A2-vector_vs_A1-vector": {
+          "wins": 0,
+          "ties": 7,
+          "losses": 1
+        },
+        "A2-hybrid_vs_A1-hybrid": {
+          "wins": 1,
+          "ties": 6,
+          "losses": 1
+        },
+        "A2-hybrid_facts_vs_A1-hybrid_facts": {
+          "wins": 1,
+          "ties": 6,
+          "losses": 1
+        },
+        "A2-graph_vs_A1-graph": {
+          "wins": 1,
+          "ties": 6,
+          "losses": 1
+        },
+        "A1-vector_vs_A0-vector": {
+          "wins": 0,
+          "ties": 8,
+          "losses": 0
+        },
+        "A1-hybrid_vs_A0-hybrid": {
+          "wins": 0,
+          "ties": 8,
+          "losses": 0
+        },
+        "A1-hybrid_facts_vs_A0-hybrid_facts": {
+          "wins": 0,
+          "ties": 8,
+          "losses": 0
+        },
+        "A1-graph_vs_A0-graph": {
+          "wins": 1,
+          "ties": 7,
+          "losses": 0
+        }
+      }
+    },
+    "held_out": {
+      "conditions": {
+        "A0-vector": {
+          "answers": 16,
+          "arm_id": "A0",
+          "profile_id": "baseline",
+          "selector_id": "reference",
+          "mode": "vector",
+          "mean_correctness": 0.71875,
+          "mean_citation_support": 0.5625,
+          "mean_evidence_recall_answerable": 0.3888888888888889,
+          "median_retrieval_ms": 68.79055002355017,
+          "fallbacks": 0
+        },
+        "A0-hybrid": {
+          "answers": 16,
+          "arm_id": "A0",
+          "profile_id": "baseline",
+          "selector_id": "reference",
+          "mode": "hybrid",
+          "mean_correctness": 0.75,
+          "mean_citation_support": 0.53125,
+          "mean_evidence_recall_answerable": 0.4722222222222222,
+          "median_retrieval_ms": 42.75385002256371,
+          "fallbacks": 0
+        },
+        "A0-hybrid_facts": {
+          "answers": 16,
+          "arm_id": "A0",
+          "profile_id": "baseline",
+          "selector_id": "reference",
+          "mode": "hybrid_facts",
+          "mean_correctness": 0.6875,
+          "mean_citation_support": 0.53125,
+          "mean_evidence_recall_answerable": 0.3888888888888889,
+          "median_retrieval_ms": 113.00514999311417,
+          "fallbacks": 0
+        },
+        "A0-graph": {
+          "answers": 16,
+          "arm_id": "A0",
+          "profile_id": "baseline",
+          "selector_id": "reference",
+          "mode": "graph",
+          "mean_correctness": 0.6875,
+          "mean_citation_support": 0.53125,
+          "mean_evidence_recall_answerable": 0.3888888888888889,
+          "median_retrieval_ms": 154.2224499862641,
+          "fallbacks": 16
+        },
+        "A1-vector": {
+          "answers": 16,
+          "arm_id": "A1",
+          "profile_id": "retrieval-v2",
+          "selector_id": "reference",
+          "mode": "vector",
+          "mean_correctness": 0.71875,
+          "mean_citation_support": 0.5625,
+          "mean_evidence_recall_answerable": 0.3888888888888889,
+          "median_retrieval_ms": 69.13970000459813,
+          "fallbacks": 0
+        },
+        "A1-hybrid": {
+          "answers": 16,
+          "arm_id": "A1",
+          "profile_id": "retrieval-v2",
+          "selector_id": "reference",
+          "mode": "hybrid",
+          "mean_correctness": 0.75,
+          "mean_citation_support": 0.53125,
+          "mean_evidence_recall_answerable": 0.4722222222222222,
+          "median_retrieval_ms": 42.97194999526255,
+          "fallbacks": 0
+        },
+        "A1-hybrid_facts": {
+          "answers": 16,
+          "arm_id": "A1",
+          "profile_id": "retrieval-v2",
+          "selector_id": "reference",
+          "mode": "hybrid_facts",
+          "mean_correctness": 0.6875,
+          "mean_citation_support": 0.53125,
+          "mean_evidence_recall_answerable": 0.3888888888888889,
+          "median_retrieval_ms": 115.8867499907501,
+          "fallbacks": 0
+        },
+        "A1-graph": {
+          "answers": 16,
+          "arm_id": "A1",
+          "profile_id": "retrieval-v2",
+          "selector_id": "reference",
+          "mode": "graph",
+          "mean_correctness": 0.6875,
+          "mean_citation_support": 0.53125,
+          "mean_evidence_recall_answerable": 0.3888888888888889,
+          "median_retrieval_ms": 159.0398499974981,
+          "fallbacks": 16
+        },
+        "A2-vector": {
+          "answers": 16,
+          "arm_id": "A2",
+          "profile_id": "retrieval-v2",
+          "selector_id": "cross_encoder",
+          "mode": "vector",
+          "mean_correctness": 0.65625,
+          "mean_citation_support": 0.5,
+          "mean_evidence_recall_answerable": 0.3611111111111111,
+          "median_retrieval_ms": 343.2966499822214,
+          "fallbacks": 0
+        },
+        "A2-hybrid": {
+          "answers": 16,
+          "arm_id": "A2",
+          "profile_id": "retrieval-v2",
+          "selector_id": "cross_encoder",
+          "mode": "hybrid",
+          "mean_correctness": 0.8125,
+          "mean_citation_support": 0.625,
+          "mean_evidence_recall_answerable": 0.4861111111111111,
+          "median_retrieval_ms": 506.5298500121571,
+          "fallbacks": 0
+        },
+        "A2-hybrid_facts": {
+          "answers": 16,
+          "arm_id": "A2",
+          "profile_id": "retrieval-v2",
+          "selector_id": "cross_encoder",
+          "mode": "hybrid_facts",
+          "mean_correctness": 0.8125,
+          "mean_citation_support": 0.625,
+          "mean_evidence_recall_answerable": 0.4861111111111111,
+          "median_retrieval_ms": 921.8238499888685,
+          "fallbacks": 0
+        },
+        "A2-graph": {
+          "answers": 16,
+          "arm_id": "A2",
+          "profile_id": "retrieval-v2",
+          "selector_id": "cross_encoder",
+          "mode": "graph",
+          "mean_correctness": 0.8125,
+          "mean_citation_support": 0.625,
+          "mean_evidence_recall_answerable": 0.4861111111111111,
+          "median_retrieval_ms": 997.9672000044957,
+          "fallbacks": 16
+        }
+      },
+      "questions": 16,
+      "paired_correctness": {
+        "A2-graph_vs_A2-hybrid_facts": {
+          "wins": 0,
+          "ties": 16,
+          "losses": 0
+        },
+        "A1-graph_vs_A1-hybrid_facts": {
+          "wins": 0,
+          "ties": 16,
+          "losses": 0
+        },
+        "A2-vector_vs_A1-vector": {
+          "wins": 0,
+          "ties": 14,
+          "losses": 2
+        },
+        "A2-hybrid_vs_A1-hybrid": {
+          "wins": 3,
+          "ties": 12,
+          "losses": 1
+        },
+        "A2-hybrid_facts_vs_A1-hybrid_facts": {
+          "wins": 4,
+          "ties": 12,
+          "losses": 0
+        },
+        "A2-graph_vs_A1-graph": {
+          "wins": 4,
+          "ties": 12,
+          "losses": 0
+        },
+        "A1-vector_vs_A0-vector": {
+          "wins": 0,
+          "ties": 16,
+          "losses": 0
+        },
+        "A1-hybrid_vs_A0-hybrid": {
+          "wins": 0,
+          "ties": 16,
+          "losses": 0
+        },
+        "A1-hybrid_facts_vs_A0-hybrid_facts": {
+          "wins": 0,
+          "ties": 16,
+          "losses": 0
+        },
+        "A1-graph_vs_A0-graph": {
+          "wins": 0,
+          "ties": 16,
+          "losses": 0
+        }
+      }
+    }
+  },
+  "primary_contrast": "A2-graph_vs_A2-hybrid_facts",
+  "paired_correctness": {
+    "A2-graph_vs_A2-hybrid_facts": {
+      "wins": 0,
+      "ties": 24,
+      "losses": 0
+    },
+    "A1-graph_vs_A1-hybrid_facts": {
+      "wins": 1,
+      "ties": 23,
+      "losses": 0
+    },
+    "A2-vector_vs_A1-vector": {
+      "wins": 0,
+      "ties": 21,
+      "losses": 3
+    },
+    "A2-hybrid_vs_A1-hybrid": {
+      "wins": 4,
+      "ties": 18,
+      "losses": 2
+    },
+    "A2-hybrid_facts_vs_A1-hybrid_facts": {
+      "wins": 5,
+      "ties": 18,
+      "losses": 1
+    },
+    "A2-graph_vs_A1-graph": {
+      "wins": 5,
+      "ties": 18,
+      "losses": 1
+    },
+    "A1-vector_vs_A0-vector": {
+      "wins": 0,
+      "ties": 24,
+      "losses": 0
+    },
+    "A1-hybrid_vs_A0-hybrid": {
+      "wins": 0,
+      "ties": 24,
+      "losses": 0
+    },
+    "A1-hybrid_facts_vs_A0-hybrid_facts": {
+      "wins": 0,
+      "ties": 24,
+      "losses": 0
+    },
+    "A1-graph_vs_A0-graph": {
+      "wins": 1,
+      "ties": 23,
+      "losses": 0
+    }
+  },
+  "limits": [
+    "Exploratory source-author outcome exposure; human review does not remove selection bias.",
+    "Negative development gate retained; no population superiority claim.",
+    "Selector contrasts are end-to-end policies, including changed Graph anchors."
+  ]
+}

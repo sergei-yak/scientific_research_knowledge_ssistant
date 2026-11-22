@@ -1,0 +1,12 @@
+{
+  "format": "public-delivery-file-hashes-v3",
+  "files": {
+    "Project_Progress_Report_Completed.pdf": "3c215b4f5c5ccbbee9987fd431488658504c3102c25cb7b00220fea161ee42b4",
+    "README.md": "38ba55a6f0effbc94c36c4b56853116ca2194fb705b3a67f150075dda7a19834",
+    "report-data.json": "9b0d79d547f8eb0bfe2622e08af6ff9090a18867c869d108ffe2c38044f9f203",
+    "assets/m8-physics-answer.jpg": "4bef22208eda66f9213a89baea71ab8a26043d0949d89566f64dd4c8a75627ca",
+    "assets/m8-workspace.jpg": "013b371964c4938fe8d6ef1821f5f42240881018bf491fd047e2a8809f1f5734"
+  },
+  "source_commit": "665956553fca8fca2c5fe990a62e935ee6b305d6",
+  "excludes": "This manifest and outer delivery ZIP; office lock files are never included."
+}

@@ -164,12 +164,14 @@ def build_view(run: RunArtifact, catalog: ReviewCatalog | None) -> ProductView:
                        rows=rows, notices=notices, paper_count=len(papers), method_count=len(methods))
 
 
-def evidence_csv(run: RunArtifact) -> str:
+def evidence_csv(run: RunArtifact, *, source_references: dict[str, dict[str, str]] | None = None) -> str:
     """Serialize actual excerpts with reversible formula escaping; call only after validate_run."""
     fields = ['run_id', 'requested_mode', 'effective_mode', 'fallback_reason', 'context_sha256',
               'evidence_id', 'kind', 'paper', 'source_url', 'page', 'claim_id', 'claim_revision',
               'claim', 'condition', 'quotation', 'chunk_id', 'source_sha256', 'start', 'end',
               'graph_paths', 'escaped_fields']
+    if source_references is not None:
+        fields.extend(['source_reference', 'source_filename'])
     output = io.StringIO(newline='')
     writer = csv.DictWriter(output, fieldnames=fields, lineterminator='\n')
     writer.writeheader()
@@ -183,6 +185,9 @@ def evidence_csv(run: RunArtifact) -> str:
                        claim=item.claim_text or '', condition=json.dumps(item.conditions, ensure_ascii=False, sort_keys=True),
                        quotation=excerpt.text, chunk_id=excerpt.chunk_id, source_sha256=excerpt.source_sha256,
                        start=str(excerpt.start), end=str(excerpt.end), graph_paths=json.dumps(item.graph_paths, ensure_ascii=False, sort_keys=True))
+            if source_references is not None:
+                reference = source_references[excerpt.paper_id]
+                row.update(source_reference=reference['reference'], source_filename=reference['filename'])
             escaped = []
             for field, value in row.items():
                 if value.lstrip().startswith(('=', '+', '-', '@')) or value.startswith(('\t', '\r', '\n', "'")):
@@ -194,7 +199,8 @@ def evidence_csv(run: RunArtifact) -> str:
 
 
 def prepare_output(run: RunArtifact, settings: Settings,
-                   review_directory: Path = Path('data/reviews/pilot')) -> tuple[ProductView, str]:
+                   review_directory: Path = Path('data/reviews/pilot'), *,
+                   source_references: dict[str, dict[str, str]] | None = None) -> tuple[ProductView, str]:
     """Single checked product/export boundary shared by CLI and Streamlit."""
     catalog = validate_run(run, settings, review_directory)
-    return build_view(run, catalog), evidence_csv(run)
+    return build_view(run, catalog), evidence_csv(run, source_references=source_references)

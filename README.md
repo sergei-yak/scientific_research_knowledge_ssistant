@@ -1,53 +1,12 @@
 # Scientific Research Knowledge Assistant
 
-A local assistant for asking questions about scientific papers and checking the sources behind its answers. The project compares semantic search, combined semantic/lexical search, human-approved facts and source-backed graph retrieval.
+**Active M8 product: M8.1-M8.5 complete for the bounded local first release.** Use `C:/Users/serge/DBU-GraphRAG-Worktrees/m8-user-collections`, branch `codex/m8-user-collections`. Open **http://127.0.0.1:8504/** or run `START_M8.ps1` there. Create/select a collection, import PDFs or public links, ask Vector/Hybrid questions and inspect/download exact sources. Optional human claim review and **Update reviewed index** enable fact/Graph modes only with current approvals. AI and gravitational-wave examples are checked; two genuine AI approvals remain published, while physics has no reviewed claims. Real Graph explicitly falls back for the current AI claims. [User guide](docs/M8_USER_GUIDE.md), [actual verification/limits](docs/M8_5_REPORT.md), [completed M8 plan](docs/M8_PLAN.md). Local assets/locked environment still require provisioning and are intentionally excluded from Git. The final GitHub release brings this tested M8 source to main under the current user request; the previous main commit, M6 checkout, earlier packages and both research scopes remain retained.
 
-## Start here
+**Current class materials:** [Completed progress PDF](coursework/progress-2026-11-21-complete/Project_Progress_Report_Completed.pdf), [updated report](submission/v3/Project_Report_v3.pdf), [eleven-slide deck](submission/v3/Project_Presentation_Storytelling_v3.pptx) and [complete v3 package](submission/v3/DBU_Deep_Learning_Submission_v3.zip). The progress document lists eight completed technical milestones, excluding internal submission preparation. The earlier ~88% PDF remains an unchanged preimplementation snapshot. Use the current [submission/rehearsal guide](docs/M7_SUBMISSION_GUIDE.md).
 
-- [Class progress report with completion percentages and screenshots](coursework/progress-2026-11-21/Project_Progress_Report.pdf)
-- [M8 plan for users to bring their own papers (not implemented)](docs/M8_PLAN.md)
+Preserved class demonstration: **M0-M7 complete (M7 prepares the submission; it does not upload it). Open the working product at http://127.0.0.1:8503/**. Current checkout: `C:/Users/serge/DBU-GraphRAG-Worktrees/m6-demonstration`; launch with `START_DEMO.ps1`. [Startup/presentation guide](docs/M6_DEMO_GUIDE.md), [actual checks and limits](docs/M6_REPORT.md).
 
-- [Final report, 10 pages](submission/Project_Report.pdf)
-- [Presentation, 11 slides with speech in speaker notes](submission/Project_Presentation_Storytelling_v2.pptx)
-- [Simple storytelling speech](docs/PRESENTATION_SPEECH.md)
-- [Complete submission package](submission/DBU_Deep_Learning_Submission_v2.zip)
-- [Project specification](project_spec.md), [implementation plan](IMPLEMENTATION_PLAN.md) and [submission checklist](submission/Submission_Checklist.md)
-- [Product startup/demo guide](docs/M6_DEMO_GUIDE.md)
-
-The source covers the completed M0-M7 project: Python services, CLI, Streamlit UI, tests, paper/model manifests, locked dependencies, milestone reports and public results. `submission/` contains the checked report, editable slides, speech, public evidence and source snapshot. Git history preserves the development milestones.
-
-## Research outcome
-
-The indexed research collection has 20 papers, 1,427 chunks and 51 human-approved claims. In both small held-out studies, Graph requests fell back to the matching fact-augmented evidence. No held-out benefit from selected graph traversal was established. The exploratory follow-up found mode-dependent reranker quality/latency trade-offs. Its question-author exposure and negative development gate remain disclosed in the [study amendment](docs/M5_5_STUDY_AMENDMENT.md) and [results](docs/M5_6_EVALUATION_REPORT.md).
-
-The neural models were pretrained externally. No neural network was trained or fine-tuned for this project. Intended business value is easier research and source checking; user time savings and financial return were not measured.
-
-## Planned product extension
-
-M8 will add named collections, PDF uploads/supported links, source-cited QA and optional human-reviewed graph features. It is 0% implemented. The progress report shows completed technical milestones M0-M6 and planned M8: approximately 88% by equal 7-of-8 count, not model accuracy or an effort estimate. Internal M7 submission/presentation preparation is excluded from its feature list and completion calculation. [Scope and acceptance plan](docs/M8_PLAN.md).
-
-## Running locally
-
-This is a local application, not a hosted website. The recorded product uses Neo4j, Ollama, pretrained model caches and reviewed paper data on the original workstation. Those runtime assets and credentials are not included in this repository. A fresh clone requires their separate provisioning; cloning alone does not reproduce the prepared database or grant a new experiment authorization.
-
-```powershell
-git clone https://github.com/sergei-yak/scientific_research_knowledge_ssistant.git
-cd scientific_research_knowledge_ssistant
-uv sync --locked
-Copy-Item .env.example .env
-```
-
-Configure your own local settings and follow the [setup instructions](#setup-powershell-project-root) and [demo guide](docs/M6_DEMO_GUIDE.md). After the locked environment, working database, model and reviewed source assets are available, `START_DEMO.ps1` serves the UI at `http://127.0.0.1:8503/`. Never use a study/evaluation runner as a product launcher.
-
-Downloaded PDFs, model weights/caches, database volumes, local data/accounting, real environment files and private evaluation questions/gold/answers/scores are intentionally excluded. Public aggregate findings are under [submission/evidence](submission/evidence/). [Publication scope](docs/GITHUB_PUBLICATION.md).
-
-## Detailed local development record
-
-The notes below retain the original workstation paths and milestone history. Localhost URLs refer to the machine running the app. Historical freeze/evaluator commands are preserved for provenance; both completed study runs are consumed and must not be restarted. Fresh-machine reproduction and native PowerPoint/projector rehearsal have not been newly performed for publication.
-
-Current implementation: **M0-M7 complete (M7 prepares the submission; it does not upload it). Open the working product at http://127.0.0.1:8503/**. Current checkout: `C:/Users/serge/DBU-GraphRAG-Worktrees/m6-demonstration`; launch with `START_DEMO.ps1`. [Startup/presentation guide](docs/M6_DEMO_GUIDE.md), [actual checks and limits](docs/M6_REPORT.md).
-
-**Submission package:** [M7 guide](docs/M7_SUBMISSION_GUIDE.md), [report source](docs/PROJECT_REPORT.md), [simple speech](docs/PRESENTATION_SPEECH.md), [slides/demo notes](docs/PRESENTATION_NOTES.md), [checklist](docs/SUBMISSION_CHECKLIST.md), [actual checks](docs/M7_REPORT.md). Current bundle: `runs/m7/DBU_Deep_Learning_Submission_v2.zip`; revised 11-slide PPTX/speech in `runs/m7/presentation-v2/submission/`. The unchanged ten-page report and original v1 remain under `runs/m7/submission/`. Verify the actual course rubric and rehearse before uploading.
+**Final delivery:** [Open v3](submission/v3/START_HERE.md), [simple speech](docs/PRESENTATION_SPEECH.md), [demo/rehearsal](docs/DEMO_REHEARSAL.md), [checklist](docs/SUBMISSION_CHECKLIST.md). The new source archive identifies tested M8 commit6659565. Original v1/v2 M7 packages and all research assets remain historical. PowerPoint/app technical checks pass; confirm the course rubric and rehearse aloud before portal upload.
 
 **Current iteration:** Specification 6.5 governs `retrieval-v2`; M5.0–M5.4 are complete.
 [M5.4](docs/M5_4_REPORT.md) records the matched 96-request development comparison and a **no-go**

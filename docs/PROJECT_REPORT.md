@@ -2,11 +2,11 @@
 
 Graph retrieval, source-grounded question answering and controlled evaluation
 
-Sergei Iakovlev | DBU Deep Learning | 19 November 2026
+Sergei Iakovlev | DBU Deep Learning | 21 November 2026 | Product update v3
 
 ### Abstract
 
-This project builds a local assistant for studying artificial-intelligence research papers. It combines semantic and lexical search, a human-reviewed scientific knowledge graph, and a pretrained local language model. Users can ask questions, inspect exact source excerpts, see approved claims and any selected graph connections, and export the evidence. The implementation compares Vector, Hybrid, Hybrid + Approved Facts, and Graph retrieval under a common evidence budget. The graph condition is tested against the fact-augmented ablation so that any gain from graph traversal can be separated from access to reviewed claims.
+This project builds a local assistant for studying research papers, with a controlled AI-literature evaluation and a completed extension for user-provided documents. It combines semantic and lexical search, a human-reviewed scientific knowledge graph, and a pretrained local language model. Users can ask questions, inspect exact source excerpts, see approved claims and any selected graph connections, and export the evidence. The implementation compares Vector, Hybrid, Hybrid + Approved Facts, and Graph retrieval under a common evidence budget. The graph condition is tested against the fact-augmented ablation so that any gain from graph traversal can be separated from access to reviewed claims.
 
 A five-paper pilot preceded a twenty-paper corpus containing 1,427 indexed chunks and 51 active human-approved claims. Two frozen studies used eight development and sixteen held-out questions each. The original study produced 96 answers; a later exploratory study compared twelve matched conditions across 288 answer slots. Human scores were sealed before condition reveal. In the original held-out sample, Hybrid obtained the highest mean correctness rating, 0.7188. In the exploratory sample, reranked Hybrid, Hybrid + Facts and Graph tied at 0.8125. Every held-out Graph request fell back to its matching fact-augmented context in both studies. The results therefore demonstrate no held-out benefit from selected graph traversal. Reranking showed mode-dependent quality and latency trade-offs.
 
@@ -136,7 +136,7 @@ The original run completed 96 answer generations/provider responses and 48 addit
 | Hybrid + Facts | 0.5625 | 0.2500 | 0.1944 | 243.3 |
 | Graph | 0.5625 | 0.2500 | 0.1944 | 351.0 |
 
-*Table 1. Original held-out results (n = 16; recall n = 12). Retrieval values are medians in milliseconds, excluding generation.*
+Table 1. Original held-out results (n = 16; recall n = 12). Retrieval values are medians in milliseconds, excluding generation.
 
 ### Interpretation
 
@@ -176,7 +176,7 @@ The authorized follow-up completed 288 answer slots across twenty-four questions
 | A2 / Hybrid + Facts | 0.8125 | 0.6250 | 0.4861 | 921.8 |
 | A2 / Graph | 0.8125 | 0.6250 | 0.4861 | 998.0 |
 
-*Table 2. Exploratory held-out results. Retrieval medians exclude generation. Every Graph arm falls back on 16/16 held-out questions.*
+Table 2. Exploratory held-out results. Retrieval medians exclude generation. Every Graph arm falls back on 16/16 held-out questions.
 
 ### Primary and matched comparisons
 
@@ -195,9 +195,9 @@ The reranked policy raises mean correctness by 0.0625 for Hybrid and 0.1250 for 
 
 ## 7. Discussion and limitations
 
-![Public result figure or actual product screenshot](figures/m7-followup-correctness.png)
+![Project evidence](figures/m7-followup-correctness.png)
 
-*Figure 1. Exploratory held-out correctness, n = 16. Native table values are in Table 2. A0 matches A1 quality; Graph always falls back. Means are human ratings on 0/0.5/1, not accuracy.*
+Figure 1. Exploratory held-out correctness, n = 16. Native table values are in Table 2. A0 matches A1 quality; Graph always falls back. Means are human ratings on 0/0.5/1, not accuracy.
 
 ### What the results support
 
@@ -215,21 +215,21 @@ Latency depends on caches, ordering, checks and hardware. Public aggregates lack
 
 <!-- Report page boundary -->
 
-## 8. Working product, demonstration and next work
+## 8. Working product and user-provided papers
 
-The M6 product checkout provides ordinary local question answering at http://127.0.0.1:8503/. Users choose the five- or twenty-paper collection, a workflow and one of the four Standard modes. Answer generation is opt-in; an explicit submit makes one local request. The interface keeps the submitted question, requested/effective mode, answer and evidence together. Discovery, Comparison and Limitations guide the research task; they are not separate inference backends.
+The completed M8 local product runs at http://127.0.0.1:8504/ in the isolated m8-user-collections checkout. A user creates a named collection, uploads text-based PDFs or supplies arXiv/direct public PDF links, imports the papers and asks a question. Ordinary Vector/Hybrid search works without claim review. Answer generation is optional; source cards and CSV/JSON/PDF exports remain checked. [E6]
 
-![Public result figure or actual product screenshot](figures/m6-demo-answer.jpg)
+![Project evidence](figures/m8-physics-answer.jpg)
 
-*Figure 2. Answer detail from the actual M6 browser screenshot, twenty-paper corpus, Standard/Hybrid. This is a public LightRAG demonstration, not a held-out answer. Its underlying excerpts were checked on PDF p.4. The full screenshot is included. [E4]*
+Figure 2. Actual M8 physics-paper answer detail, cropped for readability. The complete screenshot includes source/PDF controls. This is a public functional example, not a held-out answer or new accuracy result.
 
-Source cards show exact text, attribution and page links. Approved claims additionally show their reviewed assertion and conditions. Graph connections display only selected supporting routes; fallback remains visible if none entered the answer. Reruns and downloads validate saved evidence without another generation. The retained experimental V2 scope is not provisioned as normal synthesis in this product checkout; the Standard demonstration does not claim to deploy the reranked research arm.
+Each collection has its own immutable source/revision/index/review binding. Limits include 10 unique PDFs, 25 MiB/100 pages per file, and 300 pages/3,000 chunks per collection. Identical bytes report a duplicate; an invalid PDF fails without overwriting existing valid papers. OCR, encrypted PDFs, arbitrary webpages and cloud accounts are outside this local first release.
 
-M6 verification records 374 offline tests passed, seven integration cases deselected, twelve live service cases, two actual browser queries and an exact six-row evidence CSV match. Three foreign-scope probes were refused and retained as historical failures. Seven bounded local model attempts, including two reconciled smoke probes, used $0 paid spend. Observed product answers took 35-76 seconds; the browser LightRAG answer took about 42 seconds. These are engineering observations, not new benchmark scores. [E4]
+Optional local proposals require actual source-bound human decisions and a separate reviewed-index update before fact/Graph use. Two real AI-paper claims are now approved. Their Graph request falls back to the exact fact-mode context because no new reviewed cross-paper evidence is eligible. A separate physics collection has no approvals and cannot inherit them. Approval verifies what a source reports, not independent scientific truth.
 
-A short demonstration should submit the public LightRAG retrieval-strategy question once, open its cited excerpts, show an evidence-only comparison and explain Graph fallback. Startup requires the existing working Neo4j instance, Ollama and cached assets; never reset volumes or restart used evaluation targets. The code archive excludes those assets. A clean-machine reproduction has not been newly tested for M7.
+M8.5 verifies AI and physics workflows: a new 16-page/148-chunk import, duplicate/corrupt-input preservation, all four requested AI modes, physics Vector/Hybrid, source/export/CLI parity, two unrelated-topic abstentions and missing-review refusals. 495 offline tests and one actual-artifact/native verifier pass; ten other integrations were not rerun. Six local answer generations succeeded within a fixed engineering scope. These are product checks, not comparative quality evidence.
 
-Future work could test reviewed graph enrichment, useful cross-paper chains and independent raters on a fresh, cleanly authored evaluation. It needs a prospective gate and new authorization; none was performed here. AI supported planning, implementation, debugging and documentation. Human review and ratings were recorded separately, never replaced with agent approvals.
+Observed M8.5 generation alone took about 23-54 seconds; startup and readiness add time. A cold new-document import does not establish cold OS/model-cache performance. This remains a local single-user product, with no clean-machine, broad user or endurance acceptance. The retained M6 example and both consumed studies are unchanged. The new source archive contains the tested M8 commit6659565 and uv.lock; models, source/index data and the owned database need separate provisioning. [E4,E6]
 
 <!-- Report page boundary -->
 
@@ -265,10 +265,10 @@ Future work could test reviewed graph enrichment, useful cross-paper chains and 
 
 [E3] evidence/M5_6_EVALUATION_REPORT.md, evidence/followup-aggregates.json and evidence/M5_5_STUDY_AMENDMENT.md: exploratory results, negative-gate continuation and author-exposure limits. Freeze SHA-256: c64da42c62fe46bbd51220738a0016d00742bb1c606575cbb68c4db21374329c.
 
-[E4] evidence/M6_REPORT.md, evidence/M6_DEMO_GUIDE.md and demo screenshots: actual product verification and operating limits. Source archive is the tested M6 commit 9b9b6c884d5616d044bbf3e0d98344e43ec91635, not a newly evaluated M7 runtime.
+[E4] evidence/M6_REPORT.md and evidence/M6_DEMO_GUIDE.md: preserved original product verification. The updated source archive contains tested M8 commit665956553fca8fca2c5fe990a62e935ee6b305d6; the historical M6 package stays unchanged.
 
 [E5] evidence/M5_1_REPORT.md and evidence/M5_4_REPORT.md: development diagnostics and the negative retrieval gate.
 
-*Bibliographic links identify source publications; indexed versions are stated where applicable. Full model digests and file hashes are retained in the source manifests and the submission manifest. Private questions, gold, individual scores, answer packets, credentials, model weights, PDFs and databases are intentionally not distributed. The checklist records pending course-specific submission requirements.*
+[E6] evidence/M8_1_REPORT.md through M8_5_REPORT.md and M8_USER_GUIDE.md: source-bound collection imports, local QA/review, two-topic functional verification and explicit limits. New user collections are separate from the twenty-paper research corpus.
 
-<!-- Report page boundary -->
+Bibliographic links identify source publications; indexed versions are stated where applicable. Full model digests and file hashes are retained in the source manifests and the submission manifest. Private questions, gold, individual scores, answer packets, credentials, model weights, PDFs and databases are intentionally not distributed. The checklist records pending course-specific submission requirements.

@@ -136,7 +136,7 @@ class ReviewDecision(Contract):
     review_time_note: str = Field(min_length=1)
     reason: str = Field(min_length=1)
     decision: Literal["approved", "rejected", "needs_review"]
-    origin: Literal["human_csv", "human_chat"]
+    origin: Literal["human_csv", "human_chat", "human_ui"]
     provenance_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
 
     @model_validator(mode="after")

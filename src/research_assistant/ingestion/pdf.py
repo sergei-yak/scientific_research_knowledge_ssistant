@@ -23,12 +23,14 @@ def normalize_block(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
-def parse_pages(manifest: PaperManifestEntry) -> list[dict]:
+def parse_pages(manifest: PaperManifestEntry, *, skip_empty: bool = False,
+                max_page_characters: int | None = None,
+                max_total_characters: int | None = None) -> list[dict]:
     """Parse only declared pages, preserving normalized paragraph/section locations."""
     path = Path(manifest.local_path)
     if hashlib.sha256(path.read_bytes()).hexdigest() != manifest.source_sha256:
         raise ValueError("PDF SHA-256 differs from the manifest")
-    pages, section = [], "Front matter"
+    pages, section, characters = [], "Front matter", 0
     with pymupdf.open(path) as document:
         if manifest.selected_pages != sorted(set(manifest.selected_pages)):
             raise ValueError("Selected pages must be sorted and unique")
@@ -48,14 +50,22 @@ def parse_pages(manifest: PaperManifestEntry) -> list[dict]:
                 blocks.append({"text": text, "section": section,
                                "bbox": [round(v, 3) for v in block[:4]]})
             if not blocks:
+                if skip_empty:
+                    continue
                 raise ValueError(f"No readable text on selected page {number}")
+            page_characters = sum(len(b['text']) for b in blocks)
+            characters += page_characters
+            if ((max_page_characters is not None and page_characters > max_page_characters)
+                    or (max_total_characters is not None and characters > max_total_characters)):
+                raise ValueError('Extracted text exceeds the import text limit')
             pages.append({"page": number, "blocks": blocks,
                           "text": "\n\n".join(b["text"] for b in blocks),
                           "replacement_characters": sum(b["text"].count("\ufffd") for b in blocks)})
     return pages
 
 
-def make_chunks(manifest: PaperManifestEntry, pages: list[dict], encoder) -> list[Chunk]:
+def make_chunks(manifest: PaperManifestEntry, pages: list[dict], encoder,
+                *, max_chunks: int | None = None) -> list[Chunk]:
     """Create page-local windows with soft section boundaries and no encoder truncation."""
     chunks = []
     config = {"parser": PARSER_VERSION, "chunker": CHUNKER_VERSION,
@@ -102,6 +112,8 @@ def make_chunks(manifest: PaperManifestEntry, pages: list[dict], encoder) -> lis
                 text=piece, text_sha256=text_sha(piece), parser_version=PARSER_VERSION,
                 chunker_version=version, mini_tokens=mini, mpnet_tokens=mpnet,
             ))
+            if max_chunks is not None and len(chunks) > max_chunks:
+                raise ValueError('Collection chunk limit exceeded')
             if end == len(mapping):
                 break
             offset = max(offset + 1, end - 40)

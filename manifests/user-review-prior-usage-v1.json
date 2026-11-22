@@ -1,0 +1,126 @@
+{
+  "format": "user-review-prior-usage-v1",
+  "sources": {
+    "737b0b8fe0aa8459429b5906d66d0bfcb5246c488add534d3ce23f58a0f7b7fc": {
+      "requests": 8,
+      "candidates": 3,
+      "passages": 4,
+      "journal_sha256": "f070554d2877bacef3a74feb34a6c243f19bdd72db7342c5efaba7d82d60c7b1"
+    },
+    "33524b3b56910c513affdad8dbf67d14e68edf0572e4debdb09a9f1916463b06": {
+      "requests": 7,
+      "candidates": 10,
+      "passages": 4,
+      "journal_sha256": "294d938bf661d3c23a369b85769e1cadef6cd86129c9c8eed0e8ffe6d7a5f11d"
+    },
+    "43413f14b75989b41574a783c3d854643db768c6842eb4ae71daa5d8baeb8b32": {
+      "requests": 4,
+      "candidates": 5,
+      "passages": 4,
+      "journal_sha256": "27abaf79349389bc75a7eebea4234dc233841b769533aeaa5e802020bf50a34b"
+    },
+    "430857127120ba1a0923afe56258c8fc87fd4ec503f9f8e284c5d1007ccf7001": {
+      "requests": 4,
+      "candidates": 5,
+      "passages": 4,
+      "journal_sha256": "4dfdfc9354f4ddba9cbb8158a279c418dac12bee84a4fba56e555b566f45ca9f"
+    },
+    "4e6b75b6734ad4e3c25421a3e35f1d9d4aa68e896236dde3ba84090812c478f8": {
+      "requests": 4,
+      "candidates": 4,
+      "passages": 4,
+      "journal_sha256": "97b5696225d7e5d7856401fe148550174848b9934b67a90dc06eec3ed85d2bb3"
+    },
+    "66b865274319c1df380d237f3c3a4b1fb7ed20a2641db770c9ea2ad605cc3f11": {
+      "requests": 2,
+      "candidates": 2,
+      "passages": 2,
+      "journal_sha256": "aedcbd4ac8938b9dc051d0ffdaffe7fabb708135655b38f34b988ba2145618f2"
+    },
+    "a31eb1e5e28786a6db88a09e529bad71e2c1209a777aedf12a81a7cb7a132ca9": {
+      "requests": 2,
+      "candidates": 1,
+      "passages": 2,
+      "journal_sha256": "819746324f158252a352a2ac068ea21f96aa4ac1a2bc2e45a87a5d774dbefd4f"
+    },
+    "a6e01003ee38ca3d0ab4e912808ea46ebdedf2f72c925256cc0195b5b21aceb3": {
+      "requests": 2,
+      "candidates": 3,
+      "passages": 2,
+      "journal_sha256": "b29e66e088c546b58b03d840da7b080992e3e309e9da265e98b5663d6b041603"
+    },
+    "e04a0fe65cb78c1bc157d6d7c72de108193de812a4ef21157775d9711cddeddd": {
+      "requests": 2,
+      "candidates": 1,
+      "passages": 2,
+      "journal_sha256": "524da68cd05bb79fd67ff5d11f008d77aba6d05f3333afd0b57759dc1868f026"
+    },
+    "30e51af0bda2b8ea2605023abbb726cd077dbadc415bc46d0cfcbc57401adedf": {
+      "requests": 2,
+      "candidates": 2,
+      "passages": 2,
+      "journal_sha256": "a0e42b7daa44d88dd65eaebe47e903c53d8766378db4942b733035c59e091a09"
+    },
+    "1f51235565c4676226bb87b253dbe12be0775b60ffd3e4017a21424e98f216a9": {
+      "requests": 2,
+      "candidates": 1,
+      "passages": 2,
+      "journal_sha256": "ab695aff0f7a7e7f32fbe5e37c8d1428345db2cb5c202ca825f6b72993f69484"
+    },
+    "fe9af32a8602f0c82e58048516873dfbbebfcdef9213e6f1976f8e15b1dc15cd": {
+      "requests": 2,
+      "candidates": 3,
+      "passages": 2,
+      "journal_sha256": "db9947686ff38f5810e6174fafed4dc3e5c308ba4bdac30918782f9027b4c800"
+    },
+    "92115118cd6457d13b2343f17f1c91a65ed8e233f37f7f5087d121e4206a8b66": {
+      "requests": 2,
+      "candidates": 3,
+      "passages": 2,
+      "journal_sha256": "2e057aeafd38ae7e215dbd4c47fa25733b6130b8b7aa47b3b876c7b7bb7dbde0"
+    },
+    "f71e55fd5ec2bdadd08200dde4dfb4e6e29c380e14c80ea8451aba6de73aec30": {
+      "requests": 2,
+      "candidates": 2,
+      "passages": 2,
+      "journal_sha256": "ef89b300d0644fd80313467b72814ebb4c1235325aee53e7c26a42da0e2fe94a"
+    },
+    "06b1634ecb08e230622b376eb8a3975e013e8d4cebf5f145c21d98fe4aebc95a": {
+      "requests": 2,
+      "candidates": 2,
+      "passages": 2,
+      "journal_sha256": "045364442c27e4091fb9ca30c84332c4315f3a91adf11c4acfb76faa0371fa85"
+    },
+    "4ab41b5a9f41bacb1f5ed1f7567ae8489520e22b206910eedd50b3b6169a1734": {
+      "requests": 2,
+      "candidates": 2,
+      "passages": 2,
+      "journal_sha256": "b17347761ca6237401a0ea9f6f2337faccbdb2ec061c7ce167fa66b1c6086209"
+    },
+    "ac529ab762fd1672e2a7fd16a0f7035b3dbaa1a1974e700ba0ce5f4c19a66f7d": {
+      "requests": 2,
+      "candidates": 2,
+      "passages": 2,
+      "journal_sha256": "8b3538881dc21d34544e73c6df8625c34f7ad51462b884adbce84dec6a652e6d"
+    },
+    "873d882437481107659a106a1e72c82019b24e47c7b1770675f42f165cf6f7bf": {
+      "requests": 2,
+      "candidates": 1,
+      "passages": 2,
+      "journal_sha256": "4eac99bc17c7503f214f11c5571ad293df27d6e8e24780cc76cd1030ec7bda34"
+    },
+    "4f264a45c744c3d04ca08edcb89a8c0bc098963d2543dfd9612463d1a9c0e913": {
+      "requests": 2,
+      "candidates": 1,
+      "passages": 2,
+      "journal_sha256": "c8804a2f6bd483f93d6b23ee93707edbeb0fc4ca872dfc9535eccc26059b6ab1"
+    },
+    "7b3849d0e5ce18a2ffe6b0e6290925e720bab8c102b7571b0ba1473317548c01": {
+      "requests": 2,
+      "candidates": 2,
+      "passages": 2,
+      "journal_sha256": "66d72eb036105e80ee2698128f4d039f2d38031822caf784ed48baec603f3f46"
+    }
+  },
+  "note": "Public curated-source extraction reservations carried forward. No claim, decision or private evaluation data imported."
+}

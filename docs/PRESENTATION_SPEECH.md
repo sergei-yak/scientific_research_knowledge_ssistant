@@ -1,16 +1,16 @@
 # Presentation speech
 
-Sergei Iakovlev, DBU Deep Learning
+Sergei Iakovlev | DBU Deep Learning | 21 November 2026
 
-This script follows the revised 11-slide presentation. The opening researcher is an imagined example. Read the paragraphs as a story, rather than reading every number on the slides. Allow roughly 10-12 minutes for the speech, plus a short demonstration. This is a planning estimate, not a measured rehearsal or a course time limit.
+Eleven slides, with an early RAG comparison and a simple research-team story. The opening team is hypothetical. M8 is the completed product extension; scientific results remain unchanged. Rehearsal duration is an estimate until Sergei measures his own delivery.
 
 ## Slide 1 - Scientific Research Knowledge Assistant
 
-Imagine you are part of a research team. Your manager asks a simple question: "Which AI method should we try, and what evidence supports that choice?"
+Imagine you are part of a research team. Your manager asks, "Which method should we try, and what evidence supports that choice?"
 
-You have twenty papers. One describes a method, another explains its weaknesses, and a third reports a different test. Finding an answer means moving between documents and checking what each one actually says.
+You have papers open everywhere. One explains a method, another lists its weaknesses, and a third uses a different test. Checking an answer means moving between documents.
 
-That is the problem behind my project. I built an assistant that helps people ask questions about these papers and inspect the sources behind its answers. The business idea is to support that research work, with less searching and easier checking. I tested answer quality. I have not yet measured business time savings.
+That is the problem behind my project. I built an assistant that lets people bring their own research papers, ask questions, and inspect the original sources behind an answer. The business idea is easier research and easier checking. I tested the system and answer quality, but I have not measured business time savings.
 
 ## Slide 2 - Traditional RAG and Graph RAG: what changes?
 
@@ -42,13 +42,13 @@ I used models that were already trained. I did not train a new neural network. M
 
 ## Slide 5 - Building a small library we can check
 
-An assistant is only as useful as the material it can find. So I started with five papers, checked the process, and then expanded to twenty.
+Before opening the app to different topics, I needed a small library that I could check carefully. I started with five AI papers, then expanded to twenty.
 
-The system divides the papers into searchable passages. It also contains 51 claims that I reviewed against their sources. Each reviewed claim keeps a link back to the original wording and page.
+Those research experiments used 1,427 searchable passages and 51 claims reviewed against their sources. Each reviewed statement keeps its original wording and page reference.
 
-That link is important for our researcher. If an answer says a method has a limitation, they can open the passage and check it.
+That matters for our researcher. If an answer describes a limitation, they can open the passage and check it. Approval means the paper supports the statement; it does not mean I repeated the scientific experiment.
 
-There is also a boundary here. Approving a claim means the paper supports it. It does not mean I independently repeated the authors' experiment. Missing details remain marked as unknown.
+The product can now accept new collections. Those stay separate from this research library, so adding a new paper does not change the results I am about to show.
 
 ## Slide 6 - Testing the idea fairly
 
@@ -90,22 +90,22 @@ That does not show that Graph RAG can never help. My collection was small, and t
 
 For a team choosing a tool, I would present that result honestly. I would need stronger evidence before recommending the extra graph work for better answers.
 
-## Slide 10 - From a question to an answer you can check
+## Slide 10 - Your papers, your research questions
 
-Let us return to the researcher with a question. In the app, they choose a paper collection, enter the question, and decide whether they want evidence alone or a written answer.
+Now imagine our researcher changes jobs or starts a different topic. They should not be limited to the papers I selected for class.
 
-They can then open the source excerpts, check the paper pages, and export the evidence. If the graph search adds nothing, the interface makes that visible.
+In the app, they create a collection, upload PDFs or paste public paper links, and wait for the papers to become searchable. Then they ask a question. They can inspect passages alone, or ask the local AI to write an answer.
 
-The screenshot comes from an actual test of the working app. Answers took around 35 to 76 seconds in the product checks, so it is not instant.
+This screenshot shows a real physics-paper example about gravitational waves. I also checked the app on AI papers. The source cards let the user open the original page and export the evidence.
 
-This demonstration uses the Standard search options. The experimental ranking study is separate. What I can show working today is the path from a question to an answer and its sources.
+Ordinary search works immediately after indexing. Graph search needs claims and connections that a person has reviewed. If it adds no useful evidence, the app says so. These product checks show the workflow works; they are not a new accuracy study.
 
 ## Slide 11 - What this could mean for a research team
 
-We started with a team trying to make sense of information scattered across papers. The product I built brings questions, answers and supporting sources into one place.
+We started with a team trying to understand information scattered across papers. The working product now lets that team bring its own documents and follow an answer back to its sources.
 
-For a research team, the intended value is less repeated searching and an easier way to check a recommendation. Those business benefits still need a study with real users. This project did not measure time savings or financial return.
+The intended business value is less repeated searching and an easier way to check a recommendation. Those benefits still need testing with real users; I have not measured financial return or time savings.
 
-The research also changed what I would recommend. Graph connections did not add value in the held-out tests. Some ranking changes helped, but had trade-offs.
+The research also changed what I would recommend. Graph connections did not improve the held-out answers here. Some ranking changes helped, with trade-offs.
 
-My next research step would be to test more useful reviewed connections with a fresh evaluation. For now, the contribution is a working assistant and a clear account of what the evidence supports.
+My future research would examine more useful reviewed connections and a fresh evaluation. Today, I can demonstrate a local research assistant and explain clearly what the evidence supports. I used pretrained models; I did not train a new neural network.

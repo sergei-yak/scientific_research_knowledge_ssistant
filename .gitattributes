@@ -1,7 +1,9 @@
 * text=auto eol=lf
 
-# Preserve exact validated submission bytes and manifest checksums.
+# Preserve exact validated delivery bytes and manifest checksums.
 submission/** -text whitespace=cr-at-eol
+
+coursework/progress-2026-11-21-complete/** -text whitespace=cr-at-eol
 
 # Generated deliverables are binary artifacts, not source diffs.
 *.pdf binary

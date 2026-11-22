@@ -61,14 +61,29 @@ def ingest_paper(manifest_path: Path, settings: Settings) -> dict:
     encoder = Encoder()
     pages = parse_pages(manifest)
     chunks = make_chunks(manifest, pages, encoder)
+    return index_prepared_paper(manifest, pages, chunks, encoder, settings)
+
+
+def paper_identity(manifest: PaperManifestEntry, encoder) -> dict:
+    """Keep the exact historical single-paper snapshot identity shared across entry points."""
+    return {"paper_id": manifest.paper_id, "source_sha256": manifest.source_sha256,
+            "pages": manifest.selected_pages, "parser": PARSER_VERSION,
+            "chunker": CHUNKER_VERSION, "encoder_revision": encoder.revision,
+            "mpnet_tokenizer_revision": encoder.mpnet_revision}
+
+
+def index_prepared_paper(manifest: PaperManifestEntry, pages: list[dict], chunks: list[Chunk],
+                         encoder, settings: Settings, *, directory: Path | None = None) -> dict:
+    """Persist/embed/index preflighted source data using the same cache and graph contracts."""
     if not chunks:
         raise ValueError("No chunks produced")
-    identity = {"paper_id": manifest.paper_id, "source_sha256": manifest.source_sha256,
-                "pages": manifest.selected_pages, "parser": PARSER_VERSION,
-                "chunker": CHUNKER_VERSION, "encoder_revision": encoder.revision,
-                "mpnet_tokenizer_revision": encoder.mpnet_revision}
+    if ([p['page'] for p in pages] != manifest.selected_pages
+            or any(c.paper_id != manifest.paper_id or c.source_sha256 != manifest.source_sha256
+                   or c.page not in manifest.selected_pages for c in chunks)):
+        raise ValueError('Prepared source membership differs from its manifest')
+    identity = paper_identity(manifest, encoder)
     corpus_id = fingerprint(identity)
-    directory = Path("data/processed") / corpus_id
+    directory = directory if directory is not None else Path("data/processed") / corpus_id
     snapshot = {**identity, "corpus_id": corpus_id, "paper": manifest.model_dump(),
                 "chunk_count": len(chunks), "normalized_pages": len(pages),
                 "chunks_sha256": fingerprint([c.model_dump() for c in chunks])}

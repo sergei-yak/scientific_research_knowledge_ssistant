@@ -7,6 +7,12 @@ from research_assistant.settings import Settings
 
 def guard_development_write(settings: Settings) -> None:
     """Existing baseline checkout has no marker; scoped worktrees cannot write another target."""
+    if Path('data/scopes/user-collections.json').exists():
+        if Path('data/scopes/retrieval-v2.json').exists():
+            raise ValueError('User collection and research development scopes must remain separate')
+        from research_assistant.collections.scope import guard_user_write
+        guard_user_write(settings)
+        return
     path=Path('data/scopes/retrieval-v2.json')
     if not path.exists():
         if Path('.git').is_file():

@@ -3,7 +3,9 @@
 
 ## Current presentation revision
 
-The user requested slide2 explain entities/nodes and relationships/edges. V4 in `submission/presentation-v4/` adds the editable three-node/two-edge teaching example and matching simple speech. The other ten slide bodies/notes and all other PPTX parts match v3 exactly. Use the complete v4 ZIP/current submission guide; original v3/v2 packages and report/progress/source bytes stay unchanged. Read `docs/SLIDE_2_GRAPH_EXPLANATION.md`. This is internal presentation work, with no application/model/review/private/research operation. Fresh rendering/import/layout checks pass; v4 native PowerPoint was not rerun and earlier v3 rehearsal stays historical.
+The professor's final-showcase rubric now governs presentation v5 in `submission/presentation-v5/`. Twelve editable slides have twelve simple speeches: problem/business need, entities/relationships (slide3), product walkthrough (slide5), challenges paired with solutions, evaluation/findings, limits/future, human-accepted course-reflection draft and visible references. Target12-13 minutes including2-3-minute demo within required10-15; live OR recorded allowed, all post the deck. Read `docs/M7_RUBRIC_REVISION.md`, the current submission guide and rehearsal. The user authorized publishing all latest v5 and README updates on22November2026. Verify the actual GitHub main before reporting publication. Course-portal submission and native PowerPoint/spoken/projector checks for v5 remain manual.
+
+Fresh all-slide rendering/import/layout/font/chart/workbook/content checks pass. The original baseline chart/workbook bytes were restored after export omitted the embedded workbook relationship. All prior v3/v4 package/report/progress/source bytes remain unchanged. The earlier slide2-only v4 record in `docs/SLIDE_2_GRAPH_EXPLANATION.md` is historical. No application/model/review/private/research operation occurred. Current M8 runtime stays the tested bytes.
 
 ## Retained v3 delivery record
 

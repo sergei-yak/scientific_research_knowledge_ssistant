@@ -1,28 +1,28 @@
-# Final submission checklist - v4
+# Final presentation checklist - v5
 
-The current package contains the completed M8 product and unchanged research findings. Earlier v1/v2 packages and the preimplementation progress snapshot remain historical. No course-portal upload is performed here.
+## Prepared
 
-## Prepared and checked
+- [x] Title and individual presenter name.
+- [x] Visible problem, motivation and intended business value.
+- [x] Entities/nodes and relationships/edges graph explanation.
+- [x] Working-product screenshot and step-by-step demo plan.
+- [x] Concrete challenges paired with implemented responses.
+- [x] Evaluation approach and original negative Graph findings.
+- [x] Current limitations and future enhancements.
+- [x] Accepted course-reflection draft and future coding interests.
+- [x] Visible references plus complete citations in notes/companion file.
+- [x] Twelve editable slides and twelve embedded simple speeches.
+- [x] One Arial font family, fresh slide rendering/import/layout checks and preserved original native chart/workbook.
+- [x] Existing report/progress/source and earlier delivery packages remain unchanged.
 
-- [x] Ten-page report includes the completed user-document product and keeps original research results/limitations distinct.
-- [x] Eleven editable slides retain the early traditional RAG/Graph RAG explanation and simple storytelling speech on every slide.
-- [x] Actual current-topic screenshots, user/demo guide and tested M8 source archive are supplied.
-- [x] Three-page progress document lists eight technical elements with completion percentages and challenges; internal submission work is excluded.
-- [x] No-training, negative Graph findings, one-rater/small-sample and exploratory author-context disclosures remain explicit.
-- [x] Native research tables/charts remain editable; original chart/workbook bytes and public aggregates are preserved.
-- [x] All final slide previews and PDF pages were inspected; package/source/hash and preservation checks pass.
-- [x] PowerPoint checked v3 with eleven slides/notes; v4 has fresh rendering/import/layout checks. Native PowerPoint was not rerun for the revised slide2.
-- [x] Actual app rehearsal checked AI sources/CSV, collection-switch clearing, a new physics evidence-only question and run export.
-- [x] Secrets, private evaluation content, source PDFs, model weights, databases and local raw runs are excluded from publication.
+## Presenter actions
 
-## Sergei's final actions
+- [ ] Open this v5 file in PowerPoint and inspect Presenter View, chart, diagram, screenshot and hyperlinks.
+- [ ] Rehearse the full talk, including the slide-5 demo, within 10-15 minutes. Target 12-13.
+- [ ] Confirm the reflection matches your experience and the name/date are correct.
+- [ ] Prepare the existing collection and check the local app before presenting. Do not reset data or rerun consumed studies.
+- [ ] Choose live delivery or a recorded video, as the professor permits. Label recorded output accurately.
+- [ ] Check AI-assistance disclosure requirements and the target display/projector.
+- [ ] Post the slide deck to the course portal. If recording, upload the required video and retain the receipt.
 
-- [ ] Confirm the instructor's rubric, including whether pretrained-model inference/evaluation satisfies any training requirement.
-- [ ] Confirm your name/course, required report/slide limits, citation style and AI-assistance disclosure.
-- [ ] Read the eleven speeches aloud in Presenter View and measure your actual duration; the estimate is 10-12 minutes plus a 3-5 minute demo.
-- [ ] Check the actual projector/display scaling and practice switching between slide 10 and the browser. The native screen smoke check is not a spoken/projector rehearsal.
-- [ ] Before presenting, check the existing owned M8 services and model/data assets. Do not reset volumes or rerun consumed studies/readiness harnesses.
-- [ ] Verify the required delivery format: progress PDF, report, PPTX, ZIP, GitHub link or video. A fresh-machine build has not been newly tested.
-- [ ] Upload only requested files to the course portal and keep its receipt.
-
-See [the rehearsal guide](DEMO_REHEARSAL.md). These remaining personal/course-specific actions are not incomplete application features.
+The ten-page report, completed progress PDF and tested source archive are unchanged v3 documents. This presentation revision is internal delivery work, not a new project feature or a new research result.

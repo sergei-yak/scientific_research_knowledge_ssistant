@@ -1,7 +1,9 @@
-# Presentation rehearsal notes - v4
+# Presenter notes - v5
 
-The current eleven-slide deck includes an early entity/node and relationship/edge explanation and simple speech on every slide. See [the full speech](PRESENTATION_SPEECH.md) and [demonstration/rehearsal guide](DEMO_REHEARSAL.md). The active M8 app is on port8504; the research figures remain unchanged.
+The professor's final showcase is 10-15 minutes total. Use twelve slides, twelve matching simple speeches and a 2-3-minute product walkthrough at slide 5. The graph explanation is now slide 3. A full script, references and demo guide accompany this deck.
 
-The opening research team is hypothetical. Business time savings and financial return are intended benefits, not measured outcomes. Scores are human rubric ratings, not accuracy percentages. No neural model was trained; the exploratory author-context and negative Graph findings remain disclosed.
+Tell a research-team story, demonstrate the product before discussing results, and pair real challenges with implemented responses. Explain that reviewed source support is not independent scientific proof. Preserve the no-training, negative Graph, small-sample/one-rater and exploratory author-exposure statements. The cross-encoder is experimental, not a required M8 product stage. The physics screenshot is recorded M8 output.
 
-V4 changes only slide2 and its speech, with fresh layout/import checks. The previous technical rehearsal opened the v3 file in PowerPoint, ran its slide show, inspected AI source support/export and executed one public physics evidence-only query. No new answer generation or study occurred. Personal spoken timing, projector checks, rubric confirmation and portal upload remain manual. Historical M6/v2 instructions stay with their earlier packages.
+The course-reflection draft was explicitly accepted by Sergei. Personalize it if needed before recording. AI-assisted development included Codex, while the human supplied requirements, source review and answer scoring.
+
+V5 has not had a native PowerPoint, spoken or projector rehearsal. Open it in PowerPoint, use Presenter View, check hyperlinks and measure the complete talk including the demo. Historical v3 native checks do not certify this revision. Reports, runtime source, review decisions, study results and original packages remain unchanged.

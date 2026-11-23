@@ -43,7 +43,21 @@ Enter your reviewer identity, choose **approve**, **reject** or **needs_review**
 
 Drafts are never approved automatically. Each PDF retains cumulative extraction limits across collections: eight requests/eight passages/twelve generated-or-unknown candidates, at most two candidates per request. Failed and interrupted attempts count. No paid extraction is enabled.
 
-## 5. Save or demonstrate a result
+## 5. Explore the collection graph
+
+Select a ready collection and tick **Show collection graph**. This opens the map independently of a question and makes no AI/model call. You can inspect document structure even before reviewing claims.
+
+- The **overview** shows the collection, papers and current published approved claims/entities. Passages and derived search records are hidden for readability, with exact visible/total counts.
+- Tick **Full graph (include passages and search records)** to see every current logical node and edge. Dense maps are easier to explore by zooming and selecting a node.
+- Use **+**, **−**, the mouse wheel or **Fit graph**. Drag the background to pan, or drag a node to rearrange it. These movements affect only the display.
+- Click a node, use **Find a node**, or choose it from **Select a node**. The detail panel shows its full statement, source quotations and PDF pages. Click a relationship to inspect its direction and meaning. Nodes/relationships also support keyboard selection.
+- **Download current graph JSON** saves the complete validated map. Use **Graph source PDF** to select and download an original checked paper.
+
+Colors distinguish papers, passages, findings/evaluations, methods, datasets and search records. A paper-to-passage link means document ownership, not a scientific finding. Dotted **mentions** links remain discovery-only. A reviewed claim means the paper supports its wording, not independently verified scientific truth.
+
+This is the selected collection's current logical source/review map, not a raw database administration view. Old revisions, rejected/pending claims, unrelated collections and administrative records are excluded. Missing method/dataset mappings remain absent. Stale published approvals, changed sources or unavailable indexes block the reviewed view rather than displaying old claims. The AI demo currently has5 overview nodes/4 edges, or639 nodes/642 edges with passages/search records. Its two approved claims have no named method/dataset mappings. Physics has2 overview nodes/1 edge, or150 nodes/149 edges, with no approved claims. These counts describe current examples, not a Graph retrieval-quality result.
+
+## 6. Save or demonstrate a result
 
 Use **Download evidence CSV** for evidence rows and **Download run JSON** for the full saved answer, source/mode bindings and diagnostics. Source-card PDF downloads return the checked original bytes. Exports are revalidated against the selected collection and current reviews.
 

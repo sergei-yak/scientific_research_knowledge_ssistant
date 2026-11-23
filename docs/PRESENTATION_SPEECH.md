@@ -1,115 +1,57 @@
-# Presentation speech
+# Presentation speech - v5
 
-Sergei Iakovlev | DBU Deep Learning | 21 November 2026
+Sergei Iakovlev | DBU Deep Learning | 22 November 2026
 
-Eleven slides, with an early RAG comparison and a simple research-team story. The opening team is hypothetical. M8 is the completed product extension; scientific results remain unchanged. Rehearsal duration is an estimate until Sergei measures his own delivery.
+Twelve slides for the professor's final-project showcase. The opening research team is hypothetical. The course reflection draft was explicitly accepted by Sergei. Scientific results remain unchanged.
+
+**Timing:** 1,092 spoken words, approximately 9.1 minutes at 120 words/minute. Allow another 2-3 minutes for the slide-5 demo and about one minute for pauses/transitions. Target roughly 12-13 minutes within the required 10-15. This is an estimate, not a measured rehearsal. Speaker-note citations are not spoken.
 
 ## Slide 1 - Scientific Research Knowledge Assistant
 
-Imagine you are part of a research team. Your manager asks, "Which method should we try, and what evidence supports that choice?"
+Imagine a research team trying to choose a new method. The evidence is spread across papers, and checking one answer means opening several documents. My project starts with that everyday problem. I built a local assistant that accepts research papers, answers questions, and lets the user inspect the original sources. Today I will show the working product, explain the challenges behind it, and share what the tests taught me about adding graph connections.
 
-You have papers open everywhere. One explains a method, another lists its weaknesses, and a third uses a different test. Checking an answer means moving between documents.
+## Slide 2 - The research team's problem
 
-That is the problem behind my project. I built an assistant that lets people bring their own research papers, ask questions, and inspect the original sources behind an answer. The business idea is easier research and easier checking. I tested the system and answer quality, but I have not measured business time savings.
+Picture a researcher with ten papers open. One describes a method, another uses the same dataset, and a third explains a limitation. A quick answer is useful only if the researcher can check where it came from. My intended users are students and research teams making sense of a collection of papers. The business idea is to reduce repeated searching and make evidence easier to inspect. I have demonstrated the workflow, but I have not measured time savings or financial return. That would require a separate study with real users.
 
-## Slide 2 - Graph RAG: entities and relationships
+## Slide 3 - Graph RAG: entities and relationships
 
-Imagine two papers. The first says Method A was tested on Dataset X. The second says the same about Method B. A dataset is simply a collection of test data.
+Imagine two papers. One says Method A was tested on Dataset X. The other says the same about Method B. Traditional RAG finds useful passages for an AI to read. Graph RAG also organizes information into a map. Important things, called entities, become nodes. Here they are Method A, Method B and Dataset X. Relationships become labelled edges. Each evaluated-on arrow connects a method to its dataset. We can follow those links to find methods tested on Dataset X, then retrieve the original passages. My project requires human review of proposed connections. The research question is whether this extra structure gives the answer writer more useful evidence. This example illustrates the idea, rather than a measured result.
 
-Traditional RAG searches their text for useful passages. Graph RAG also turns the information into a map.
+## Slide 4 - How the application works
 
-The important things are called entities. Here, Method A, Method B and Dataset X each become a node - the circles on this slide.
+The application follows a simple sequence. First, it reads a paper and saves searchable passages with their source locations. When someone asks a question, search selects a small reading pack. The local AI can then write an answer from that evidence. Finally, the user can open the sources and export the result. Optional reviewed claims support fact and graph search. I also tested an extra relevance checker in the research study. It is an experimental option, rather than a required stage in the demonstrated product. I used pretrained models and did not train a new neural network.
 
-A relationship describes how two things are connected. "Evaluated on" becomes a labelled arrow from a method to its dataset. Both arrows lead to the same Dataset X node.
+## Slide 5 - Your papers, your research questions
 
-Now we can ask, "Which methods were evaluated on Dataset X?" The assistant follows those connections to Method A and Method B, then retrieves the source passages so we can check the answer.
+Let us follow the researcher's journey in the app. I will show the paper-import controls, select an existing collection, ask a question, and open the supporting passage. Using a prepared collection keeps the demonstration short. The screenshot shows a previously generated answer about gravitational waves. Live evidence search works without generating another answer. I can also export the evidence. Ordinary search becomes available after indexing. Fact and graph modes need that collection's own reviewed claims. New collections stay separate from the research experiments. I will now switch to the application for a short walkthrough.
 
-In my project, a person reviews proposed connections before the graph uses them. My research tests whether adding this structure leads to better supported answers.
+## Slide 6 - Challenges and implemented solutions
 
-## Slide 3 - Is following connections worth the extra work?
+The first challenge was trust in the input. PDF reading order and generated claims can be imperfect. I kept exact quotations and page references, and required a person to review claims before publication. The second challenge was limited local hardware. I limited the reading pack and output length, and ran one inference at a time. The third was keeping collections and reviews consistent. Document hashes, collection revisions and current-review checks help prevent stale evidence from appearing. These choices made the workflow more controlled. They did not eliminate extraction errors, slow answers, or the need for human judgment.
 
-Now our researcher has two possible ways to search the library. To find out whether connections help, I needed a fair comparison.
+## Slide 7 - How I tested the idea
 
-I tested four approaches. The first searches by meaning. The second combines meaning with matching words. The third also searches claims that a person has checked against the papers. The fourth can follow connections between those reviewed claims and their related research.
+A good-looking demonstration does not tell us which search approach gives better answers. I built a checked research library of twenty papers and compared four approaches: meaning search, meaning plus words, reviewed claims, and graph connections. They received the same questions and evidence limits within each study. I rated anonymous answers before revealing which approach produced them. There were two small studies, each with sixteen held-out questions. I was the only scorer. The follow-up question author had seen earlier outcomes, so that study is exploratory. The two studies used different held-out questions, which prevents a direct improvement claim between them.
 
-Each approach gets the same limit on how much evidence it can give the answer writer. That matters because a larger reading pack could improve an answer by itself.
+## Slide 8 - What the tests showed
 
-If the connection search adds nothing useful to the final pack, the system says so and uses the matching simpler result.
+In the first study, combining meaning search with matching words gave the highest average reviewer score. The chart uses ratings from zero to one, not percentages of correct answers. Graph search tied the version using reviewed claims. No additional graph evidence entered the final reading pack for any held-out question. The follow-up tested broader connections and an extra relevance checker. That checker helped some approaches, hurt another, and added retrieval time. Graph again supplied no new selected evidence on the held-out questions. My conclusion is specific: this implementation did not demonstrate a graph benefit under these conditions. It does not establish that Graph RAG can never help.
 
-## Slide 4 - Three roles: find, check and write
+## Slide 9 - Current limitations
 
-Think of the assistant as having three roles. One finds material that might answer the question. Another gives the possible passages a closer relevance check. The last writes an answer from the selected evidence.
+The limits matter when deciding where to use this product. The studies were small and used one reviewer. The follow-up also has the question-author exposure I mentioned. Paper coverage and reviewed connections are incomplete, and a citation does not guarantee every sentence is correct. The app is a local, single-user release. It supports text-based PDFs, rather than every website or scanned document. Local answer generation can take tens of seconds. A useful next business test would observe whether real researchers can complete their work more easily and check answers successfully.
 
-The names and numbers on this slide describe the AI tools doing those jobs. I compared two search models and later tested the extra checking step. For the answer writer, I used a model running on my own computer.
+## Slide 10 - Future enhancements
 
-I used models that were already trained. I did not train a new neural network. My work was building the system around them and testing whether the way I found and selected evidence made the answers more useful.
+The next improvements should address the gaps we actually observed. First, build more useful reviewed connections while preserving their original sources. Second, evaluate a revised system on fresh questions with cleanly separated authors and independent reviewers. Third, test the product with real users, then investigate larger collections and scanned papers if those users need them. Uploads and separate research collections already work. These are proposals for future work, rather than features I have completed or evidence that answer quality will improve.
 
-## Slide 5 - Building a small library we can check
+## Slide 11 - Course reflection
 
-Before opening the app to different topics, I needed a small library that I could check carefully. I started with five AI papers, then expanded to twenty.
+This project helped me think beyond getting an AI model to return an answer. I had to consider the data, the source of each statement, the user experience, and how to test the result. The biggest lesson was to check whether an added component earns its complexity. The graph result was negative, but reporting that honestly was part of the learning. My next interest is building reliable AI applications that people can question and verify. I would carry the same source checks and fair comparisons into future coding projects.
 
-Those research experiments used 1,427 searchable passages and 51 claims reviewed against their sources. Each reviewed statement keeps its original wording and page reference.
+## Slide 12 - References and project resources
 
-That matters for our researcher. If an answer describes a limitation, they can open the passage and check it. Approval means the paper supports the statement; it does not mean I repeated the scientific experiment.
+These are the main research and software resources behind the project. The full citations and model details are in the notes and companion reference file. The repository contains the implementation, documentation and public results. Private evaluation material and local model assets are excluded. Thank you. I am happy to show a source or discuss a design choice.
 
-The product can now accept new collections. Those stay separate from this research library, so adding a new paper does not change the results I am about to show.
-
-## Slide 6 - Testing the idea fairly
-
-At this point, the assistant could answer questions. But a convincing demonstration alone would not tell me which search approach worked better.
-
-I prepared two studies. Within each study, every approach received the same questions. Some asked for a simple fact, some needed several papers, and some had no supported answer in the collection.
-
-I scored the answers without seeing which approach had produced each one. The scale allowed wrong, partly correct, and fully supported answers. I was the only scorer, so this is a small study.
-
-The follow-up also has a limitation: its question author had seen earlier outcomes. I treat it as exploratory. Its different questions prevent a direct improvement claim between the two studies.
-
-## Slide 7 - First study: combined search worked best here
-
-The first study gave me a useful surprise. Combining search by meaning with matching words produced the highest average answer score in the test sample. You can see that in the taller Hybrid bar.
-
-These are reviewer scores on a scale from zero to one, not percentages of correct answers.
-
-The graph approach did not improve on the version with reviewed claims. For every held-out question, no extra graph evidence entered the final answer material. It used the same evidence as that simpler version.
-
-For our research team, that matters. A more complicated system needs to earn its place. In this test, I had no evidence that following connections added answer value.
-
-## Slide 8 - Second study: a closer look helped some searches
-
-After that result, I investigated two changes. Could a broader search through the connections help? And could an extra relevance check choose better material for the answer writer?
-
-Think of that second change as reading the shortlist more carefully before handing it over.
-
-In the follow-up sample, broader connections alone did not improve the answer scores. The extra checking step helped some search approaches, but it hurt another and took more retrieval time. It was not a universal improvement.
-
-The business lesson is to test each added step against the work it is meant to support. An extra AI component should show a useful benefit, rather than simply make the system more elaborate.
-
-## Slide 9 - Did the connections improve the answers?
-
-This slide returns to the main question. Did graph connections improve answers beyond what the reviewed claims already provided?
-
-In the main follow-up comparison, all sixteen held-out questions were ties. The graph stage added retrieval time, but no new graph evidence reached the answer writer.
-
-That does not show that Graph RAG can never help. My collection was small, and the reviewed connections may not have supplied the missing evidence these questions needed. It shows that this implementation did not demonstrate that benefit here.
-
-For a team choosing a tool, I would present that result honestly. I would need stronger evidence before recommending the extra graph work for better answers.
-
-## Slide 10 - Your papers, your research questions
-
-Now imagine our researcher changes jobs or starts a different topic. They should not be limited to the papers I selected for class.
-
-In the app, they create a collection, upload PDFs or paste public paper links, and wait for the papers to become searchable. Then they ask a question. They can inspect passages alone, or ask the local AI to write an answer.
-
-This screenshot shows a real physics-paper example about gravitational waves. I also checked the app on AI papers. The source cards let the user open the original page and export the evidence.
-
-Ordinary search works immediately after indexing. Graph search needs claims and connections that a person has reviewed. If it adds no useful evidence, the app says so. These product checks show the workflow works; they are not a new accuracy study.
-
-## Slide 11 - What this could mean for a research team
-
-We started with a team trying to understand information scattered across papers. The working product now lets that team bring its own documents and follow an answer back to its sources.
-
-The intended business value is less repeated searching and an easier way to check a recommendation. Those benefits still need testing with real users; I have not measured financial return or time savings.
-
-The research also changed what I would recommend. Graph connections did not improve the held-out answers here. Some ranking changes helped, with trade-offs.
-
-My future research would examine more useful reviewed connections and a fresh evaluation. Today, I can demonstrate a local research assistant and explain clearly what the evidence supports. I used pretrained models; I did not train a new neural network.
+After slide 5, perform the short walkthrough in Demo_Rehearsal.md. If using recorded material, identify it as recorded. Personalize the accepted reflection if it does not match your experience.

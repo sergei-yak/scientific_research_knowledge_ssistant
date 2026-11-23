@@ -1,12 +1,125 @@
 # Scientific Research Knowledge Assistant
 
+## Purpose
+
+A local research assistant for students and research teams. Users create a collection, upload research PDFs or supply public paper links, ask questions, and inspect the original passages and PDF pages behind the answer. Optional human review enables approved-fact and graph retrieval.
+
+The project also compares traditional passage retrieval with Graph RAG, which connects entities through source-backed relationships. It uses pretrained models without neural-network training. The completed small studies did **not** establish an answer-quality benefit from selected graph evidence. [Original results](docs/FINAL_EVALUATION_REPORT.md) and [exploratory follow-up](docs/M5_6_EVALUATION_REPORT.md).
+
+## Team
+
+| Name | GitHub username | Role |
+|---|---|---|
+| Sergei Iakovlev | [@sergei-yak](https://github.com/sergei-yak) | Individual project author |
+
+## Requirements
+
+- Python **3.11** and **uv**. Install dependencies from the committed `uv.lock` using `uv sync --locked`.
+- Git and Docker Desktop with Docker Compose, running Linux containers.
+- The pinned Neo4j image and an isolated local user-collection database, described below.
+- Ollama and the configured local Qwen model for optional answer generation or claim drafting.
+- Local Sentence Transformers encoder files and the token-estimator cache. These need separate preparation before normal offline use.
+
+Development and product checks used Windows, approximately 32 GB RAM and an NVIDIA RTX 4070 Ti with 12 GB VRAM. This is the tested configuration, not a guaranteed minimum. Local generation can take tens of seconds. Model weights, `.env`, imported PDFs, indexes, databases and review data are intentionally excluded from Git. A fresh clone starts without the author's example collections.
+
+## Run the existing configured application
+
+On the author's demonstration computer, start Docker Desktop and Ollama, then run:
+
+```powershell
+Set-Location 'C:/Users/serge/DBU-GraphRAG-Worktrees/m8-user-collections'
+.\START_M8.ps1
+```
+
+Open **http://127.0.0.1:8504/**. The launcher uses locked offline dependencies and starts only its already-declared database container. Keep this terminal running. After setup in another M8 checkout, run `START_M8.ps1` from that checkout instead. The retained OneDrive/baseline and M6 research/demo checkouts are historical, separate environments.
+
+In the app:
+
+1. Create or select a collection and import text-based PDFs or supported public PDF/arXiv links.
+2. Ask a question using **Hybrid**. Leave **Generate an answer** off for evidence only, or enable it to use local Qwen.
+3. Open source excerpts/PDF pages and download evidence CSV or run JSON.
+4. Optionally review proposed claims, then choose **Update reviewed index** before using fact/Graph modes. New documents do not receive automatic approvals.
+
+See the [illustrated workflow and limits](docs/M8_USER_GUIDE.md). Graph shows an explicit fallback when it adds no eligible evidence. Citations and human source review do not independently prove scientific truth.
+
+## First-time setup in a fresh M8 checkout
+
+These instructions provision a **new empty local workspace**. Do not run the one-time setup over an existing `.env`, collection registry, scope or database. Keep an existing installation at its original path because its scope binds the checkout and exact container identity.
+
+**1. Clone and install the locked Python environment.** Initial installation needs network access and may download large PyTorch dependencies. Later cached runs can use `--offline`.
+
+```powershell
+git clone https://github.com/sergei-yak/scientific_research_knowledge_ssistant.git scientific-research-assistant
+Set-Location scientific-research-assistant
+uv sync --locked
+```
+
+**2. Start Docker Desktop and prepare the expected Neo4j image.** The M8 ownership guard checks the exact image ID, not just the tag.
+
+```powershell
+docker pull neo4j:5.26.32-community
+docker image inspect neo4j:5.26.32-community --format '{{.Id}}'
+```
+
+The required ID is `sha256:42ef3ebfd671ebd01fdebb6dcbe80cf7b45eef2aa3d346ef4132f7ef31e67d2f`, defined in `src/research_assistant/collections/scope.py`. If the downloaded image differs, obtain the matching verified image before setup. Do not change the identity check to force a different image through.
+
+**3. Create the isolated workspace once.** For this M8 setup, do **not** copy `.env.example` first. The setup script generates `.env` with a new password, separate ports, its own container/volumes and local-provider defaults.
+
+```powershell
+uv run --locked --offline python scripts/setup_user_collections.py
+```
+
+If setup fails or reports existing state, inspect its saved diagnostics before taking another action. Preserve existing files and volumes. The script refuses to reuse or reset them.
+
+**4. Prepare the encoder and estimator assets explicitly.** Run this only on the new workspace. This command downloads both encoder models and the token estimator, records the resolved encoder revisions and makes no answer-generation call.
+
+```powershell
+$setupTag = Get-Date -Format 'yyyyMMdd-HHmmss'
+uv run --locked python -m research_assistant smoke --checks model-artifacts --allow-model-download --output "runs/setup-models-$setupTag.json"
+```
+
+`uv.lock` locks Python packages, not downloaded model weights. This setup resolves model revisions at preparation time, so it does not by itself reproduce the frozen study's exact assets or results. Preserve an existing model cache and its manifests when using the demonstrated installation.
+
+**5. Provision the local generator and launch.** Start Ollama and use `ollama list` to check installed model names. The generated `.env` expects `qwen3.8:latest` for `GENERATION_MODEL` and `EXTRACTION_MODEL`. This is the author's **local alias**, not a verified public model-release name or a guaranteed `ollama pull` target. The corresponding local model asset must be supplied separately to reproduce that configuration. If deliberately configuring another compatible model, set both names explicitly and validate it separately; its outputs are not the recorded research results.
+
+```powershell
+ollama list
+.\START_M8.ps1
+```
+
+Ordinary evidence-only QA does not require generator inference, but it still needs the encoder/estimator assets and a ready database. No OpenAI API key is needed for the default local workflow. Paid calls remain disabled. Keep `.env` and keys out of Git. Full end-to-end setup on a clean second machine has not been verified; the existing local installation is the demonstrated product.
+
+## Checks and troubleshooting
+
+These checks inspect the environment without running a new research experiment:
+
+```powershell
+uv lock --check --offline
+uv pip check --python .venv/Scripts/python.exe
+uv run --locked --offline python -m research_assistant.collections --help
+```
+
+If the launcher reports a missing scope, complete first-time setup in a fresh checkout. If a model/cache is missing, prepare the required asset rather than substituting it automatically. After source/interface changes, restart Streamlit to clear stale Python imports. Preserve collection/review history, failed import records and database volumes when troubleshooting.
+
+## Documentation and class submission
+
+- [User guide](docs/M8_USER_GUIDE.md) and [actual product verification/limitations](docs/M8_5_REPORT.md).
+- [Project specification](project_spec.md), [implementation plan](IMPLEMENTATION_PLAN.md) and [agent working guide](AGENTS.md).
+- [Current twelve-slide presentation and speeches](submission/presentation-v5/README.md), [submission guide](docs/M7_SUBMISSION_GUIDE.md) and [demo rehearsal](docs/DEMO_REHEARSAL.md).
+- [Completed progress report](coursework/progress-2026-11-21-complete/Project_Progress_Report_Completed.pdf) and [final report](submission/v3/Project_Report_v3.pdf).
+
+The course presentation is 10-15 minutes, live or recorded. Internal submission preparation is not a product feature. Both completed studies and their private evaluation boundaries remain closed. The older commands below document development history and are not the current product quick start.
+
+<details>
+<summary>Historical milestone records and earlier commands</summary>
+
 **Active M8 product: M8.1-M8.5 complete for the bounded local first release.** Use `C:/Users/serge/DBU-GraphRAG-Worktrees/m8-user-collections`, branch `codex/m8-user-collections`. Open **http://127.0.0.1:8504/** or run `START_M8.ps1` there. Create/select a collection, import PDFs or public links, ask Vector/Hybrid questions and inspect/download exact sources. Optional human claim review and **Update reviewed index** enable fact/Graph modes only with current approvals. AI and gravitational-wave examples are checked; two genuine AI approvals remain published, while physics has no reviewed claims. Real Graph explicitly falls back for the current AI claims. [User guide](docs/M8_USER_GUIDE.md), [actual verification/limits](docs/M8_5_REPORT.md), [completed M8 plan](docs/M8_PLAN.md). Local assets/locked environment still require provisioning and are intentionally excluded from Git. The final GitHub release brings this tested M8 source to main under the current user request; the previous main commit, M6 checkout, earlier packages and both research scopes remain retained.
 
-**Current class materials:** [Completed progress PDF](coursework/progress-2026-11-21-complete/Project_Progress_Report_Completed.pdf), [updated report](submission/v3/Project_Report_v3.pdf), [eleven-slide deck](submission/presentation-v4/Project_Presentation_Storytelling_v4.pptx) and [complete v4 package](submission/presentation-v4/DBU_Deep_Learning_Submission_v4.zip). The progress document lists eight completed technical milestones, excluding internal submission preparation. The earlier ~88% PDF remains an unchanged preimplementation snapshot. Use the current [submission/rehearsal guide](docs/M7_SUBMISSION_GUIDE.md).
+**Current class materials:** [Completed progress PDF](coursework/progress-2026-11-21-complete/Project_Progress_Report_Completed.pdf), [updated report](submission/v3/Project_Report_v3.pdf), [twelve-slide showcase](submission/presentation-v5/Project_Presentation_Showcase_v5.pptx) and [complete v5 package](submission/presentation-v5/DBU_Deep_Learning_Submission_v5.zip). The progress document lists eight completed technical milestones, excluding internal submission preparation. The earlier ~88% PDF remains an unchanged preimplementation snapshot. Use the current [submission/rehearsal guide](docs/M7_SUBMISSION_GUIDE.md).
 
 Preserved class demonstration: **M0-M7 complete (M7 prepares the submission; it does not upload it). Open the working product at http://127.0.0.1:8503/**. Current checkout: `C:/Users/serge/DBU-GraphRAG-Worktrees/m6-demonstration`; launch with `START_DEMO.ps1`. [Startup/presentation guide](docs/M6_DEMO_GUIDE.md), [actual checks and limits](docs/M6_REPORT.md).
 
-**Final delivery (v4 presentation):** [Open current delivery](submission/presentation-v4/README.md), [simple speech](docs/PRESENTATION_SPEECH.md), [demo/rehearsal](docs/DEMO_REHEARSAL.md), [checklist](docs/SUBMISSION_CHECKLIST.md). The source archive identifies tested M8 commit6659565. Original v1/v2/v3 packages and all research assets remain historical. V4's slide 2 passed fresh rendering/import/layout checks; earlier app/PowerPoint checks remain recorded. Confirm the course rubric and rehearse aloud before portal upload.
+**Final delivery (v5 showcase):** [Open current delivery](submission/presentation-v5/README.md), [simple speech](docs/PRESENTATION_SPEECH.md), [demo/rehearsal](docs/DEMO_REHEARSAL.md), [checklist](docs/SUBMISSION_CHECKLIST.md). Twelve slides address the professor's rubric, including challenges/solutions, course reflection and references. Target 12-13 minutes including the demo within the required 10-15. Source remains tested M8 commit6659565. Earlier packages and research findings are preserved. Native PowerPoint and a timed spoken rehearsal for v5 remain manual.
 
 **Current iteration:** Specification 6.5 governs `retrieval-v2`; M5.0–M5.4 are complete.
 [M5.4](docs/M5_4_REPORT.md) records the matched 96-request development comparison and a **no-go**
@@ -615,3 +728,5 @@ uv run --locked --offline python -m research_assistant.evaluation.matched_setup 
 ```
 
 Actual exact receipt: `runs/retrieval-v2/m5-5/final-run-authorization-v1.json`, SHA `6e4871c6b316005bf5ed9b34a043cae12e0f4459fdefa1531da927bf1e757897`. Its once-only execution and subsequent real human 288-row scoring/seal/guarded reveal are complete; 60 active scoring minutes recorded. [Final matched results](docs/M5_6_EVALUATION_REPORT.md), [operations](docs/M5_6_REPORT.md). Both evaluation targets remain stopped; data/frozen bytes preserved. Do not run again, resume, reset accounting, repeat immutable seal/reveal exports or alter sealed scores after seeing results. Source-only false flags and historical requests remain unchanged. M6 demonstration is now complete; see the separate product guide/report.
+
+</details>

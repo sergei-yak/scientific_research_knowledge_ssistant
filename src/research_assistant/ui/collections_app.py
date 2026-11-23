@@ -16,6 +16,7 @@ from research_assistant.contracts import RunArtifact, fingerprint
 from research_assistant.settings import Settings, configure_caches
 from research_assistant.ui.app import cached_encoder, render_run
 from research_assistant.ui.collection_review import review_panel
+from research_assistant.ui.collection_graph import graph_panel
 
 logger = logging.getLogger(__name__)
 
@@ -164,6 +165,8 @@ def main() -> None:
         except Exception as exc:
             st.session_state.pop('user_run',None)
             st.error('Review tools are unavailable: '+message(exc,settings))
+    if usable:
+        graph_panel(registry, collection, settings, message)
     with st.form('user_query'):
         question = st.text_area('Research question', max_chars=2000,
             placeholder='For example: What problem does this method solve, and what limitations do the authors report?')

@@ -1,6 +1,12 @@
 # Agent working guide
 
 
+## Current M9 graph explorer
+
+M9.1-M9.3 complete in the M8 checkout only, specification6.12. Read `docs/M9_GRAPH_EXPLORER_PLAN.md`, `docs/M9_GRAPH_EXPLORER_REPORT.md` and user-guide section5. Port8504 is restarted with the optional interactive current-collection map. Overview hides passages/search records with exact counts; Full graph exposes all current logical source/review nodes/edges. Current approvals/roles/sources/indexes are validated through shared guards. No generated links, auto-approval, name merging, stale approved map or cross-collection substitution. The current AI graph has no named method/dataset mappings. Visualization is independent of a question and proves no traversal-quality benefit.
+
+510 offline passes/11 integrations deselected,16 final focused passes, actual browser and five read-only native map loads are recorded. Original database and241 source/review/accounting files,93 prior public assets and both studies remain preserved. No model/encoder/import/extraction/review/paid/private operation occurred. The pinned isolated wheel build includes the local HTML asset. The M9 engineering scope is closed at handoff; ordinary explicit graph browsing remains available. The user explicitly authorized publishing the completed graph explorer to GitHub; verify actual remote main before reporting publication. Do not mirror M9 runtime source into original/M6/research checkouts. V5 presentation/source archives remain historical unchanged bytes; their earlier no-runtime-change statements apply to their preparation scope.
+
 ## Current presentation revision
 
 The professor's final-showcase rubric now governs presentation v5 in `submission/presentation-v5/`. Twelve editable slides have twelve simple speeches: problem/business need, entities/relationships (slide3), product walkthrough (slide5), challenges paired with solutions, evaluation/findings, limits/future, human-accepted course-reflection draft and visible references. Target12-13 minutes including2-3-minute demo within required10-15; live OR recorded allowed, all post the deck. Read `docs/M7_RUBRIC_REVISION.md`, the current submission guide and rehearsal. The user authorized publishing all latest v5 and README updates on22November2026. Verify the actual GitHub main before reporting publication. Course-portal submission and native PowerPoint/spoken/projector checks for v5 remain manual.

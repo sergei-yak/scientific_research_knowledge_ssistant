@@ -6,6 +6,8 @@ A local research assistant for students and research teams. Users create a colle
 
 The project also compares traditional passage retrieval with Graph RAG, which connects entities through source-backed relationships. It uses pretrained models without neural-network training. The completed small studies did **not** establish an answer-quality benefit from selected graph evidence. [Original results](docs/FINAL_EVALUATION_REPORT.md) and [exploratory follow-up](docs/M5_6_EVALUATION_REPORT.md).
 
+An optional **collection graph explorer** now shows papers, passages and current reviewed relationships. Tick **Show collection graph**, then zoom, select nodes/edges or choose **Full graph** for every current logical node and edge. [How to use it](docs/M8_USER_GUIDE.md#5-explore-the-collection-graph) and [actual checks/limits](docs/M9_GRAPH_EXPLORER_REPORT.md). This view makes no AI call.
+
 ## Team
 
 | Name | GitHub username | Role |

@@ -124,6 +124,7 @@ D1–D11 are incorporated into the authoritative spec; verify them in the listed
 | D105 | User requests a clearer Graph RAG explanation through entities/relationships. Replace only slide2 and its speech with entities becoming nodes and labelled relationships becoming edges. Use a hypothetical three-node/two-edge example and source retrieval. Preserve all other slide/note/package parts and prior deliveries; add v4 presentation/full ZIP with unchanged reports/source. No application or research change. | `docs/SLIDE_2_GRAPH_EXPLANATION.md`; presentation v4 |
 | D106 | User authorizes corrections for the professor's final showcase and accepts the reflection draft. Reorganize into12 slides with visible motivation, a short product tour, challenges/solutions, reflection and references. Keep original findings/limitations; label reranker experimental and screenshot M8. Target12-13 minutes including2-3-minute demo within10-15. Publish local v5 delivery, preserve prior packages/runtime, no application or study operation. | `docs/M7_RUBRIC_REVISION.md`; presentation v5 |
 | D107 | User requests the professor-required README coverage and then explicitly asks to push all latest changes. Add clear purpose, setup/run steps and Sergei Iakovlev/@sergei-yak attribution; retain older commands as historical. Publish the public v5 delivery and documentation through a history-preserving GitHub release. Keep prior packages, runtime, lockfile, data and studies unchanged; no force push or branch deletion. | README.md; v5 submission guide and publication receipts |
+| D108 | User requests a visual collection graph and explicitly authorizes GitHub publication after verification. Specification6.12 adds a read-only source/current-review map independent of query mode. Publish M9 viewer, tests, guides and exact6.11 archives while preserving previous packages, research scopes, model/dependency identities and review/accounting data. No additional model, review or study operation follows from publication. | `docs/M9_GRAPH_EXPLORER_PLAN.md`; `docs/M9_GRAPH_EXPLORER_REPORT.md`; release receipts |
 
 ## M1 design bindings (before M2; implemented through M3.1)
 
@@ -368,3 +369,7 @@ Operational references: [uv lock/sync](https://docs.astral.sh/uv/concepts/projec
 - **DEL.3:** Review and publish the combined M8/v3 release to GitHub main without force, preserving old publication files/history. Actual outcome is recorded in `docs/DELIVERY_V3_REPORT.md` and local release receipts.
 
 This is internal release/submission work, not M9 or an added product feature. No new scientific study, private access or paid operation is authorized.
+
+## M9 - Read-only collection graph explorer
+
+User-requested frontend extension after completed M8. Source requirements are specification6.12. [Tasks, boundaries and acceptance](docs/M9_GRAPH_EXPLORER_PLAN.md): M9.1 validated shared snapshot, M9.2 interactive UI, M9.3 offline/live preservation and handoff. No research algorithm, study, provider, approval or dependency change. Status: complete. See `docs/M9_GRAPH_EXPLORER_REPORT.md` for actual checks, skips and limits.
